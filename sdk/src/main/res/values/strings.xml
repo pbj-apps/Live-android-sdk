@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="type_a_message">TYPE A MESSAGE</string>
+    <string name="next_up">NEXT UP</string>
+    <string name="countdown_title">LIVE IN</string>
+    <string name="with_coach">With %1$s</string>
+    <string name="end_stream_title">Thanks for watching</string>
+    <string name="reminder_set">Reminder Set ✓</string>
+    <string name="remind_me">Remind Me</string>
+    <string name="join_live">Join Live</string>
+    <string name="no_live">No Livestream</string>
+    <string name="no_live_description">Looks like there is no livestream available at the moment, come back later!</string>
+    <string name="loading_livestream">Loading live stream</string>
+    <string name="livestream_error_title">Something wrong happened</string>
+    <string name="livestream_error_description">Looks like something went wrong</string>
+</resources>
