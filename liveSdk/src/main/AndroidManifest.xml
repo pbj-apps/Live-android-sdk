@@ -9,7 +9,7 @@
     <application>
         <activity
             android:name=".live.sdkLivePlayer.SDKLivePlayerActivity"
-            android:exported="true"></activity>
+            android:exported="true"/>
         <activity
             android:name=".live.livePlayer.LiveRoomActivity"
             android:configChanges="orientation|screenSize"
