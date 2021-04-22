@@ -3,19 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="../../../../layout/custom_preview.xml" value="0.1" />
-        <entry key="../InShape-android/Fyt/sdk/src/main/res/layout/activity_guest_live_player.xml" value="0.19270833333333334" />
-        <entry key="../InShape-android/Fyt/sdk/src/main/res/layout/activity_live_stream_room.xml" value="0.19270833333333334" />
-        <entry key="../InShape-android/Fyt/sdk/src/main/res/layout/activity_sdk_live_player.xml" value="0.18958333333333333" />
-        <entry key="../InShape-android/Fyt/sdk/src/main/res/layout/chat_input_layout.xml" value="0.19270833333333334" />
-        <entry key="../InShape-android/Fyt/sdk/src/main/res/layout/episode_end_layout.xml" value="0.16302083333333334" />
-        <entry key="../InShape-android/Fyt/sdk/src/main/res/layout/fragment_live_player.xml" value="0.17864583333333334" />
-        <entry key="../InShape-android/Fyt/sdk/src/main/res/layout/livestream_error_layout.xml" value="0.15052083333333333" />
-        <entry key="../InShape-android/Fyt/sdk/src/main/res/layout/loading_livestream_layout.xml" value="0.335" />
-        <entry key="../InShape-android/Fyt/sdk/src/main/res/layout/no_livestream_layout.xml" value="0.25" />
-        <entry key="../InShape-android/Fyt/sdk/src/main/res/layout/show_preview_layout.xml" value="0.2" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="sdk/src/main/res/layout/activity_live_stream_room.xml" value="0.19270833333333334" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.19270833333333334" />
       </map>
     </option>
   </component>
