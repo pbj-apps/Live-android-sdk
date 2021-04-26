@@ -153,7 +153,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
     private fun updateView(liveRoomState: LiveRoomViewModel.LiveRoomState) {
         setStreamTitle(liveRoomState)
-        setDescription(vm.episode?.description)
+        setDescription(vm.episode, liveRoomState)
 
         isChatVisible = false
 
@@ -283,7 +283,12 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         view.title.text = title?.toUpperCase()
     }
 
-    private fun setDescription(string: String?) {
+    private fun setDescription(episode: Episode?, liveRoomState: LiveRoomViewModel.LiveRoomState) {
+        val string = if(episode?.status == EpisodeStatus.WAITING_ROOM)
+            episode?.show?.waitingRoomDescription
+        else
+            episode?.description
+
         view.description.text = string?.toUpperCase()
     }
 

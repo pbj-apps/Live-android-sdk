@@ -113,9 +113,12 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
     private fun onLiveUpdate(episodeStatusUpdate: EpisodeStatusUpdate) {
         episodeStatusUpdate.apply {
             if (status != episode?.status || waitingRoomDescription != episode?.description) {
+
+                val show = episode?.show ?: Show(episodeStatusUpdate.showId)
+
                 episode = episode?.copy(
-                    description = waitingRoomDescription,
-                    status = status
+                    status = status,
+                    show = show.copy(waitingRoomDescription = waitingRoomDescription)
                 )
 
                 episode?.let {
