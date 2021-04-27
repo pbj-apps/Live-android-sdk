@@ -1,12 +1,14 @@
 package com.pbj.sdk
 
 import android.content.Context
+import androidx.annotation.Keep
 import com.pbj.sdk.core.ApiEnvironment
 import com.pbj.sdk.core.Live
 import com.pbj.sdk.core.SdkHolder
 import com.pbj.sdk.guest.GuestFeature
 import com.pbj.sdk.live.sdkLivePlayer.SDKLivePlayerActivity
 
+@Keep
 interface LiveSDK {
 
     val guestFeature: GuestFeature

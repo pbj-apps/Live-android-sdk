@@ -1,6 +1,7 @@
 package com.pbj.sdk
 
 import android.content.Context
+import androidx.annotation.Keep
 import com.pbj.sdk.core.ApiEnvironment
 import com.pbj.sdk.core.Live
 import com.pbj.sdk.core.SdkHolder
@@ -10,6 +11,7 @@ import com.pbj.sdk.notifications.LiveNotificationManager
 import com.pbj.sdk.user.UserFeature
 import com.pbj.sdk.vod.VodFeature
 
+@Keep
 interface PbjSDK {
 
     var liveNotificationManager: LiveNotificationManager?

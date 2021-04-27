@@ -48,9 +48,6 @@ internal class Live(
             Timber.d("Init SDK as $environment")
             LiveKoinContext.koinApp = koinApplication {
 
-                if (environment.isDebug)
-                    printLogger(Level.DEBUG)
-
                 androidContext(appContext.applicationContext)
 
                 modules(sdkModules)
