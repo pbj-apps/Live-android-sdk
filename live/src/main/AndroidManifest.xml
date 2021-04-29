@@ -13,7 +13,7 @@
         <activity
             android:name=".live.livePlayer.LiveRoomActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/Theme.Fyt.NoActionBar.Dark"
+            android:theme="@style/Theme.Pbj.NoActionBar.Dark"
             android:windowSoftInputMode="adjustPan" />
     </application>
 
