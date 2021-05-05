@@ -6,6 +6,7 @@ import com.pbj.sdk.core.ApiEnvironment
 import com.pbj.sdk.core.Live
 import com.pbj.sdk.core.SdkHolder
 import com.pbj.sdk.domain.chat.LiveChatSource
+import com.pbj.sdk.guest.GuestFeature
 import com.pbj.sdk.live.LiveFeature
 import com.pbj.sdk.notifications.LiveNotificationManager
 import com.pbj.sdk.user.UserFeature
@@ -24,6 +25,7 @@ interface PbjSDK {
 
     val userFeature: UserFeature
 
+    val guestFeature: GuestFeature
 
     companion object {
         fun initialize(
