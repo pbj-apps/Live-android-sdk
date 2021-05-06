@@ -136,7 +136,7 @@ internal class UserRepositoryImpl(
         return Result.Success()
     }
 
-    override suspend fun isLoggedInAsGuest() = Result.Success(preferences.isLoggedInAsGuest)
+    override suspend fun isLoggedInAsGuest(): Result<Boolean> = Result.Success(preferences.isLoggedInAsGuest)
 
     override suspend fun saveIsLoggedInAsGuest(isGuest: Boolean): Result<Any> {
         preferences.isLoggedInAsGuest = isGuest

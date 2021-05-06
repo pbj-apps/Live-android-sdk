@@ -33,6 +33,6 @@ internal class PBJPreferences(context: Context, moshi: Moshi) : AbstractPreferen
     companion object {
         private const val USER = "USER"
         private const val TOKEN = "TOKEN"
-        private const val LOGGED_IN_AS_GUEST = "TOKEN"
+        private const val LOGGED_IN_AS_GUEST = "LOGGED_IN_AS_GUEST"
     }
 }
