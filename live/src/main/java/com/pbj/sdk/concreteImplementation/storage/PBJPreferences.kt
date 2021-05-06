@@ -25,7 +25,7 @@ internal class PBJPreferences(context: Context, moshi: Moshi) : AbstractPreferen
 
     var isLoggedInAsGuest: Boolean?
         get() =
-            retrieve(LOGGED_IN_AS_GUEST)
+            retrieve(LOGGED_IN_AS_GUEST, true)
         set(value) {
             save(LOGGED_IN_AS_GUEST, value)
         }
