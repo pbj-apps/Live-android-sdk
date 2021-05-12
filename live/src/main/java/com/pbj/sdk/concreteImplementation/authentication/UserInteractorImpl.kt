@@ -86,13 +86,13 @@ internal class UserInteractorImpl(
 
             getUser {
                 user = it?.copy(firstname = firstname, lastname = lastname)
-            }
 
-            user?.let {
-                saveUser(it)
-            }
+                user?.let { newUser ->
+                    saveUser(newUser)
+                }
 
-            onSuccess?.invoke(user)
+                onSuccess?.invoke(user)
+            }
         }
     }
 
