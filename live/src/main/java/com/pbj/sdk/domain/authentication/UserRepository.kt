@@ -12,6 +12,8 @@ internal interface UserRepository {
 
     suspend fun getUser(): Result<User>
 
+    suspend fun getLocallySavedUser(): Result<User>
+
     suspend fun updateUser(firstname: String, lastname: String): Result<Any>
 
     suspend fun uploadProfilePicture(image: File, uri: Uri): Result<ProfileImage>
@@ -30,5 +32,7 @@ internal interface UserRepository {
 
     suspend fun removeToken(): Result<Any>
 
-    suspend fun getLocallySavedUser(): Result<User>
+    suspend fun isLoggedInAsGuest(): Result<Boolean>
+
+    suspend fun saveIsLoggedInAsGuest(isGuest: Boolean): Result<Any>
 }

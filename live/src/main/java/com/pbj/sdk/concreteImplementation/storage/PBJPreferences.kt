@@ -23,8 +23,16 @@ internal class PBJPreferences(context: Context, moshi: Moshi) : AbstractPreferen
             save(TOKEN, value)
         }
 
+    var isLoggedInAsGuest: Boolean?
+        get() =
+            retrieve(LOGGED_IN_AS_GUEST, true)
+        set(value) {
+            save(LOGGED_IN_AS_GUEST, value)
+        }
+
     companion object {
         private const val USER = "USER"
         private const val TOKEN = "TOKEN"
+        private const val LOGGED_IN_AS_GUEST = "LOGGED_IN_AS_GUEST"
     }
 }

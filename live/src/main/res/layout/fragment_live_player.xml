@@ -176,24 +176,38 @@
                 app:layout_constraintTop_toBottomOf="@id/nextUpTitle"
                 tools:text="Very intense workout"/>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/nextCoachImage"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                app:layout_constraintEnd_toStartOf="@id/nextCoachName"
-                app:layout_constraintTop_toBottomOf="@id/nextStreamTitle" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/nextCoachName"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/coachLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:textColor="@color/white"
-                android:textSize="18sp"
+                app:layout_goneMarginStart="0dp"
+                android:layout_marginHorizontal="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/nextStreamTitle"
-                tools:text="With Peter Jackson"/>
+                app:layout_constraintTop_toBottomOf="@id/nextStreamTitle">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/nextCoachImage"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/nextCoachName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/nextCoachImage"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:text="With Peter Jackson"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/nextCountdown"
@@ -205,7 +219,7 @@
                 android:textSize="45sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/nextCoachImage"
+                app:layout_constraintTop_toBottomOf="@id/coachLayout"
                 tools:text="05 60 97" />
 
             <com.google.android.material.button.MaterialButton
@@ -213,14 +227,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/primary"
+                android:backgroundTint="@color/liveButtonBackground"
                 android:text="@string/join_live"
-                android:textColor="@color/onPrimary"
+                android:textColor="@color/liveButtonForeground"
                 app:cornerRadius="8dp"
                 app:icon="@drawable/ic_bell"
                 app:iconGravity="textEnd"
                 app:iconSize="16dp"
-                app:iconTint="@color/black"
+                app:iconTint="@color/liveButtonForeground"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

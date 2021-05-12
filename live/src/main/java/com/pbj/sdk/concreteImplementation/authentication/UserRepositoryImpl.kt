@@ -135,4 +135,11 @@ internal class UserRepositoryImpl(
         preferences.userToken = ""
         return Result.Success()
     }
+
+    override suspend fun isLoggedInAsGuest(): Result<Boolean> = Result.Success(preferences.isLoggedInAsGuest)
+
+    override suspend fun saveIsLoggedInAsGuest(isGuest: Boolean): Result<Any> {
+        preferences.isLoggedInAsGuest = isGuest
+        return Result.Success()
+    }
 }

@@ -4,6 +4,7 @@ import android.net.Uri
 import com.pbj.sdk.di.LiveKoinComponent
 import com.pbj.sdk.domain.authentication.UserInteractor
 import com.pbj.sdk.domain.authentication.model.User
+import com.pbj.sdk.domain.onErrorCallBack
 import java.io.File
 
 internal class UserFeatureImpl(private val userInteractor: UserInteractor) : UserFeature, LiveKoinComponent {
@@ -11,21 +12,21 @@ internal class UserFeatureImpl(private val userInteractor: UserInteractor) : Use
     override fun login(
         email: String,
         password: String,
-        onError: ((Throwable) -> Unit)?,
+        onError: onErrorCallBack?,
         onSuccess: ((User) -> Unit)?
     ) {
         userInteractor.login(email, password, onError, onSuccess)
     }
 
     override fun getUser(
-        onError: ((Throwable) -> Unit)?,
+        onError: onErrorCallBack?,
         onSuccess: ((User?) -> Unit)?
     ) {
         userInteractor.getUser(onError, onSuccess)
     }
 
     override fun getLocalUser(
-        onError: ((Throwable) -> Unit)?,
+        onError: onErrorCallBack?,
         onSuccess: ((User?) -> Unit)?
     ) {
         userInteractor.getLocalUser(onError, onSuccess)
@@ -34,7 +35,7 @@ internal class UserFeatureImpl(private val userInteractor: UserInteractor) : Use
     override fun updateUser(
         firstname: String,
         lastname: String,
-        onError: ((Throwable) -> Unit)?,
+        onError: onErrorCallBack?,
         onSuccess: ((User?) -> Unit)?
     ) {
         userInteractor.updateUser(firstname, lastname, onError, onSuccess)
@@ -43,7 +44,7 @@ internal class UserFeatureImpl(private val userInteractor: UserInteractor) : Use
     override fun uploadProfilePicture(
         image: File,
         uri: Uri,
-        onError: ((Throwable) -> Unit)?,
+        onError: onErrorCallBack?,
         onSuccess: ((User?) -> Unit)?
     ) {
         userInteractor.uploadProfilePicture(image, uri, onError, onSuccess)
@@ -51,7 +52,7 @@ internal class UserFeatureImpl(private val userInteractor: UserInteractor) : Use
 
     override fun changePassword(
         currentPassword: String, newPassword: String,
-        onError: ((Throwable) -> Unit)?,
+        onError: onErrorCallBack?,
         onSuccess: (() -> Unit)?
     ) {
         userInteractor.changePassword(currentPassword, newPassword, onError, onSuccess)
@@ -63,4 +64,19 @@ internal class UserFeatureImpl(private val userInteractor: UserInteractor) : Use
 
     override fun isUserLoggedIn(onResult: ((Boolean) -> Unit)?) =
         userInteractor.isUserLoggedIn(onResult)
+
+    override fun isLoggedInAsGuest(
+        onError: onErrorCallBack?,
+        onSuccess: ((Boolean?) -> Unit)?
+    ) {
+        userInteractor.isLoggedInAsGuest(onError, onSuccess)
+    }
+
+    override fun saveIsLoggedInAsGuest(
+        isGuest: Boolean,
+        onError: onErrorCallBack?,
+        onSuccess: (() -> Unit)?
+    ) {
+        userInteractor.saveIsLoggedInAsGuest(isGuest, onError, onSuccess)
+    }
 }

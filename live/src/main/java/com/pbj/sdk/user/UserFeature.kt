@@ -2,6 +2,7 @@ package com.pbj.sdk.user
 
 import android.net.Uri
 import com.pbj.sdk.domain.authentication.model.User
+import com.pbj.sdk.domain.onErrorCallBack
 import java.io.File
 
 interface UserFeature {
@@ -9,41 +10,45 @@ interface UserFeature {
     fun login(
         email: String,
         password: String,
-        onError: ((Throwable) -> Unit)? = null,
+        onError: onErrorCallBack? = null,
         onSuccess: ((User) -> Unit)? = null
     )
 
     fun getUser(
-        onError: ((Throwable) -> Unit)? = null,
+        onError: onErrorCallBack? = null,
         onSuccess: ((User?) -> Unit)? = null
     )
 
     fun getLocalUser(
-        onError: ((Throwable) -> Unit)? = null,
+        onError: onErrorCallBack? = null,
         onSuccess: ((User?) -> Unit)? = null
     )
 
     fun updateUser(
         firstname: String,
         lastname: String,
-        onError: ((Throwable) -> Unit)? = null,
+        onError: onErrorCallBack? = null,
         onSuccess: ((User?) -> Unit)? = null
     )
 
     fun uploadProfilePicture(
         image: File,
         uri: Uri,
-        onError: ((Throwable) -> Unit)? = null,
+        onError: onErrorCallBack? = null,
         onSuccess: ((User?) -> Unit)? = null
     )
 
     fun changePassword(
         currentPassword: String, newPassword: String,
-        onError: ((Throwable) -> Unit)? = null,
+        onError: onErrorCallBack? = null,
         onSuccess: (() -> Unit)? = null
     )
 
     fun logout()
 
     fun isUserLoggedIn(onResult: ((Boolean) -> Unit)? = null)
+
+    fun isLoggedInAsGuest(onError: onErrorCallBack? = null, onSuccess: ((Boolean?) -> Unit)?)
+
+    fun saveIsLoggedInAsGuest(isGuest: Boolean, onError: onErrorCallBack? = null, onSuccess: (() -> Unit)?)
 }
