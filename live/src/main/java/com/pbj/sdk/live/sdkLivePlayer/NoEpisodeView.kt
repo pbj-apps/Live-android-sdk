@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.pbj.sdk.databinding.NoLivestreamLayoutBinding
+import com.pbj.sdk.databinding.SdkNoLivestreamLayoutBinding
 
 class NoEpisodeView @JvmOverloads constructor(
     context: Context,
@@ -13,8 +13,8 @@ class NoEpisodeView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    private val view: NoLivestreamLayoutBinding =
-        NoLivestreamLayoutBinding.inflate(LayoutInflater.from(context), this)
+    private val view: SdkNoLivestreamLayoutBinding =
+        SdkNoLivestreamLayoutBinding.inflate(LayoutInflater.from(context), this)
 
     val closeButton: AppCompatImageView = view.noLivecloseIcon
 }

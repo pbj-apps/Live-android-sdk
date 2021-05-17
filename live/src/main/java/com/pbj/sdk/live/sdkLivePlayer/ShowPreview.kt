@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import coil.load
-import com.pbj.sdk.databinding.ShowPreviewLayoutBinding
+import com.pbj.sdk.databinding.SdkShowPreviewLayoutBinding
 
 class ShowPreview @JvmOverloads constructor(
     context: Context,
@@ -17,7 +17,7 @@ class ShowPreview @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    private var view: ShowPreviewLayoutBinding = ShowPreviewLayoutBinding
+    private var view: SdkShowPreviewLayoutBinding = SdkShowPreviewLayoutBinding
         .inflate(LayoutInflater.from(context), this)
 
     val closeButton: AppCompatImageView = view.closeIcon

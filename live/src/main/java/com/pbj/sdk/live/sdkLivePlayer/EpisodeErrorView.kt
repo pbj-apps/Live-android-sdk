@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.pbj.sdk.databinding.LivestreamErrorLayoutBinding
+import com.pbj.sdk.databinding.SdkLivestreamErrorLayoutBinding
 
 class EpisodeErrorView @JvmOverloads constructor(
     context: Context,
@@ -13,8 +13,8 @@ class EpisodeErrorView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    private val view: LivestreamErrorLayoutBinding =
-        LivestreamErrorLayoutBinding.inflate(LayoutInflater.from(context), this)
+    private val view: SdkLivestreamErrorLayoutBinding =
+        SdkLivestreamErrorLayoutBinding.inflate(LayoutInflater.from(context), this)
 
     val closeButton: AppCompatImageView = view.noLivecloseIcon
 }

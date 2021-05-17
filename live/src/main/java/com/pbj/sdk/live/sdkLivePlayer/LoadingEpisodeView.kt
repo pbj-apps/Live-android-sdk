@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.pbj.sdk.databinding.LoadingLivestreamLayoutBinding
+import com.pbj.sdk.databinding.SdkLoadingLivestreamLayoutBinding
 
 class LoadingEpisodeView @JvmOverloads constructor(
     context: Context,
@@ -13,6 +13,6 @@ class LoadingEpisodeView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     init {
-        LoadingLivestreamLayoutBinding.inflate(LayoutInflater.from(context), this)
+        SdkLoadingLivestreamLayoutBinding.inflate(LayoutInflater.from(context), this)
     }
 }

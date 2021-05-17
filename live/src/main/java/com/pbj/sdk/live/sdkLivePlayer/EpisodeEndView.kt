@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import coil.load
-import com.pbj.sdk.databinding.EpisodeEndLayoutBinding
+import com.pbj.sdk.databinding.SdkEpisodeEndLayoutBinding
 
 class EpisodeEndView @JvmOverloads constructor(
     context: Context,
@@ -15,7 +15,7 @@ class EpisodeEndView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    private var view: EpisodeEndLayoutBinding = EpisodeEndLayoutBinding
+    private var view: SdkEpisodeEndLayoutBinding = SdkEpisodeEndLayoutBinding
         .inflate(LayoutInflater.from(context), this)
 
     val closeButton: AppCompatImageView = view.closeIcon
