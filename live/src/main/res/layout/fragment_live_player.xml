@@ -313,7 +313,7 @@
                 app:endIconTint="@color/white"
                 app:hintEnabled="false"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/basketIcon"
                 app:layout_constraintStart_toEndOf="@id/chatButton"
                 app:layout_constraintTop_toTopOf="@id/chatButton"
                 tools:visibility="visible">
@@ -331,6 +331,17 @@
                     android:textColorHint="@color/white_60" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/basketIcon"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_basket"
+                android:tint="@color/white"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -11,6 +11,8 @@ import com.pbj.sdk.concreteImplementation.interceptors.AuthorizationInterceptor
 import com.pbj.sdk.concreteImplementation.interceptors.TimeZoneInterceptor
 import com.pbj.sdk.concreteImplementation.live.LiveApi
 import com.pbj.sdk.concreteImplementation.live.LiveWebSocketApi
+import com.pbj.sdk.concreteImplementation.product.ProductApi
+import com.pbj.sdk.concreteImplementation.product.ProductWebSocketApi
 import com.pbj.sdk.concreteImplementation.storage.PBJPreferences
 import com.pbj.sdk.concreteImplementation.vod.VodApi
 import com.pbj.sdk.core.ApiEnvironment
@@ -87,11 +89,19 @@ internal object DataModule {
         }
 
         single {
+            provideProductApi(get())
+        }
+
+        single {
             provideScarlet(get(), get(), get(), get())
         }
 
         single {
             provideLiveWebSocketApi(get())
+        }
+
+        single {
+            provideProductWebSocketApi(get())
         }
     }
 
@@ -173,8 +183,14 @@ internal object DataModule {
     private fun provideLiveApi(retrofit: Retrofit): LiveApi =
         retrofit.create(LiveApi::class.java)
 
+    private fun provideProductApi(retrofit: Retrofit): ProductApi =
+        retrofit.create(ProductApi::class.java)
+
     private fun provideLiveWebSocketApi(scarlet: Scarlet): LiveWebSocketApi =
         scarlet.create(LiveWebSocketApi::class.java)
+
+    private fun provideProductWebSocketApi(scarlet: Scarlet): ProductWebSocketApi =
+        scarlet.create(ProductWebSocketApi::class.java)
 
     private fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         val logging = HttpLoggingInterceptor {

@@ -11,7 +11,9 @@ import com.pbj.sdk.domain.chat.ChatMessage
 import com.pbj.sdk.domain.chat.LiveChatSource
 import com.pbj.sdk.domain.live.LiveInteractor
 import com.pbj.sdk.domain.live.model.*
+import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.notifications.LiveNotificationManager
+import com.pbj.sdk.product.ProductFeature
 import com.pbj.sdk.utils.eventBus.LiveEventBus
 import com.pbj.sdk.utils.eventBus.LiveNotificationModified
 import com.pbj.sdk.utils.launch
@@ -29,6 +31,8 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     private val userInteractor: UserInteractor by inject()
 
+    private val productFeature: ProductFeature by inject()
+
     var liveChatSource: LiveChatSource? = null
 
     var liveNotificationManager: LiveNotificationManager? = null
@@ -42,6 +46,10 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
     val liveRoomState = MutableLiveData(LiveRoomState.IDLE)
 
     val remainingTime = MutableLiveData("")
+
+    val productList = MutableLiveData<List<Product>>(listOf())
+
+    val currentlyFeaturedProducts = MutableLiveData<List<Product>>(listOf())
 
     private var isPlaying = false
 
@@ -65,6 +73,12 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
     private fun initialize() {
 
         listenToNotificationSubscriptions()
+
+        episode?.let {
+            getProducts(it)
+            getCurrentlyFeaturedProducts(it)
+            registerForProductHighlights(it)
+        }
 
         liveNotificationManager = SdkHolder.instance.liveNotificationManager
         liveChatSource = SdkHolder.instance.liveChatSource
@@ -258,6 +272,34 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         }
     }
 
+    private fun getProducts(episode: Episode) {
+        productFeature.getProductsFor(episode, {
+            Timber.e(it)
+        }) {
+            productList.postValue(it)
+        }
+    }
+
+    private fun getCurrentlyFeaturedProducts(episode: Episode) {
+        productFeature.getCurrentlyFeaturedProducts(episode, {
+            Timber.e(it)
+        }) {
+            currentlyFeaturedProducts.postValue(it)
+        }
+    }
+
+    fun registerForProductHighlights(episode: Episode) {
+        productFeature.registerForProductHighlights(episode) {
+            currentlyFeaturedProducts.postValue(it.productList)
+        }
+    }
+
+    private fun unRegisterForProductHighlights() {
+        episode?.let {
+            productFeature.unRegisterProductHighlights(it)
+        }
+    }
+
     private fun fetchUser() {
         userInteractor.getLocalUser {
             user = it
@@ -267,6 +309,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
     override fun onCleared() {
         super.onCleared()
         stopTimer()
+        unRegisterForProductHighlights()
     }
 
     fun onLiveFinished() {

@@ -9,6 +9,7 @@ import com.pbj.sdk.domain.chat.LiveChatSource
 import com.pbj.sdk.guest.GuestFeature
 import com.pbj.sdk.live.LiveFeature
 import com.pbj.sdk.notifications.LiveNotificationManager
+import com.pbj.sdk.product.ProductFeature
 import com.pbj.sdk.user.UserFeature
 import com.pbj.sdk.vod.VodFeature
 
@@ -20,6 +21,8 @@ interface PbjSDK {
     var liveChatSource: LiveChatSource?
 
     val liveFeature: LiveFeature
+
+    val productFeature: ProductFeature
 
     val vodFeature: VodFeature
 

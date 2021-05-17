@@ -14,7 +14,7 @@ internal class VodRepositoryImpl(private val api: VodApi) : BaseRepository(), Vo
     override suspend fun getVodCategories(): Result<List<VodCategory>> =
         apiCall(
             call = { api.getCategories() },
-            onApiError = { _, _ -> GenericError.Unknown() })
+            onApiError = { error, _ -> GenericError.Unknown(error?.errors?.first()?.message) })
         { page ->
             page?.results?.map { it.asModel }
         }
@@ -22,7 +22,7 @@ internal class VodRepositoryImpl(private val api: VodApi) : BaseRepository(), Vo
     override suspend fun getPlaylist(id: String): Result<VodPlaylist> =
         apiCall(
             call = { api.getPlaylist(id) },
-            onApiError = { _, _ -> GenericError.Unknown() }
+            onApiError = { error, _ -> GenericError.Unknown(error?.errors?.first()?.message) }
         ) {
             it?.asModel
         }
@@ -30,7 +30,7 @@ internal class VodRepositoryImpl(private val api: VodApi) : BaseRepository(), Vo
     override suspend fun getVideo(id: String): Result<VodVideo> =
         apiCall(
             call = { api.getVideo(id) },
-            onApiError = { _, _ -> GenericError.Unknown() }
+            onApiError = { error, _ -> GenericError.Unknown(error?.errors?.first()?.message) }
         ) {
             it?.asModel
         }
