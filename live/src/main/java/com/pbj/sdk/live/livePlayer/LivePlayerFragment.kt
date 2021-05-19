@@ -1,5 +1,6 @@
 package com.pbj.sdk.live.livePlayer
 
+import android.app.PictureInPictureParams
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +27,8 @@ import android.content.Intent
 import android.net.Uri
 
 
-internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragmentListener, ProductAdapter.OnProductClickListener {
+internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragmentListener,
+    ProductAdapter.OnProductClickListener {
 
     interface Listener {
         fun onPressClose()
@@ -48,7 +50,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
     private var productAdapter: ProductAdapter = ProductAdapter(this)
 
-    private var canShowChat = false
+    private var isPictureAndPictureMode = false
 
     private var isChatVisible = false
 
@@ -218,6 +220,8 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
                 updateProductButtonVisibility()
 
+                toggleProductListVisibility(false)
+
                 videoPlayerContainer.isVisible = isBroadcastingOrPlaying
 
                 listener?.enableScreenRotation(isBroadcastingOrPlaying)
@@ -299,11 +303,11 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         }
     }
 
-    private fun toggleChatVisibility() {
+    private fun toggleChatVisibility(show: Boolean? = null) {
         if (showProducts)
             toggleProductListVisibility()
 
-        isChatVisible = !isChatVisible
+        isChatVisible = show ?: !isChatVisible
 
         view.apply {
             chatMessageCount.isVisible = !isChatVisible
@@ -330,11 +334,12 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         productAdapter.update(productsToDisplay)
 
         view.apply {
-            productListView.isVisible = showProducts || highlightedProductList.isNotEmpty()
+            productListView.isVisible =
+                (showProducts || highlightedProductList.isNotEmpty()) && isBroadcastingOrPlaying
         }
 
         if (isChatVisible)
-            toggleChatVisibility()
+            toggleChatVisibility(!showProducts)
     }
 
     private fun updateProductButtonVisibility() {
@@ -363,7 +368,9 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     }
 
     private fun initVideoPlayer(url: String) {
-        val videoFragment = VideoPlayerFragment.newInstance(url, true)
+        val videoFragment = VideoPlayerFragment.newInstance(url, true).apply {
+            liveFragmentListener = this@LivePlayerFragment
+        }
         parentFragmentManager.startFragment(videoFragment, view.videoPlayerContainer.id)
     }
 
@@ -441,7 +448,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     private fun observeHighlightedProductList() {
         observe(vm.highlightedProductList) {
             highlightedProductList = it
-            toggleProductListVisibility(showProducts)
+            toggleProductListVisibility(!showProducts)
         }
     }
 
@@ -449,11 +456,6 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         observe(vm.nextLiveStream) {
             setUpEndBody()
         }
-    }
-
-    override fun onClick(product: Product) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(product.link))
-        startActivity(browserIntent)
     }
 
     private fun observeError() {
@@ -466,6 +468,23 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
                     Snackbar.LENGTH_SHORT
                 ).show()
             }
+        }
+    }
+
+    override fun onClick(product: Product) {
+        val params = PictureInPictureParams.Builder().build()
+        activity?.enterPictureInPictureMode(params)
+
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(product.link)).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        }
+        startActivity(browserIntent)
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode)
+        if (isInPictureInPictureMode) {
+            view.overlay.isVisible = false
         }
     }
 

@@ -9,6 +9,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Renderer
@@ -17,6 +18,9 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.pbj.sdk.R
 import com.pbj.sdk.utils.setMediaSource
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class VideoPlayerFragment : Fragment() {
 
@@ -100,6 +104,13 @@ class VideoPlayerFragment : Fragment() {
 
                     override fun onPlayerError(error: ExoPlaybackException) {
                         super.onPlayerError(error)
+
+                        lifecycleScope.launch {
+                            viewModel.isLoadingVideoPlayer.value = true
+                            delay(5000)
+                            viewModel.videoPlayer?.prepare()
+                        }
+
                         liveFragmentListener?.onPlayerError(error.localizedMessage)
                     }
                 }
@@ -132,8 +143,8 @@ class VideoPlayerFragment : Fragment() {
         backButton.isVisible = isVisible
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         viewModel.videoPlayer?.stop()
     }
 

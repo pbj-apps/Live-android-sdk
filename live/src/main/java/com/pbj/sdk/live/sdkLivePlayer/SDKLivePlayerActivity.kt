@@ -88,7 +88,12 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener,
 
     private fun onShow(show: Show) {
         replaceView(
-            SdkShowPreview(this, show.previewAsset?.previewImage, show.title, show.description).apply {
+            SdkShowPreview(
+                this,
+                show.previewAsset?.previewImage,
+                show.title,
+                show.description
+            ).apply {
                 closeButton.setOnClickListener {
                     finish()
                 }

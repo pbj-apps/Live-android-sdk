@@ -9,11 +9,16 @@
     <application>
         <activity
             android:name=".live.sdkLivePlayer.SDKLivePlayerActivity"
+            android:launchMode="singleTask"
+            android:supportsPictureInPicture="true"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="true"/>
         <activity
             android:name=".live.livePlayer.LiveRoomActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:theme="@style/Theme.Pbj.NoActionBar.Dark"
+            android:launchMode="singleTask"
+            android:supportsPictureInPicture="true"
             android:windowSoftInputMode="adjustPan" />
     </application>
 
