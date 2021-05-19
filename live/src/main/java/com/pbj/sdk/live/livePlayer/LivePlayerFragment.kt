@@ -16,12 +16,17 @@ import com.google.android.material.snackbar.Snackbar
 import com.pbj.sdk.R
 import com.pbj.sdk.databinding.FragmentLivePlayerBinding
 import com.pbj.sdk.domain.live.model.*
+import com.pbj.sdk.domain.product.model.Product
+import com.pbj.sdk.product.ProductAdapter
 import com.pbj.sdk.utils.observe
 import com.pbj.sdk.utils.startFragment
 import com.pbj.sdk.videoPlayer.VideoPlayerFragment
 import timber.log.Timber
+import android.content.Intent
+import android.net.Uri
 
-internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragmentListener {
+
+internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragmentListener, ProductAdapter.OnProductClickListener {
 
     interface Listener {
         fun onPressClose()
@@ -41,9 +46,23 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
     private lateinit var chatAdapter: ChatAdapter
 
+    private var productAdapter: ProductAdapter = ProductAdapter(this)
+
+    private var canShowChat = false
+
     private var isChatVisible = false
 
+    private var showProducts = false
+
+    private var hasProducts = false
+
+    private var isBroadcastingOrPlaying = false
+
     private var listener: Listener? = null
+
+    private var productList: List<Product> = listOf()
+
+    private var highlightedProductList: List<Product> = listOf()
 
     override fun onStart() {
         super.onStart()
@@ -57,8 +76,8 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         super.onCreate(savedInstanceState)
 
         arguments?.apply {
-            episode = getParcelable(LiveRoomActivity.LIVE_STREAM)
-            nextEpisode = getParcelable(LiveRoomActivity.NEXT_LIVE_STREAM)
+            episode = getParcelable(LIVE_STREAM)
+            nextEpisode = getParcelable(NEXT_LIVE_STREAM)
         }
     }
 
@@ -93,6 +112,8 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
                 footer.isVisible = false
                 chatListView.isVisible = false
             }
+
+            initProductList()
 
             root.setOnClickListener {
                 if (vm.liveRoomState.value != LiveRoomViewModel.LiveRoomState.ENDED) {
@@ -151,9 +172,25 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         }
     }
 
+    private fun initProductList() {
+        view.apply {
+            productListView.apply {
+                adapter = productAdapter
+                layoutManager =
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            }
+
+            productCount.text = productList.toString()
+
+            productButton.setOnClickListener {
+                toggleProductListVisibility()
+            }
+        }
+    }
+
     private fun updateView(liveRoomState: LiveRoomViewModel.LiveRoomState) {
         setStreamTitle(liveRoomState)
-        setDescription(vm.episode, liveRoomState)
+        setDescription(vm.episode)
 
         isChatVisible = false
 
@@ -174,14 +211,16 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
                 updateChatView(liveRoomState)
 
-                val isBroadcastingAndPlaying = live.isBroadcasting
+                isBroadcastingOrPlaying = live.isBroadcasting
                         || liveRoomState == LiveRoomViewModel.LiveRoomState.PLAYING
 
-                bgImage.isVisible = !isBroadcastingAndPlaying
+                bgImage.isVisible = !isBroadcastingOrPlaying
 
-                videoPlayerContainer.isVisible = isBroadcastingAndPlaying
+                updateProductButtonVisibility()
 
-                listener?.enableScreenRotation(isBroadcastingAndPlaying)
+                videoPlayerContainer.isVisible = isBroadcastingOrPlaying
+
+                listener?.enableScreenRotation(isBroadcastingOrPlaying)
             }
         }
     }
@@ -261,15 +300,46 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     }
 
     private fun toggleChatVisibility() {
+        if (showProducts)
+            toggleProductListVisibility()
+
         isChatVisible = !isChatVisible
+
         view.apply {
             chatMessageCount.isVisible = !isChatVisible
             chatInputLayout.isVisible = isChatVisible
             chatListView.isVisible = isChatVisible
 
+            updateProductButtonVisibility()
+
             if (vm.liveRoomState.value?.isValidStateForBody == true && vm.episode?.isBroadcasting == false) {
                 activeBody.isVisible = !isChatVisible
             }
+        }
+    }
+
+    private fun toggleProductListVisibility(show: Boolean? = null) {
+
+        showProducts = show ?: !showProducts
+
+        val productsToDisplay = if (showProducts)
+            productList
+        else
+            highlightedProductList
+
+        productAdapter.update(productsToDisplay)
+
+        view.apply {
+            productListView.isVisible = showProducts || highlightedProductList.isNotEmpty()
+        }
+
+        if (isChatVisible)
+            toggleChatVisibility()
+    }
+
+    private fun updateProductButtonVisibility() {
+        view.apply {
+            productButton.isVisible = hasProducts && !isChatVisible && isBroadcastingOrPlaying
         }
     }
 
@@ -283,8 +353,8 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         view.title.text = title?.toUpperCase()
     }
 
-    private fun setDescription(episode: Episode?, liveRoomState: LiveRoomViewModel.LiveRoomState) {
-        val string = if(episode?.status == EpisodeStatus.WAITING_ROOM)
+    private fun setDescription(episode: Episode?) {
+        val string = if (episode?.status == EpisodeStatus.WAITING_ROOM)
             episode?.show?.waitingRoomDescription
         else
             episode?.description
@@ -302,6 +372,8 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         observeTimer()
         observeLiveUrl()
         observeNextStream()
+        observeProductList()
+        observeHighlightedProductList()
         observeError()
 
         vm.liveChatSource?.let {
@@ -353,10 +425,35 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         }
     }
 
+    private fun observeProductList() {
+        observe(vm.productList) {
+
+            productList = it
+            hasProducts = it.count() > 0
+
+            view.apply {
+                updateProductButtonVisibility()
+                productCount.text = it.count().toString()
+            }
+        }
+    }
+
+    private fun observeHighlightedProductList() {
+        observe(vm.highlightedProductList) {
+            highlightedProductList = it
+            toggleProductListVisibility(showProducts)
+        }
+    }
+
     private fun observeNextStream() {
         observe(vm.nextLiveStream) {
             setUpEndBody()
         }
+    }
+
+    override fun onClick(product: Product) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(product.link))
+        startActivity(browserIntent)
     }
 
     private fun observeError() {

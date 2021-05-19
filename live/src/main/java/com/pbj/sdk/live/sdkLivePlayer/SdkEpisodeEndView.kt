@@ -8,7 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import coil.load
 import com.pbj.sdk.databinding.SdkEpisodeEndLayoutBinding
 
-class EpisodeEndView @JvmOverloads constructor(
+class SdkEpisodeEndView @JvmOverloads constructor(
     context: Context,
     private val showPreview: String?,
     attrs: AttributeSet? = null,

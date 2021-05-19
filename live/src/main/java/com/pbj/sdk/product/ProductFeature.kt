@@ -13,7 +13,7 @@ interface ProductFeature {
         onSuccess: ((List<Product>?) -> Unit)? = null
     )
 
-    fun getCurrentlyFeaturedProducts(
+    fun getHighlightedProducts(
         episode: Episode,
         onError: onErrorCallBack? = null,
         onSuccess: ((List<Product>?) -> Unit)? = null

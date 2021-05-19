@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.pbj.sdk.databinding.SdkLoadingLivestreamLayoutBinding
 
-class LoadingEpisodeView @JvmOverloads constructor(
+class SdkLoadingEpisodeView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0

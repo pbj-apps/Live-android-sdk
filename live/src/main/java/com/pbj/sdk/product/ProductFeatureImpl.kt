@@ -33,13 +33,13 @@ internal class ProductFeatureImpl(private val repository: ProductRepository): Pr
         }
     }
 
-    override fun getCurrentlyFeaturedProducts(
+    override fun getHighlightedProducts(
         episode: Episode,
         onError: onErrorCallBack?,
         onSuccess: ((List<Product>?) -> Unit)?
     ) {
         scope.launch {
-            repository.fetchCurrentlyFeaturedProducts(episode).onResult({
+            repository.fetchHighlightedProducts(episode).onResult({
                 onError?.invoke(it)
             }) {
                 onSuccess?.invoke(it)

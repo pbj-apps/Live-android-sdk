@@ -22,19 +22,19 @@ internal class ProductRepositoryImpl(
             call = { api.fetchProducts(episode.id) },
             onApiError = { _, _ -> GenericError.Unknown() },
             onSuccess = { response ->
-                response?.map {
-                    it.asModel
+                response?.results?.mapNotNull {
+                    it.product?.asModel
                 }
             }
         )
 
-    override suspend fun fetchCurrentlyFeaturedProducts(episode: Episode): Result<List<Product>> =
+    override suspend fun fetchHighlightedProducts(episode: Episode): Result<List<Product>> =
         apiCall(
-            call = { api.fetchCurrentlyFeaturedProducts(episode.id) },
+            call = { api.fetchHighlightedProducts(episode.id) },
             onApiError = { _, _ -> GenericError.Unknown() },
             onSuccess = { response ->
-                response?.map {
-                    it.asModel
+                response?.results?.mapNotNull {
+                    it.product?.asModel
                 }
             }
         )

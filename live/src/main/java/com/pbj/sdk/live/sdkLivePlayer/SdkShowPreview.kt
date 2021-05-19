@@ -8,7 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import coil.load
 import com.pbj.sdk.databinding.SdkShowPreviewLayoutBinding
 
-class ShowPreview @JvmOverloads constructor(
+class SdkShowPreview @JvmOverloads constructor(
     context: Context,
     private val showPreview: String?,
     private val showTitle: String?,

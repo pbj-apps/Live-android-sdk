@@ -33,7 +33,10 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
             nextEpisode = getParcelable(NEXT_LIVE_STREAM)
         }
 
-        val fragment = LivePlayerFragment.newInstance(episode, nextEpisode)
+        val fragment = LivePlayerFragment.newInstance(
+            episode = episode,
+            nextEpisode = nextEpisode
+        )
         startFragment(fragment, view.content.id)
     }
 

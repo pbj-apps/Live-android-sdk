@@ -49,7 +49,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     val productList = MutableLiveData<List<Product>>(listOf())
 
-    val currentlyFeaturedProducts = MutableLiveData<List<Product>>(listOf())
+    val highlightedProductList = MutableLiveData<List<Product>>(listOf())
 
     private var isPlaying = false
 
@@ -76,7 +76,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
         episode?.let {
             getProducts(it)
-            getCurrentlyFeaturedProducts(it)
+            getHighlightedProducts(it)
             registerForProductHighlights(it)
         }
 
@@ -280,17 +280,17 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         }
     }
 
-    private fun getCurrentlyFeaturedProducts(episode: Episode) {
-        productFeature.getCurrentlyFeaturedProducts(episode, {
+    private fun getHighlightedProducts(episode: Episode) {
+        productFeature.getHighlightedProducts(episode, {
             Timber.e(it)
         }) {
-            currentlyFeaturedProducts.postValue(it)
+            highlightedProductList.postValue(it)
         }
     }
 
-    fun registerForProductHighlights(episode: Episode) {
+    private fun registerForProductHighlights(episode: Episode) {
         productFeature.registerForProductHighlights(episode) {
-            currentlyFeaturedProducts.postValue(it.productList)
+            highlightedProductList.postValue(it.productList)
         }
     }
 

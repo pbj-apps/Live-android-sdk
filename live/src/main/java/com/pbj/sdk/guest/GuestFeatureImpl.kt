@@ -3,11 +3,13 @@ package com.pbj.sdk.guest
 import com.pbj.sdk.domain.authentication.GuestInteractor
 import com.pbj.sdk.domain.live.LiveInteractor
 import com.pbj.sdk.domain.onErrorCallBack
+import org.koin.java.KoinJavaComponent
 
 internal class GuestFeatureImpl(
-    private val guestInteractor: GuestInteractor,
-    private val liveInteractor: LiveInteractor
+    private val guestInteractor: GuestInteractor
 ) : GuestFeature {
+
+    private val liveInteractor: LiveInteractor by KoinJavaComponent.inject(LiveInteractor::class.java)
 
     override fun authenticateAsGuest(
         onError: onErrorCallBack?,

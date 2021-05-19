@@ -8,8 +8,8 @@ internal val JsonProduct.asModel: Product
         id,
         title,
         price,
-        detail,
-        image.src,
+        description,
+        image?.src,
         store_url
     )
 
