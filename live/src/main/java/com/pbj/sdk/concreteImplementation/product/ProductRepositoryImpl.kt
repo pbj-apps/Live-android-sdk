@@ -1,7 +1,7 @@
 package com.pbj.sdk.concreteImplementation.product
 
 import com.pbj.sdk.concreteImplementation.generic.BaseRepository
-import com.pbj.sdk.concreteImplementation.live.model.JsonWebSocketRequest
+import com.pbj.sdk.concreteImplementation.live.model.JsonWebSocketProductRequest
 import com.pbj.sdk.concreteImplementation.product.model.asModel
 import com.pbj.sdk.domain.GenericError
 import com.pbj.sdk.domain.Result
@@ -41,13 +41,9 @@ internal class ProductRepositoryImpl(
 
     private fun registerForProductHighlights(episode: Episode) {
         socketApi.subscribe(
-            JsonWebSocketRequest(
-                """
-        {
-            "command": "join-episode-featured-product-updates",
-            "episode_id": "${episode.id}"
-        }
-        """
+            JsonWebSocketProductRequest(
+                "join-episode-featured-product-updates",
+                episode.id
             )
         )
     }
@@ -59,13 +55,9 @@ internal class ProductRepositoryImpl(
 
     override suspend fun unRegisterProductHighlights(episode: Episode) {
         socketApi.subscribe(
-            JsonWebSocketRequest(
-                """
-        {
-            "command": "leave-episode-featured-product-updates",
-            "episode_id": "${episode.id}"
-        }
-        """
+            JsonWebSocketProductRequest(
+                "leave-episode-featured-product-updates",
+                episode.id
             )
         )
     }

@@ -15,5 +15,5 @@ internal val JsonProduct.asModel: Product
 
 internal val JsonProductUpdate.asModel: ProductUpdate
     get() = ProductUpdate(
-        productList.map { it.asModel }
+        highlighted_featured_products.mapNotNull { it.product?.asModel }
     )

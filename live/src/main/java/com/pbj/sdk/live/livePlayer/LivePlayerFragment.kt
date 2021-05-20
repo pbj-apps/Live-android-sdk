@@ -448,7 +448,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     private fun observeHighlightedProductList() {
         observe(vm.highlightedProductList) {
             highlightedProductList = it
-            toggleProductListVisibility(!showProducts)
+            toggleProductListVisibility(showProducts)
         }
     }
 
