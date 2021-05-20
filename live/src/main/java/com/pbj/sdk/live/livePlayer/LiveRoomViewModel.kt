@@ -74,6 +74,8 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
         listenToNotificationSubscriptions()
 
+        initStreamUpdates()
+
         episode?.let {
             getProducts(it)
             getHighlightedProducts(it)
@@ -86,8 +88,6 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         liveNotificationManager?.init(this)
 
         initCountdown()
-
-        initStreamUpdates()
     }
 
     private fun initCountdown() {
@@ -119,7 +119,8 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
                     nextLiveStream.value?.copy(
                         description = it.waitingRoomDescription,
                         status = it.status
-                    ))
+                    )
+                )
             }
         }
     }
@@ -245,13 +246,21 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
             remindedLiveStreamIdList.value?.contains(it.showId)
         } ?: false
 
-    override fun onRequestPushNotificationSubscription(episode: Episode, token: String, onSuccess: () -> Unit) {
+    override fun onRequestPushNotificationSubscription(
+        episode: Episode,
+        token: String,
+        onSuccess: () -> Unit
+    ) {
         liveInteractor.subscribeToNotifications(episode, token) {
             onSuccess.invoke()
         }
     }
 
-    override fun onRequestPushNotificationUnsubscription(episode: Episode, token: String, onSuccess: () -> Unit) {
+    override fun onRequestPushNotificationUnsubscription(
+        episode: Episode,
+        token: String,
+        onSuccess: () -> Unit
+    ) {
         liveInteractor.unSubscribeFromNotifications(episode, token) {
             onSuccess.invoke()
         }
@@ -290,6 +299,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     private fun registerForProductHighlights(episode: Episode) {
         productFeature.registerForProductHighlights(episode) {
+            Timber.d("Highlighted Products updated with: ${it.productList.count()}")
             highlightedProductList.postValue(it.productList)
         }
     }
