@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.pbj.sdk.databinding.ActivityLiveRoomBinding
 import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.utils.startFragment
+import timber.log.Timber
 
 class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
 
@@ -33,7 +34,10 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
             nextEpisode = getParcelable(NEXT_LIVE_STREAM)
         }
 
-        val fragment = LivePlayerFragment.newInstance(episode, nextEpisode)
+        val fragment = LivePlayerFragment.newInstance(
+            episode = episode,
+            nextEpisode = nextEpisode
+        )
         startFragment(fragment, view.content.id)
     }
 
@@ -48,7 +52,9 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
             ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
     }
 
-    override fun onPlayerError(errorMessage: String?) {}
+    override fun onPlayerError(errorMessage: String?) {
+        Timber.e(errorMessage)
+    }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)

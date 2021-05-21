@@ -8,6 +8,7 @@ import com.pbj.sdk.domain.chat.LiveChatSource
 import com.pbj.sdk.guest.GuestFeature
 import com.pbj.sdk.live.LiveFeature
 import com.pbj.sdk.notifications.LiveNotificationManager
+import com.pbj.sdk.product.ProductFeature
 import com.pbj.sdk.user.UserFeature
 import com.pbj.sdk.vod.VodFeature
 import org.koin.android.ext.koin.androidContext
@@ -18,13 +19,15 @@ import timber.log.Timber
 
 internal class Live(
     private val appContext: Context,
-    private val apiKey: String,
-    private val environment: ApiEnvironment,
+    apiKey: String,
+    environment: ApiEnvironment,
     override var liveNotificationManager: LiveNotificationManager? = null,
     override var liveChatSource: LiveChatSource? = null
 ) : LiveSDK, PbjSDK, LiveKoinComponent {
 
     override val liveFeature: LiveFeature by inject()
+
+    override val productFeature: ProductFeature by inject()
 
     override val vodFeature: VodFeature by inject()
 
@@ -36,10 +39,14 @@ internal class Live(
         DataModule.init(apiKey, environment),
         userModule,
         vodModule,
-        liveModule
+        liveModule,
+        productModule
     )
 
     init {
+        if (environment.isDebug)
+            Timber.plant(Timber.DebugTree())
+
         if (SdkHolder.isInitialized()) {
             Timber.d("Reset Sdk")
             SdkHolder.instance.close()
@@ -53,9 +60,6 @@ internal class Live(
                 modules(sdkModules)
             }
         }
-
-        if (environment.isDebug)
-            Timber.plant(Timber.DebugTree())
     }
 
     override fun isEpisodeLive(onError: (Throwable) -> Unit, onSuccess: (Boolean) -> Unit) {

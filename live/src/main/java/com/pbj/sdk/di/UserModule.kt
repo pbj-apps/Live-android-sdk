@@ -25,7 +25,7 @@ internal val userModule = module {
 
     single { provideGuestInteractor(get(), get()) }
 
-    single { provideGuestFeature(get(), get()) }
+    single { provideGuestFeature(get()) }
 }
 
 internal fun provideUserRepository(
@@ -53,6 +53,5 @@ internal fun provideGuestInteractor(
 }
 
 internal fun provideGuestFeature(
-    guestInteractor: GuestInteractor,
-    liveInteractor: LiveInteractor
-): GuestFeature = GuestFeatureImpl(guestInteractor, liveInteractor)
+    guestInteractor: GuestInteractor
+): GuestFeature = GuestFeatureImpl(guestInteractor)
