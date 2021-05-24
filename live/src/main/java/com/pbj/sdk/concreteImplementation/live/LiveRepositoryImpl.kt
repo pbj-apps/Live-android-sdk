@@ -1,10 +1,10 @@
 package com.pbj.sdk.concreteImplementation.live
 
 import com.pbj.sdk.concreteImplementation.generic.BaseRepository
+import com.pbj.sdk.concreteImplementation.generic.mapGenericError
 import com.pbj.sdk.concreteImplementation.live.model.JsonWebSocketRequest
 import com.pbj.sdk.concreteImplementation.live.model.LiveNotificationSubscription
 import com.pbj.sdk.concreteImplementation.live.model.asModel
-import com.pbj.sdk.domain.GenericError
 import com.pbj.sdk.domain.Result
 import com.pbj.sdk.domain.live.LiveRepository
 import com.pbj.sdk.domain.live.model.Episode
@@ -13,13 +13,22 @@ import com.pbj.sdk.domain.live.model.Show
 import com.pbj.sdk.domain.live.model.showId
 import kotlinx.coroutines.flow.map
 
-internal class LiveRepositoryImpl(private val restApi: LiveApi, private val socketApi: LiveWebSocketApi) :
+internal class LiveRepositoryImpl(
+    private val restApi: LiveApi,
+    private val socketApi: LiveWebSocketApi
+) :
     BaseRepository(), LiveRepository {
 
     override suspend fun fetchLiveStreams(): Result<EpisodeResponse> =
         apiCall(
             call = { restApi.fetchLiveStreams() },
-            onApiError = { _, _ -> GenericError.Unknown() })
+            onApiError = { e, code ->
+                mapGenericError(
+                    code.code,
+                    e?.errors?.firstOrNull()?.message
+                )
+            }
+        )
         { response ->
             response?.asModel
         }
@@ -27,7 +36,13 @@ internal class LiveRepositoryImpl(private val restApi: LiveApi, private val sock
     override suspend fun fetchLiveStreamsSchedule(date: String): Result<EpisodeResponse> =
         apiCall(
             call = { restApi.fetchLiveStreamsSchedule(date) },
-            onApiError = { _, _ -> GenericError.Unknown() })
+            onApiError = { e, code ->
+                mapGenericError(
+                    code.code,
+                    e?.errors?.firstOrNull()?.message
+                )
+            }
+        )
         { response ->
             response?.asModel
         }
@@ -35,7 +50,13 @@ internal class LiveRepositoryImpl(private val restApi: LiveApi, private val sock
     override suspend fun fetchLiveStreamsSchedule(daysAhead: Int): Result<EpisodeResponse> =
         apiCall(
             call = { restApi.fetchLiveStreamsSchedule(daysAhead) },
-            onApiError = { _, _ -> GenericError.Unknown() })
+            onApiError = { e, code ->
+                mapGenericError(
+                    code.code,
+                    e?.errors?.firstOrNull()?.message
+                )
+            }
+        )
         { response ->
             response?.asModel
         }
@@ -43,7 +64,13 @@ internal class LiveRepositoryImpl(private val restApi: LiveApi, private val sock
     override suspend fun fetchCurrentLiveStream(): Result<Episode> =
         apiCall(
             call = { restApi.fetchCurrentLiveStream() },
-            onApiError = { _, _ -> GenericError.Unknown() })
+            onApiError = { e, code ->
+                mapGenericError(
+                    code.code,
+                    e?.errors?.firstOrNull()?.message
+                )
+            }
+        )
         { response ->
             response?.results?.firstOrNull()?.asModel
         }
@@ -51,7 +78,13 @@ internal class LiveRepositoryImpl(private val restApi: LiveApi, private val sock
     override suspend fun fetchCurrentLiveStream(showId: String): Result<Episode> =
         apiCall(
             call = { restApi.fetchCurrentLiveStream(showId) },
-            onApiError = { _, _ -> GenericError.Unknown() })
+            onApiError = { e, code ->
+                mapGenericError(
+                    code.code,
+                    e?.errors?.firstOrNull()?.message
+                )
+            }
+        )
         { response ->
             response?.results?.firstOrNull()?.asModel
         }
@@ -59,7 +92,12 @@ internal class LiveRepositoryImpl(private val restApi: LiveApi, private val sock
     override suspend fun fetchShowPublic(showId: String): Result<Show> =
         apiCall(
             call = { restApi.fetchShowPublic(showId) },
-            onApiError = { _, _ -> GenericError.Unknown() })
+            onApiError = { e, code ->
+                mapGenericError(
+                    code.code,
+                    e?.errors?.firstOrNull()?.message
+                )
+            })
         { response ->
             response?.asModel
         }
@@ -80,13 +118,23 @@ internal class LiveRepositoryImpl(private val restApi: LiveApi, private val sock
     override suspend fun fetchBroadcastUrl(episode: Episode): Result<String> =
         apiCall(
             call = { restApi.fetchBroadcastUrl(episode.id) },
-            onApiError = { _, _ -> GenericError.Unknown() }
+            onApiError = { e, code ->
+                mapGenericError(
+                    code.code,
+                    e?.errors?.firstOrNull()?.message
+                )
+            }
         ) { it?.broadcast_url }
 
     override suspend fun fetchNotificationSubscriptions(): Result<List<String>> =
         apiCall(
             call = { restApi.fetchNotificationSubscriptions() },
-            onApiError = { _, _ -> GenericError.Unknown() }
+            onApiError = { e, code ->
+                mapGenericError(
+                    code.code,
+                    e?.errors?.firstOrNull()?.message
+                )
+            }
         ) { response ->
             response?.results?.mapNotNull { it.topic_id }
         }
@@ -100,11 +148,19 @@ internal class LiveRepositoryImpl(private val restApi: LiveApi, private val sock
 
         return apiCall(
             call = { restApi.subscribeToNotification(request) },
-            onApiError = { _, _ -> GenericError.Unknown() }
+            onApiError = { e, code ->
+                mapGenericError(
+                    code.code,
+                    e?.errors?.firstOrNull()?.message
+                )
+            }
         ) { it }
     }
 
-    override suspend fun unSubscribeFromNotifications(episode: Episode, token: String): Result<Any> {
+    override suspend fun unSubscribeFromNotifications(
+        episode: Episode,
+        token: String
+    ): Result<Any> {
         val request = LiveNotificationSubscription(
             "show",
             episode.showId,
@@ -112,7 +168,12 @@ internal class LiveRepositoryImpl(private val restApi: LiveApi, private val sock
         )
         return apiCall(
             call = { restApi.unsubscribeFromNotifications(request) },
-            onApiError = { _, _ -> GenericError.Unknown() }
+            onApiError = { e, code ->
+                mapGenericError(
+                    code.code,
+                    e?.errors?.firstOrNull()?.message
+                )
+            }
         ) { it }
     }
 }
