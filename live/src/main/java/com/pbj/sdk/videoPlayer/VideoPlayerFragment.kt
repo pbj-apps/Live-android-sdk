@@ -151,6 +151,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
     private fun updateUiVisibility(isVisible: Boolean) {
         viewBinding.apply {
             backButton.isVisible = isVisible
+            productButton.isVisible = isVisible
         }
     }
 
@@ -172,6 +173,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
                     LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             }
 
+//            productButton
 //        productCount.text = productList.toString()
 //
 //        productButton.setOnClickListener {
