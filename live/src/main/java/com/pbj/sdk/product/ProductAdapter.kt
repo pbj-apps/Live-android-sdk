@@ -10,11 +10,11 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.pbj.sdk.R
 import com.pbj.sdk.domain.product.model.Product
 
-internal class ProductAdapter(private val onClickListener: OnProductClickListener) :
+class ProductAdapter(private val onClickListener: OnProductClickListener) :
     RecyclerView.Adapter<ProductVH>() {
 
     interface OnProductClickListener {
-        fun onClick(product: Product)
+        fun onClickProduct(product: Product)
     }
 
     private var productList: List<Product> = listOf()
@@ -37,7 +37,7 @@ internal class ProductAdapter(private val onClickListener: OnProductClickListene
     override fun getItemCount(): Int = productList.count()
 }
 
-internal class ProductVH(val view: View, private val listener: ProductAdapter.OnProductClickListener) : RecyclerView.ViewHolder(view) {
+class ProductVH(val view: View, private val listener: ProductAdapter.OnProductClickListener) : RecyclerView.ViewHolder(view) {
 
     private var title: AppCompatTextView = view.findViewById(R.id.productTitle)
     private var price: AppCompatTextView = view.findViewById(R.id.productPrice)
@@ -51,7 +51,7 @@ internal class ProductVH(val view: View, private val listener: ProductAdapter.On
         image.load(product.image)
 
         view.setOnClickListener {
-            listener.onClick(product)
+            listener.onClickProduct(product)
         }
     }
 }

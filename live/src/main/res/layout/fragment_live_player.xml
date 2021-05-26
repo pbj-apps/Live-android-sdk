@@ -361,7 +361,7 @@
                 android:id="@+id/productIcon"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:src="@drawable/ic_basket"
+                android:src="@drawable/ic_product"
                 android:tint="@color/white"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"

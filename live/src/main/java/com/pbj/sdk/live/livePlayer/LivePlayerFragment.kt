@@ -50,8 +50,6 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
     private var productAdapter: ProductAdapter = ProductAdapter(this)
 
-    private var isPictureAndPictureMode = false
-
     private var isChatVisible = false
 
     private var showProducts = false
@@ -471,7 +469,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         }
     }
 
-    override fun onClick(product: Product) {
+    override fun onClickProduct(product: Product) {
         val params = PictureInPictureParams.Builder().build()
         activity?.enterPictureInPictureMode(params)
 
