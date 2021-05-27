@@ -42,6 +42,8 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
 
     private var productAdapter = ProductAdapter(this)
 
+    private var canShowProducts = false
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -61,32 +63,32 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewBinding.apply {
+        context?.let {
+            if (savedInstanceState == null) {
 
-            context?.let { _ ->
-                if (savedInstanceState == null) {
-
-                    arguments?.apply {
-                        vm.videoUrl.value = getString(VIDEO_URL)
-                        vm.isLive = getBoolean(IS_LIVE)
-                        val products: Array<Product>? =
-                            getParcelableArray(PRODUCT_LIST) as Array<Product>?
-                        products?.toList()?.let {
-                            vm.productList = it
-                        }
+                arguments?.apply {
+                    vm.videoUrl.value = getString(VIDEO_URL)
+                    vm.isLive = getBoolean(IS_LIVE)
+                    val products: Array<Product>? =
+                        getParcelableArray(PRODUCT_LIST) as Array<Product>?
+                    products?.toList()?.let {
+                        vm.productList = it
                     }
                 }
             }
 
+            initPlayer(it)
+            initVideoView(viewBinding.playerView)
+        }
+
+        initView()
+    }
+
+    private fun initView() {
+        viewBinding.apply {
+
             if (!vm.productList.isNullOrEmpty()) {
                 initProductList()
-            }
-
-            if (savedInstanceState == null) {
-                context?.let {
-                    initPlayer(it)
-                    initVideoView(playerView)
-                }
             }
 
             backButton.setOnClickListener {
@@ -94,6 +96,11 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
             }
 
             updateUiVisibility(false)
+
+            productButton.setOnClickListener {
+                canShowProducts = !canShowProducts
+                toggleProductListVisibility(canShowProducts)
+            }
         }
     }
 
@@ -151,7 +158,20 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
     private fun updateUiVisibility(isVisible: Boolean) {
         viewBinding.apply {
             backButton.isVisible = isVisible
-            productButton.isVisible = isVisible
+            toggleProductVisibility(isVisible)
+        }
+    }
+
+    private fun toggleProductVisibility(showProducts: Boolean) {
+        viewBinding.apply {
+            productButton.isVisible = showProducts
+            toggleProductListVisibility(showProducts && canShowProducts)
+        }
+    }
+
+    private fun toggleProductListVisibility(showProducts: Boolean) {
+        viewBinding.apply {
+            productListView.isVisible = showProducts
         }
     }
 
@@ -162,23 +182,26 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(product.link)).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
+
+        canShowProducts = false
+        toggleProductVisibility(false)
+        viewBinding.playerView.hideController()
+
         startActivity(browserIntent)
     }
 
     private fun initProductList() {
         viewBinding.apply {
             productListView.apply {
+
+                vm.productList?.let {
+                    productAdapter.update(it)
+                }
+
                 adapter = productAdapter
                 layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             }
-
-//            productButton
-//        productCount.text = productList.toString()
-//
-//        productButton.setOnClickListener {
-//            toggleProductListVisibility()
-//        }
         }
     }
 
