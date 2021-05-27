@@ -7,7 +7,7 @@ interface VodItem {
     val title: String
     val description: String?
     val type: VodItemType?
-    val thumbnailUrl: URL?
+    val thumbnailUrl: String?
 }
 
 enum class VodItemType {

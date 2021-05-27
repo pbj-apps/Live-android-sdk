@@ -58,8 +58,8 @@ internal class UserFeatureImpl(private val userInteractor: UserInteractor) : Use
         userInteractor.changePassword(currentPassword, newPassword, onError, onSuccess)
     }
 
-    override fun logout() {
-        userInteractor.logout()
+    override fun logout(onError: onErrorCallBack?, onSuccess: (() -> Unit)?) {
+        userInteractor.logout(onError, onSuccess)
     }
 
     override fun isUserLoggedIn(onResult: ((Boolean) -> Unit)?) =

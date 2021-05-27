@@ -8,7 +8,10 @@ import retrofit2.http.Query
 internal interface ProductApi {
 
     @GET("shopping/episodes/featured-products")
-    suspend fun fetchProducts(@Query("episode") episodeId: String): Response<JsonProductResponse>
+    suspend fun fetchProductsForEpisode(@Query("episode") episodeId: String): Response<JsonProductResponse>
+
+    @GET("shopping/videos/featured-products")
+    suspend fun fetchProductsForVideo(@Query("video") episodeId: String): Response<JsonProductResponse>
 
     @GET("shopping/episodes/featured-products/highlighted")
     suspend fun fetchHighlightedProducts(@Query("episode") episodeId: String): Response<JsonProductResponse>

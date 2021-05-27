@@ -198,7 +198,7 @@ internal object DataModule {
         }
 
         if (apiEnvironment.isDebug) {
-            logging.level = HttpLoggingInterceptor.Level.BASIC
+            logging.level = HttpLoggingInterceptor.Level.BODY
         } else {
             logging.level = HttpLoggingInterceptor.Level.NONE
         }

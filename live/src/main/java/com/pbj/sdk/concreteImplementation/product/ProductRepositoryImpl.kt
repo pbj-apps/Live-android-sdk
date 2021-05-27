@@ -1,6 +1,7 @@
 package com.pbj.sdk.concreteImplementation.product
 
 import com.pbj.sdk.concreteImplementation.generic.BaseRepository
+import com.pbj.sdk.concreteImplementation.generic.mapGenericError
 import com.pbj.sdk.concreteImplementation.live.model.JsonWebSocketProductRequest
 import com.pbj.sdk.concreteImplementation.product.model.asModel
 import com.pbj.sdk.domain.GenericError
@@ -9,6 +10,7 @@ import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.product.ProductRepository
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.domain.product.model.ProductUpdate
+import com.pbj.sdk.domain.vod.model.VodVideo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -19,8 +21,13 @@ internal class ProductRepositoryImpl(
 
     override suspend fun fetchProductsFor(episode: Episode): Result<List<Product>> =
         apiCall(
-            call = { api.fetchProducts(episode.id) },
-            onApiError = { _, _ -> GenericError.Unknown() },
+            call = { api.fetchProductsForEpisode(episode.id) },
+            onApiError = { e, code ->
+                mapGenericError(
+                    code.code,
+                    e?.errors?.firstOrNull()?.message
+                )
+            },
             onSuccess = { response ->
                 response?.results?.mapNotNull {
                     it.product?.asModel
@@ -28,10 +35,27 @@ internal class ProductRepositoryImpl(
             }
         )
 
+    override suspend fun fetchProductsFor(video: VodVideo): Result<List<Product>> = apiCall(
+        call = { api.fetchProductsForVideo(video.id) },
+        onApiError = { e, code ->
+            mapGenericError(code.code, e?.errors?.firstOrNull()?.message)
+        },
+        onSuccess = { response ->
+            response?.results?.mapNotNull {
+                it.product?.asModel
+            }
+        }
+    )
+
     override suspend fun fetchHighlightedProducts(episode: Episode): Result<List<Product>> =
         apiCall(
             call = { api.fetchHighlightedProducts(episode.id) },
-            onApiError = { _, _ -> GenericError.Unknown() },
+            onApiError = { e, code ->
+                mapGenericError(
+                    code.code,
+                    e?.errors?.firstOrNull()?.message
+                )
+            },
             onSuccess = { response ->
                 response?.results?.mapNotNull {
                     it.product?.asModel

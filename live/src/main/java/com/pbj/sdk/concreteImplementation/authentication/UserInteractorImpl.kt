@@ -15,7 +15,7 @@ internal class UserInteractorImpl(
 ) : UserInteractor {
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e( "$throwable")
+        Timber.e("$throwable")
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + errorHandler)
@@ -80,7 +80,8 @@ internal class UserInteractorImpl(
 
             userRepository.updateUser(firstname, lastname)
                 .onResult(
-                    onError = { onError?.invoke(it)
+                    onError = {
+                        onError?.invoke(it)
                     }
                 )
 
@@ -136,9 +137,13 @@ internal class UserInteractorImpl(
         }
     }
 
-    override fun logout() {
+    override fun logout(onError: onErrorCallBack?, onSuccess: (() -> Unit)?) {
         scope.launch {
-            userRepository.logout()
+            userRepository.logout().onResult({
+                onError?.invoke(it)
+            }, {
+                onSuccess?.invoke()
+            })
         }
     }
 

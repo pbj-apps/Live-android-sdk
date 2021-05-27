@@ -10,7 +10,7 @@ data class VodPlaylist(
         override val title: String,
         override val description: String?,
         override val type: VodItemType? = VodItemType.Playlist,
-        override val thumbnailUrl: URL?,
+        override val thumbnailUrl: String?,
         val videoList: List<VodVideo>,
         val videoCount: Int,
         val isFeatured: Boolean = false

@@ -1,28 +1,32 @@
 package com.pbj.sdk.videoPlayer
 
+import android.app.PictureInPictureParams
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.pbj.sdk.databinding.FragmentVideoPlayerBinding
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Renderer
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
-import com.pbj.sdk.R
+import com.pbj.sdk.domain.product.model.Product
+import com.pbj.sdk.product.ProductAdapter
 import com.pbj.sdk.utils.setMediaSource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
-class VideoPlayerFragment : Fragment() {
+class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
 
     interface LiveFragmentListener {
         fun onLiveFinished()
@@ -30,71 +34,83 @@ class VideoPlayerFragment : Fragment() {
         fun onPlayerError(errorMessage: String?)
     }
 
+    lateinit var viewBinding: FragmentVideoPlayerBinding
+
     var liveFragmentListener: LiveFragmentListener? = null
 
-    val viewModel: VideoViewModel by viewModels()
+    val vm: VideoViewModel by viewModels()
 
-    lateinit var playerView: PlayerView
+    private var productAdapter = ProductAdapter(this)
 
-    lateinit var backButton: AppCompatImageView
+    private var canShowProducts = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         if (activity is LiveFragmentListener) {
-            liveFragmentListener = activity as LiveFragmentListener
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        context?.let { _ ->
-            if (savedInstanceState == null) {
-
-                arguments?.apply {
-
-                    viewModel.videoUrl.value = getString(VIDEO_URL)
-                    viewModel.isLive = getBoolean(IS_LIVE)
-                }
-            }
+            liveFragmentListener = activity as? LiveFragmentListener
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_video_player, container, false)
+    ): View {
+        viewBinding = FragmentVideoPlayerBinding.inflate(inflater)
+        return viewBinding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.apply {
-            playerView = findViewById(R.id.playerView)
-            backButton = findViewById(R.id.backButton)
+        context?.let {
+            if (savedInstanceState == null) {
+
+                arguments?.apply {
+                    vm.videoUrl.value = getString(VIDEO_URL)
+                    vm.isLive = getBoolean(IS_LIVE)
+                    val products: Array<Product>? =
+                        getParcelableArray(PRODUCT_LIST) as Array<Product>?
+                    products?.toList()?.let {
+                        vm.productList = it
+                    }
+                }
+            }
+
+            initPlayer(it)
+            initVideoView(viewBinding.playerView)
         }
 
-        backButton.setOnClickListener {
-            activity?.onBackPressed()
-        }
+        initView()
+    }
 
-        if (savedInstanceState == null) {
-            context?.let {
-                initPlayer(it)
-                initVideoView(playerView)
+    private fun initView() {
+        viewBinding.apply {
+
+            if (!vm.productList.isNullOrEmpty()) {
+                initProductList()
+            }
+
+            backButton.setOnClickListener {
+                activity?.onBackPressed()
+            }
+
+            updateUiVisibility(false)
+
+            productButton.setOnClickListener {
+                canShowProducts = !canShowProducts
+                toggleProductListVisibility(canShowProducts)
             }
         }
-
-        updateUiVisibility(false)
     }
 
     private fun initPlayer(context: Context) {
-        viewModel.videoPlayer = SimpleExoPlayer.Builder(requireContext()).build().apply {
+        vm.videoPlayer = SimpleExoPlayer.Builder(requireContext()).build().apply {
             addListener(
                 object : Player.EventListener {
                     override fun onPlaybackStateChanged(state: Int) {
                         super.onPlaybackStateChanged(state)
-                        viewModel.isLoadingVideoPlayer.value = state == Player.STATE_BUFFERING
+                        vm.isLoadingVideoPlayer.value = state == Player.STATE_BUFFERING
 
                         if (state == Player.STATE_ENDED)
                             liveFragmentListener?.onLiveFinished()
@@ -106,9 +122,9 @@ class VideoPlayerFragment : Fragment() {
                         super.onPlayerError(error)
 
                         lifecycleScope.launch {
-                            viewModel.isLoadingVideoPlayer.value = true
+                            vm.isLoadingVideoPlayer.value = true
                             delay(5000)
-                            viewModel.videoPlayer?.prepare()
+                            vm.videoPlayer?.prepare()
                         }
 
                         liveFragmentListener?.onPlayerError(error.localizedMessage)
@@ -117,50 +133,102 @@ class VideoPlayerFragment : Fragment() {
             )
             playWhenReady = true
 
-            if (viewModel.isLive) {
-                playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
-                videoScalingMode = Renderer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+            viewBinding.apply {
+                if (vm.isLive) {
+                    playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+                    videoScalingMode = Renderer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+                }
             }
         }
 
-        viewModel.videoUrl.value?.let {
-
-            viewModel.videoPlayer?.setMediaSource(it, context)
+        vm.videoUrl.value?.let {
+            vm.videoPlayer?.setMediaSource(it, context)
         }
     }
 
     private fun initVideoView(playerView: PlayerView) {
         playerView.apply {
             setShowBuffering(PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
-            useController = !viewModel.isLive
-            player = viewModel.videoPlayer
+            useController = !vm.isLive
+            player = vm.videoPlayer
             setControllerVisibilityListener { visibility -> updateUiVisibility(visibility == View.VISIBLE) }
         }
-
     }
 
     private fun updateUiVisibility(isVisible: Boolean) {
-        backButton.isVisible = isVisible
+        viewBinding.apply {
+            backButton.isVisible = isVisible
+            toggleProductVisibility(isVisible)
+        }
+    }
+
+    private fun toggleProductVisibility(showProducts: Boolean) {
+        viewBinding.apply {
+            productButton.isVisible = showProducts
+            toggleProductListVisibility(showProducts && canShowProducts)
+        }
+    }
+
+    private fun toggleProductListVisibility(showProducts: Boolean) {
+        viewBinding.apply {
+            productListView.isVisible = showProducts
+        }
+    }
+
+    override fun onClickProduct(product: Product) {
+        val params = PictureInPictureParams.Builder().build()
+        activity?.enterPictureInPictureMode(params)
+
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(product.link)).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        }
+
+        canShowProducts = false
+        toggleProductVisibility(false)
+        viewBinding.playerView.hideController()
+
+        startActivity(browserIntent)
+    }
+
+    private fun initProductList() {
+        viewBinding.apply {
+            productListView.apply {
+
+                vm.productList?.let {
+                    productAdapter.update(it)
+                }
+
+                adapter = productAdapter
+                layoutManager =
+                    LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            }
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        viewModel.videoPlayer?.stop()
+        vm.videoPlayer?.stop()
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(video: String, isLive: Boolean = false) =
+        fun newInstance(
+            video: String,
+            isLive: Boolean = false,
+            productList: List<Product>? = null
+        ) =
             VideoPlayerFragment().apply {
                 arguments = Bundle().also {
                     it.also {
                         it.putString(VIDEO_URL, video)
                         it.putBoolean(IS_LIVE, isLive)
+                        it.putParcelableArray(PRODUCT_LIST, productList?.toTypedArray())
                     }
                 }
             }
 
         private const val VIDEO_URL = "VIDEO_URL"
         private const val IS_LIVE = "IS_LIVE"
+        private const val PRODUCT_LIST = "PRODUCT_LIST"
     }
 }

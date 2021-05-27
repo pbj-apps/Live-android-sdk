@@ -44,7 +44,7 @@ interface UserFeature {
         onSuccess: (() -> Unit)? = null
     )
 
-    fun logout()
+    fun logout(onError: onErrorCallBack? = null, onSuccess: (() -> Unit)? = null)
 
     fun isUserLoggedIn(onResult: ((Boolean) -> Unit)? = null)
 
