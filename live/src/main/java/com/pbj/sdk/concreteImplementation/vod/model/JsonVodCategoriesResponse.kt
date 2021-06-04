@@ -17,7 +17,8 @@ internal data class JsonVodCategory(
     val id: String,
     val title: String,
     val description: String,
-    val items: List<JsonVodVideoOrPlaylist>
+    val items: List<JsonVodVideoOrPlaylist>,
+    val featured_items: List<JsonVodVideoOrPlaylist>
 )
 
 @JsonClass(generateAdapter = true)
@@ -41,7 +42,8 @@ internal val JsonVodCategory.asModel: VodCategory
     get() = VodCategory(
         id = id,
         title = title,
-        items = items.map { it.toModel()!! }
+        items = items.mapNotNull { it.toModel()!! },
+        featuredItems = featured_items.mapNotNull { it.toModel()!! }
     )
 
 
