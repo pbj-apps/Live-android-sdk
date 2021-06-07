@@ -13,7 +13,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.34-alpha"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -133,10 +133,6 @@ dependencies {
 def githubProperties = new Properties()
 githubProperties.load(new FileInputStream(rootProject.file("github.properties"))) //Set env variable GPR_USER & GPR_API_KEY if not adding a properties file
 
-def getVersionName = { ->
-    return "0.0.23-alpha"
-}
-
 def getArtificatId = { ->
     return "live"
 }
@@ -146,7 +142,7 @@ publishing {
         bar(MavenPublication) {
             groupId 'com.pbj.live'
             artifactId getArtificatId()
-            version getVersionName()
+            version android.defaultConfig.versionName
             artifact("$buildDir/outputs/aar/${getArtificatId()}-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')

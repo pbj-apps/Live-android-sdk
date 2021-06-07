@@ -1,3 +1,6 @@
 package com.pbj.sdk.utils.eventBus
 
-data class LiveNotificationModified(val list: List<String>): LiveEvent
+import androidx.annotation.Keep
+
+@Keep
+data class LiveNotificationModified(val list: List<String>) : LiveEvent

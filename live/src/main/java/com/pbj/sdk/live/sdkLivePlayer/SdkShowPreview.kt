@@ -6,16 +6,18 @@ import android.view.LayoutInflater
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import coil.load
-import com.pbj.sdk.databinding.EpisodeEndLayoutBinding
+import com.pbj.sdk.databinding.SdkShowPreviewLayoutBinding
 
-class EpisodeEndView @JvmOverloads constructor(
+class SdkShowPreview @JvmOverloads constructor(
     context: Context,
     private val showPreview: String?,
+    private val showTitle: String?,
+    private val showDescription: String?,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    private var view: EpisodeEndLayoutBinding = EpisodeEndLayoutBinding
+    private var view: SdkShowPreviewLayoutBinding = SdkShowPreviewLayoutBinding
         .inflate(LayoutInflater.from(context), this)
 
     val closeButton: AppCompatImageView = view.closeIcon
@@ -23,6 +25,8 @@ class EpisodeEndView @JvmOverloads constructor(
     init {
         view.apply {
             bgImage.load(showPreview)
+            title.text = showTitle
+            description.text = showDescription
         }
     }
 }

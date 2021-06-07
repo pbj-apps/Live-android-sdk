@@ -47,7 +47,7 @@ internal interface UserInteractor {
         onSuccess: (() -> Unit)? = null
     )
 
-    fun logout()
+    fun logout(onError: onErrorCallBack?, onSuccess: (() -> Unit)?)
 
     fun isUserLoggedIn(onResult: ((Boolean) -> Unit)? = null)
 

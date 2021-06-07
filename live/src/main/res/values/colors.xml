@@ -6,10 +6,12 @@
     <color name="onSecondary">#FF000000</color>
     <color name="black">#FF000000</color>
     <color name="black_60">#99000000</color>
+    <color name="black_50">#80000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="white_60">#99FFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="black_overlay">#66000000</color>
     <color name="liveButtonBackground">#FFFFFF</color>
     <color name="liveButtonForeground">#000000</color>
+    <color name="product_divider">#CACACA</color>
 </resources>

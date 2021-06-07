@@ -6,6 +6,7 @@ val Asset.previewImage: String?
 val VodVideo.durationInMinutes: Int
     get() {
         duration?.let {
-            return duration % 60
+            val videoDuration = duration % 60
+            return if (videoDuration < 60) 1 else videoDuration
         } ?: return 0
     }

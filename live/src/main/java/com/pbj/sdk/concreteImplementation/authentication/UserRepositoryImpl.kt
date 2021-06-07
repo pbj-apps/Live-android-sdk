@@ -6,6 +6,7 @@ import com.pbj.sdk.concreteImplementation.authentication.model.LoginRequest
 import com.pbj.sdk.concreteImplementation.authentication.model.UpdateProfileRequest
 import com.pbj.sdk.concreteImplementation.authentication.model.extensions.asModel
 import com.pbj.sdk.concreteImplementation.generic.BaseRepository
+import com.pbj.sdk.concreteImplementation.generic.mapGenericError
 import com.pbj.sdk.concreteImplementation.generic.mapLoginError
 import com.pbj.sdk.concreteImplementation.storage.PBJPreferences
 import com.pbj.sdk.concreteImplementation.vod.model.asModel
@@ -38,7 +39,13 @@ internal class UserRepositoryImpl(
         apiCall(call = {
             api.getUser()
         },
-        onApiError = { _, _ -> GenericError.Unknown()}) {
+            onApiError = { e, code ->
+                mapGenericError(
+                    code.code,
+                    e?.errors?.firstOrNull()?.message
+                )
+            }
+        ) {
             it?.asModel
         }
 
@@ -70,9 +77,13 @@ internal class UserRepositoryImpl(
             api.uploadProfilePicture(
                 requestFile
             )
-        }, onApiError = { error, _ ->
-            GenericError.Unknown(error?.errors?.firstOrNull()?.message)
-        }) {
+        }, onApiError = { e, code ->
+            mapGenericError(
+                code.code,
+                e?.errors?.firstOrNull()?.message
+            )
+        }
+        ) {
             it?.asModel
         }
 
@@ -88,8 +99,13 @@ internal class UserRepositoryImpl(
             api.updateUser(
                 mapOf("profile_image" to profileImage.id)
             )
-        },
-            onApiError = { _, code -> code.mapLoginError() }) {
+        }, onApiError = { e, code ->
+            mapGenericError(
+                code.code,
+                e?.errors?.firstOrNull()?.message
+            )
+        }
+        ) {
             profileImage
         }
 
@@ -98,9 +114,13 @@ internal class UserRepositoryImpl(
             api.changePassword(
                 ChangePasswordRequest(currentPassword, newPassword)
             )
-        }, { error, _ ->
-            GenericError.Unknown(error?.errors?.firstOrNull()?.message)
-        }) {
+        }, onApiError = { e, code ->
+            mapGenericError(
+                code.code,
+                e?.errors?.firstOrNull()?.message
+            )
+        }
+        ) {
             Any()
         }
 
@@ -136,7 +156,8 @@ internal class UserRepositoryImpl(
         return Result.Success()
     }
 
-    override suspend fun isLoggedInAsGuest(): Result<Boolean> = Result.Success(preferences.isLoggedInAsGuest)
+    override suspend fun isLoggedInAsGuest(): Result<Boolean> =
+        Result.Success(preferences.isLoggedInAsGuest)
 
     override suspend fun saveIsLoggedInAsGuest(isGuest: Boolean): Result<Any> {
         preferences.isLoggedInAsGuest = isGuest

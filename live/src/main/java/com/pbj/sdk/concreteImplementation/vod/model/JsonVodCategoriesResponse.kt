@@ -16,7 +16,9 @@ internal data class JsonVodCategoriesPage(
 internal data class JsonVodCategory(
     val id: String,
     val title: String,
-    val items: List<JsonVodVideoOrPlaylist>
+    val description: String,
+    val items: List<JsonVodVideoOrPlaylist>,
+    val featured_items: List<JsonVodVideoOrPlaylist>
 )
 
 @JsonClass(generateAdapter = true)
@@ -30,7 +32,8 @@ internal data class JsonVodVideoOrPlaylistItem(
     val id: String,
     val title: String,
     val description: String,
-    val preview_asset: JsonPreviewAsset,
+    val preview_asset: JsonPreviewAsset?,
+    val asset: JsonAsset?,
     val video_count: Int?,
     val duration: Int?
 )
@@ -39,7 +42,8 @@ internal val JsonVodCategory.asModel: VodCategory
     get() = VodCategory(
         id = id,
         title = title,
-        items = items.map { it.toModel()!! }
+        items = items.mapNotNull { it.toModel()!! },
+        featuredItems = featured_items.mapNotNull { it.toModel()!! }
     )
 
 
@@ -50,7 +54,7 @@ internal fun JsonVodVideoOrPlaylist.toModel(): VodItem? {
                 id = item.id,
                 title = item.title,
                 description = item.description,
-                thumbnailUrl = URL(item.preview_asset.image.small),
+                thumbnailUrl = item.preview_asset?.image?.small,
                 videoList = listOf(),
                 videoCount = item.video_count ?: 0
             )
@@ -60,9 +64,9 @@ internal fun JsonVodVideoOrPlaylist.toModel(): VodItem? {
                 id = item.id,
                 title = item.title,
                 description = item.description,
-                thumbnailUrl = getURL(item.preview_asset.image.small),
-                largeImageUrl = getURL(item.preview_asset.image.small),
-                videoURL = getURL(item.preview_asset.asset_url),
+                thumbnailUrl = item.preview_asset?.image?.small,
+                largeImageUrl = item.preview_asset?.image?.small,
+                videoURL = item.asset?.asset_url,
                 duration = item.duration ?: 0,
                 instructorList = listOf()
             )

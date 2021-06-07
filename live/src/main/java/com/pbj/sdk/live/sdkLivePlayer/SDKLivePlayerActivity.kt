@@ -57,13 +57,13 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener,
 
     private fun onLoading() {
         replaceView(
-            LoadingEpisodeView(this@SDKLivePlayerActivity)
+            SdkLoadingEpisodeView(this@SDKLivePlayerActivity)
         )
     }
 
     private fun onNoLive() {
         replaceView(
-            NoEpisodeView(this).apply {
+            SdkNoEpisodeView(this).apply {
                 closeButton.setOnClickListener {
                     finish()
                 }
@@ -73,7 +73,7 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener,
 
     private fun onError() {
         replaceView(
-            EpisodeErrorView(this).apply {
+            SdkEpisodeErrorView(this).apply {
                 closeButton.setOnClickListener {
                     finish()
                 }
@@ -88,7 +88,12 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener,
 
     private fun onShow(show: Show) {
         replaceView(
-            ShowPreview(this, show.previewAsset?.previewImage, show.title, show.description).apply {
+            SdkShowPreview(
+                this,
+                show.previewAsset?.previewImage,
+                show.title,
+                show.description
+            ).apply {
                 closeButton.setOnClickListener {
                     finish()
                 }
@@ -98,7 +103,7 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener,
 
     private fun onEpisodeEnd(episode: Episode?) {
         replaceView(
-            EpisodeEndView(this, episode?.show?.previewAsset?.previewImage).apply {
+            SdkEpisodeEndView(this, episode?.show?.previewAsset?.previewImage).apply {
                 closeButton.setOnClickListener {
                     finish()
                 }
