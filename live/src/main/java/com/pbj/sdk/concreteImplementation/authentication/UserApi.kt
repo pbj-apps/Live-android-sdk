@@ -2,7 +2,8 @@ package com.pbj.sdk.concreteImplementation.authentication
 
 import com.pbj.sdk.concreteImplementation.authentication.model.ChangePasswordRequest
 import com.pbj.sdk.concreteImplementation.authentication.model.JsonUser
-import com.pbj.sdk.concreteImplementation.authentication.model.LoginRequest
+import com.pbj.sdk.concreteImplementation.authentication.model.JsonLoginRequest
+import com.pbj.sdk.concreteImplementation.authentication.model.JsonRegisterRequest
 import com.pbj.sdk.concreteImplementation.authentication.model.UpdateProfileRequest
 import com.pbj.sdk.concreteImplementation.vod.model.JsonProfileImage
 import okhttp3.MultipartBody
@@ -12,7 +13,10 @@ import retrofit2.http.*
 internal interface UserApi {
 
     @POST("auth/login")
-    suspend fun loginUser(@Body loginRequest: LoginRequest): Response<JsonUser>
+    suspend fun loginUser(@Body loginRequest: JsonLoginRequest): Response<JsonUser>
+
+    @POST("auth/register")
+    suspend fun registerUser(@Body registerRequest: JsonRegisterRequest): Response<JsonUser>
 
     @POST("auth/password-change")
     suspend fun changePassword(@Body updateRequest: ChangePasswordRequest): Response<Any>
