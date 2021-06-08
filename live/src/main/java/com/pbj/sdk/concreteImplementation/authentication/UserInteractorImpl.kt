@@ -1,9 +1,11 @@
 package com.pbj.sdk.concreteImplementation.authentication
 
 import android.net.Uri
+import com.pbj.sdk.concreteImplementation.authentication.model.asJson
 import com.pbj.sdk.domain.*
 import com.pbj.sdk.domain.authentication.UserInteractor
 import com.pbj.sdk.domain.authentication.UserRepository
+import com.pbj.sdk.domain.authentication.model.RegisterRequest
 import com.pbj.sdk.domain.authentication.model.User
 import com.pbj.sdk.domain.vod.model.ProfileImage
 import kotlinx.coroutines.*
@@ -36,12 +38,39 @@ internal class UserInteractorImpl(
             }
 
             user?.let {
-                userRepository.apply {
-                    saveUser(it)
-                    saveToken(it.authToken)
-                    saveIsLoggedInAsGuest(false)
-                }
+                saveAuthenticatedUser(it)
                 onSuccess?.invoke(it)
+            }
+        }
+    }
+
+    override fun register(
+        registerRequest: RegisterRequest,
+        onError: onErrorCallBack?,
+        onSuccess: ((User) -> Unit)?
+    ) {
+        var user: User? = null
+
+        scope.launch {
+            userRepository.register(registerRequest.asJson).onResult(onError = {
+                onError?.invoke(it)
+            }) {
+                user = it
+            }
+
+            user?.let {
+                saveAuthenticatedUser(it)
+                onSuccess?.invoke(it)
+            }
+        }
+    }
+
+    private suspend fun saveAuthenticatedUser(user: User?) {
+        user?.let {
+            userRepository.apply {
+                saveUser(it)
+                saveToken(it.authToken)
+                saveIsLoggedInAsGuest(false)
             }
         }
     }
