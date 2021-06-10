@@ -8,16 +8,17 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import java.net.URL
 
-internal fun SimpleExoPlayer.setMediaSource(videoUrl: String, context: Context) {
+internal fun SimpleExoPlayer.initMediaSource(videoUrl: String, context: Context) {
 
     val url = URL(videoUrl)
 
     val mediaSource = if (url.path.endsWith(".m3u8")) {
-        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSourceFactory()
+        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
 
         val createMediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(
             MediaItem.fromUri(videoUrl)

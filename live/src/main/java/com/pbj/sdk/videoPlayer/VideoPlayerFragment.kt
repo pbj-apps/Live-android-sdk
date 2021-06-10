@@ -13,16 +13,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.exoplayer2.*
 import com.pbj.sdk.databinding.FragmentVideoPlayerBinding
-import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.Renderer
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.product.ProductAdapter
-import com.pbj.sdk.utils.setMediaSource
+import com.pbj.sdk.utils.initMediaSource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -107,7 +104,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
     private fun initPlayer(context: Context) {
         vm.videoPlayer = SimpleExoPlayer.Builder(requireContext()).build().apply {
             addListener(
-                object : Player.EventListener {
+                object : Player.Listener {
                     override fun onPlaybackStateChanged(state: Int) {
                         super.onPlaybackStateChanged(state)
                         vm.isLoadingVideoPlayer.value = state == Player.STATE_BUFFERING
@@ -136,13 +133,13 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
             viewBinding.apply {
                 if (vm.isLive) {
                     playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
-                    videoScalingMode = Renderer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+                    videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
                 }
             }
         }
 
         vm.videoUrl.value?.let {
-            vm.videoPlayer?.setMediaSource(it, context)
+            vm.videoPlayer?.initMediaSource(it, context)
         }
     }
 
