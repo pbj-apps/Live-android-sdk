@@ -3,16 +3,23 @@ package com.pbj.sdk.live.livePlayer
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.pbj.sdk.analytics.AnalyticsTracker
 import com.pbj.sdk.databinding.ActivityLiveRoomBinding
 import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.utils.startFragment
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
 
+    private val analytics : AnalyticsTracker by inject()
+
     lateinit var view: ActivityLiveRoomBinding
+
+    var episode : Episode? = null
 
     override fun onStart() {
         super.onStart()
@@ -25,7 +32,7 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
         view = ActivityLiveRoomBinding.inflate(layoutInflater)
         setContentView(view.root)
 
-        var episode: Episode? = null
+        episode = null
 
         var nextEpisode: Episode? = null
 
@@ -34,10 +41,15 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
             nextEpisode = getParcelable(NEXT_LIVE_STREAM)
         }
 
+        episode?.let {
+            analytics.logLiveClassStarts(it)
+        }
+
         val fragment = LivePlayerFragment.newInstance(
             episode = episode,
             nextEpisode = nextEpisode
         )
+
         startFragment(fragment, view.content.id)
     }
 
@@ -73,6 +85,9 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
     }
 
     override fun onBackPressed() {
+        episode?.let {
+            analytics.logLiveClassExit(it)
+        }
         finish()
     }
 

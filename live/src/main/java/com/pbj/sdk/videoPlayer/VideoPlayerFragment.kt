@@ -31,7 +31,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
         fun onPlayerError(errorMessage: String?)
     }
 
-    lateinit var viewBinding: FragmentVideoPlayerBinding
+    private lateinit var viewBinding: FragmentVideoPlayerBinding
 
     var liveFragmentListener: LiveFragmentListener? = null
 
@@ -173,6 +173,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
     }
 
     override fun onClickProduct(product: Product) {
+        vm.logOnClickProduct(product)
         val params = PictureInPictureParams.Builder().build()
         activity?.enterPictureInPictureMode(params)
 

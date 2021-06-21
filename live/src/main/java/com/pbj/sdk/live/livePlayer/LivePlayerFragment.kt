@@ -470,6 +470,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     }
 
     override fun onClickProduct(product: Product) {
+        vm.logOnClickProduct(product)
         val params = PictureInPictureParams.Builder().build()
         activity?.enterPictureInPictureMode(params)
 
