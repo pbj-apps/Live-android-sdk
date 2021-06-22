@@ -2,6 +2,7 @@ package com.pbj.sdk
 
 import android.content.Context
 import androidx.annotation.Keep
+import com.pbj.sdk.analytics.AnalyticsTracker
 import com.pbj.sdk.core.ApiEnvironment
 import com.pbj.sdk.core.Live
 import com.pbj.sdk.core.SdkHolder
@@ -20,6 +21,8 @@ interface PbjSDK {
 
     var liveChatSource: LiveChatSource?
 
+    var tracker: AnalyticsTracker?
+
     val liveFeature: LiveFeature
 
     val productFeature: ProductFeature
@@ -36,9 +39,10 @@ interface PbjSDK {
             apiKey: String,
             environment: ApiEnvironment,
             liveNotificationManager: LiveNotificationManager,
-            liveChatSource: LiveChatSource
+            liveChatSource: LiveChatSource,
+            analyticsTracker: AnalyticsTracker
         ): PbjSDK {
-            SdkHolder.instance = Live(context, apiKey, environment, liveNotificationManager, liveChatSource)
+            SdkHolder.instance = Live(context, apiKey, environment, liveNotificationManager, liveChatSource, analyticsTracker)
             return SdkHolder.instance
         }
     }

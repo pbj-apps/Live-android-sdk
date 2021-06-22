@@ -5,7 +5,6 @@ import com.pbj.sdk.domain.vod.model.VodItem
 import com.pbj.sdk.domain.vod.model.VodPlaylist
 import com.pbj.sdk.domain.vod.model.VodVideo
 import com.squareup.moshi.JsonClass
-import java.net.URL
 
 @JsonClass(generateAdapter = true)
 internal data class JsonVodCategoriesPage(
@@ -17,8 +16,8 @@ internal data class JsonVodCategory(
     val id: String,
     val title: String,
     val description: String,
-    val items: List<JsonVodVideoOrPlaylist>,
-    val featured_items: List<JsonVodVideoOrPlaylist>
+    val items: List<JsonVodVideoOrPlaylist>? = null,
+    val featured_items: List<JsonVodVideoOrPlaylist>? = null
 )
 
 @JsonClass(generateAdapter = true)
@@ -42,13 +41,13 @@ internal val JsonVodCategory.asModel: VodCategory
     get() = VodCategory(
         id = id,
         title = title,
-        items = items.mapNotNull { it.toModel()!! },
-        featuredItems = featured_items.mapNotNull { it.toModel()!! }
+        items = items?.mapNotNull { it.asModel } ?: listOf(),
+        featuredItems = featured_items?.mapNotNull { it.asModel } ?: listOf()
     )
 
 
-internal fun JsonVodVideoOrPlaylist.toModel(): VodItem? {
-    return when (item_type) {
+internal val JsonVodVideoOrPlaylist.asModel: VodItem?
+    get() = when (item_type) {
         "playlist" -> {
             VodPlaylist(
                 id = item.id,
@@ -73,12 +72,5 @@ internal fun JsonVodVideoOrPlaylist.toModel(): VodItem? {
         }
         else -> null
     }
-}
-
-private fun getURL(stringUrl: String?): URL? =
-    if (stringUrl.isNullOrBlank())
-        null
-    else
-        URL(stringUrl)
 
 

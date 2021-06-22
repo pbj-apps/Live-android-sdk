@@ -15,5 +15,7 @@ data class VodVideo(
     val duration: Int?,
     override val type: VodItemType? = VodItemType.Video,
     val instructorList: List<Instructor> = listOf(),
+    val playlists: List<VodPlaylist>? = null,
+    val categories: List<VodCategory>? = null,
     val isFeatured: Boolean = false
 ) : Parcelable, VodItem

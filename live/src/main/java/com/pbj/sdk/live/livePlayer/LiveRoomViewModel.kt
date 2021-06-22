@@ -3,6 +3,7 @@ package com.pbj.sdk.live.livePlayer
 import android.os.CountDownTimer
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.pbj.sdk.analytics.AnalyticsTracker
 import com.pbj.sdk.core.SdkHolder
 import com.pbj.sdk.di.LiveKoinComponent
 import com.pbj.sdk.domain.authentication.UserInteractor
@@ -26,6 +27,8 @@ import java.util.concurrent.TimeUnit
 
 internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNotificationListener,
     LiveUpdateListener, LiveKoinComponent {
+
+    private val tracker: AnalyticsTracker by inject()
 
     private val liveInteractor: LiveInteractor by inject()
 
@@ -147,6 +150,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         launch {
             user?.username?.let { username ->
                 postMessage(username, message)
+                episode?.let { tracker.logChatMessageSent(it) }
             }
         }
     }
@@ -334,6 +338,10 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
             isPlaying = true
             updateLiveRoomState(it)
         }
+    }
+
+    fun logOnClickProduct(product: Product) {
+        tracker.logFeaturedProductClicked(product)
     }
 
     companion object {
