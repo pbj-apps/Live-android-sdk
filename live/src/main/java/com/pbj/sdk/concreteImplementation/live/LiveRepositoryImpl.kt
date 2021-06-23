@@ -25,7 +25,7 @@ internal class LiveRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             }
         )
@@ -39,7 +39,7 @@ internal class LiveRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             }
         )
@@ -53,7 +53,7 @@ internal class LiveRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             }
         )
@@ -67,7 +67,7 @@ internal class LiveRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             }
         )
@@ -81,7 +81,7 @@ internal class LiveRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             }
         )
@@ -95,7 +95,7 @@ internal class LiveRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             })
         { response ->
@@ -121,7 +121,7 @@ internal class LiveRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             }
         ) { it?.broadcast_url }
@@ -132,7 +132,7 @@ internal class LiveRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             }
         ) { response ->
@@ -151,7 +151,7 @@ internal class LiveRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             }
         ) { it }
@@ -171,7 +171,7 @@ internal class LiveRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             }
         ) { it }
