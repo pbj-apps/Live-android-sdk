@@ -52,7 +52,7 @@ internal class UserRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             }
         ) {
@@ -90,7 +90,7 @@ internal class UserRepositoryImpl(
         }, onApiError = { e, code ->
             mapGenericError(
                 code.code,
-                e?.errors?.firstOrNull()?.message
+                e
             )
         }
         ) {
@@ -112,7 +112,7 @@ internal class UserRepositoryImpl(
         }, onApiError = { e, code ->
             mapGenericError(
                 code.code,
-                e?.errors?.firstOrNull()?.message
+                e
             )
         }
         ) {
@@ -127,7 +127,7 @@ internal class UserRepositoryImpl(
         }, onApiError = { e, code ->
             mapGenericError(
                 code.code,
-                e?.errors?.firstOrNull()?.message
+                e
             )
         }
         ) {
@@ -144,16 +144,8 @@ internal class UserRepositoryImpl(
     override suspend fun getUserToken(): Result<String> = Result.Success(preferences.userToken)
 
     private suspend fun removeCurrentUser(): Result<Any> {
-        preferences.user?.let {
-            removeUser(it)
-        }
-        return Result.Success()
-    }
-
-    override suspend fun removeUser(user: User): Result<Any> {
         preferences.user = null
-        removeToken()
-        return Result.Success()
+        return removeToken()
     }
 
     override suspend fun saveToken(token: String?): Result<Any> {
@@ -162,7 +154,7 @@ internal class UserRepositoryImpl(
     }
 
     override suspend fun removeToken(): Result<Any> {
-        preferences.userToken = ""
+        preferences.userToken = null
         return Result.Success()
     }
 

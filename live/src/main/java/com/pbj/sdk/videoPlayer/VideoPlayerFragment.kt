@@ -41,6 +41,8 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
 
     private var canShowProducts = false
 
+    private var isPip = false
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -203,9 +205,17 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
         }
     }
 
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode)
+        isPip = isInPictureInPictureMode
+    }
+
     override fun onStop() {
         super.onStop()
         vm.videoPlayer?.stop()
+        if(isPip) {
+            activity?.finish()
+        }
     }
 
     companion object {

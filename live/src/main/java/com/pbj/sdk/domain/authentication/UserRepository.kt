@@ -29,8 +29,6 @@ internal interface UserRepository {
 
     suspend fun getUserToken(): Result<String>
 
-    suspend fun removeUser(user: User): Result<Any>
-
     suspend fun saveToken(token: String?): Result<Any>
 
     suspend fun removeToken(): Result<Any>

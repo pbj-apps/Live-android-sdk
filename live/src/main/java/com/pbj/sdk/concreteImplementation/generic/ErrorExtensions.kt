@@ -13,8 +13,11 @@ internal fun ErrorCode.mapLoginError(): LoginError =
         else -> LoginError.Unknown(message)
     }
 
-internal fun BaseRepository.mapGenericError(errorCode: Int, message: String?): Throwable =
-    when (errorCode) {
-        403 -> GenericError.NoPermission(message)
+internal fun BaseRepository.mapGenericError(errorCode: Int, error: JsonGenericError?): Throwable {
+    val message = error?.errors?.firstOrNull()?.message
+    return when {
+        errorCode == 403 || error?.error_type == "NotAuthenticated" ->
+            GenericError.NoPermission(message)
         else -> GenericError.Unknown(message)
     }
+}
