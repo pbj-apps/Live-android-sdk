@@ -29,10 +29,7 @@ internal class VodRepositoryImpl(private val api: VodApi) : BaseRepository(), Vo
         apiCall(
             call = { api.getPlaylist(id) },
             onApiError = { e, code ->
-                mapGenericError(
-                    code.code,
-                    e
-                )
+                mapGenericError(code.code, e)
             }
         ) {
             it?.asModel
@@ -42,10 +39,7 @@ internal class VodRepositoryImpl(private val api: VodApi) : BaseRepository(), Vo
         apiCall(
             call = { api.getVideo(id) },
             onApiError = { e, code ->
-                mapGenericError(
-                    code.code,
-                    e
-                )
+                mapGenericError(code.code, e)
             }
         ) {
             it?.asModel

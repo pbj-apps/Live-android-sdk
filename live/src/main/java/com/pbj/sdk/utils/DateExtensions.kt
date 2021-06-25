@@ -82,3 +82,6 @@ val TemporalAccessor.dayShortName: String
 
 val TemporalAccessor.dayFullName: String
     get() = toString(DateUtils.DAY_FULL_NAME)
+
+val LocalTime?.asMilliSeconds: Long
+    get() = this?.toSecondOfDay()?.times(1000)?.toLong() ?: 0

@@ -21,6 +21,7 @@ import com.pbj.sdk.databinding.FragmentLivePlayerBinding
 import com.pbj.sdk.domain.live.model.*
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.product.ProductAdapter
+import com.pbj.sdk.utils.asMilliSeconds
 import com.pbj.sdk.utils.observe
 import com.pbj.sdk.utils.startFragment
 import com.pbj.sdk.videoPlayer.VideoPlayerFragment
@@ -358,7 +359,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
     private fun setDescription(episode: Episode?) {
         val string = if (episode?.status == EpisodeStatus.WAITING_ROOM)
-            episode?.show?.waitingRoomDescription
+            episode.show?.waitingRoomDescription
         else
             episode?.description
 
@@ -366,8 +367,13 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     }
 
     private fun initVideoPlayer(url: BroadcastUrl) {
-        val video = if (url.broadcastUrl.isNullOrEmpty())
-            vm.episode?.video?.videoURL
+        var video: String? = null
+        var productTimeCodeList: List<ProductTimeCodes>? = null
+
+        if (vm.isVideo) {
+            video = vm.episode?.video?.videoURL
+            productTimeCodeList = getProductTimeCodes()
+        }
         else
             url.broadcastUrl
 
@@ -375,13 +381,29 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
             val videoFragment = VideoPlayerFragment.newInstance(
                 video = it,
                 isLive = true,
-                timeCode = url.elapsedTime
+                timeCode = url.elapsedTime,
+                productTimeCodes = productTimeCodeList
             ).apply {
                 liveFragmentListener = this@LivePlayerFragment
             }
             parentFragmentManager.startFragment(videoFragment, view.videoPlayerContainer.id)
         }
 
+    }
+
+    private fun getProductTimeCodes(): List<ProductTimeCodes> {
+        val productTimeCodes = listOf<ProductTimeCodes>()
+        productList.forEach { product ->
+
+            product.highlightTimingList?.map {
+                    ProductTimeCodes(
+                        productId = product.id,
+                        startTime = it.startTime.asMilliSeconds,
+                        endTime = it.endTime.asMilliSeconds
+                    )
+            }
+        }
+        return productTimeCodes
     }
 
     private fun observeViewModel() {
@@ -519,6 +541,10 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
     override fun onPlayerError(errorMessage: String?) {
         listener?.onPlayerError(errorMessage)
+    }
+
+    override fun onProductTimeCodeReached(id: String, shouldShow: Boolean) {
+        vm.changeProductHighLighting(id, shouldShow)
     }
 
     companion object {

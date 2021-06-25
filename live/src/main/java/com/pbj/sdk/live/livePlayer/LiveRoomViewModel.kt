@@ -67,9 +67,12 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     var user: User? = null
 
+    var isVideo: Boolean = false
+
     fun init(live: Episode?, nextLive: Episode?) {
         episode = live
         nextLiveStream.value = nextLive
+        isVideo = episode?.video != null
         fetchUser()
         initialize()
     }
@@ -81,13 +84,15 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         initStreamUpdates()
 
         episode?.let {
-            if(it.video == null)
+            if (isVideo)
+                it.video?.let { video ->
+                    getProducts(video)
+                }
+            else {
                 getProducts(it)
-            else
-                getProducts(it.video)
-
-            getHighlightedProducts(it)
-            registerForProductHighlights(it)
+                getHighlightedProducts(it)
+                registerForProductHighlights(it)
+            }
         }
 
         liveNotificationManager = SdkHolder.instance.liveNotificationManager
@@ -355,6 +360,23 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     fun logOnClickProduct(product: Product) {
         tracker.logFeaturedProductClicked(product)
+    }
+
+    fun changeProductHighLighting(id: String, shouldShow: Boolean) {
+        val highlightedProducts = highlightedProductList.value?.toMutableList() ?: mutableListOf()
+        if (shouldShow) {
+            val product = productList.value?.firstOrNull { it.id == id }
+            product?.let {
+                highlightedProducts.add(it)
+                highlightedProductList.postValue(highlightedProducts)
+            }
+        } else {
+            highlightedProductList.postValue(
+                highlightedProducts.filter { product ->
+                    product.id != id
+                }
+            )
+        }
     }
 
     companion object {

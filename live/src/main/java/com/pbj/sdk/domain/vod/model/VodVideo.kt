@@ -1,6 +1,7 @@
 package com.pbj.sdk.domain.vod.model
 
 import android.os.Parcelable
+import com.pbj.sdk.domain.product.model.ProductHighlightTiming
 import kotlinx.parcelize.Parcelize
 import java.net.URL
 

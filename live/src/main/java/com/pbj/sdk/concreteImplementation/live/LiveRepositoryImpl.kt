@@ -8,7 +8,6 @@ import com.pbj.sdk.concreteImplementation.live.model.asModel
 import com.pbj.sdk.domain.Result
 import com.pbj.sdk.domain.live.LiveRepository
 import com.pbj.sdk.domain.live.model.*
-import com.pbj.sdk.domain.live.model.BroadcastUrl
 import kotlinx.coroutines.flow.map
 
 internal class LiveRepositoryImpl(
@@ -116,10 +115,7 @@ internal class LiveRepositoryImpl(
         apiCall(
             call = { restApi.fetchBroadcastUrl(episode.id) },
             onApiError = { e, code ->
-                mapGenericError(
-                    code.code,
-                    e
-                )
+                mapGenericError(code.code, e)
             }
         ) { it?.asModel }
 

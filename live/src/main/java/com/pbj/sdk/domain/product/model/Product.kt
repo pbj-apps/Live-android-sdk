@@ -11,4 +11,5 @@ data class Product(
     val detail: String?,
     val image: String?,
     val link: String?,
+    val highlightTimingList: List<ProductHighlightTiming>?
 ) : Parcelable

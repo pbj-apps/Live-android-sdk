@@ -4,9 +4,7 @@ import com.pbj.sdk.concreteImplementation.vod.model.asInstructorList
 import com.pbj.sdk.concreteImplementation.vod.model.asModel
 import com.pbj.sdk.domain.live.model.*
 import com.pbj.sdk.utils.DateUtils
-import java.time.LocalTime
-import java.time.temporal.ChronoField
-import java.time.temporal.TemporalField
+import com.pbj.sdk.utils.asMilliSeconds
 
 internal val JsonEpisodeResponse.asModel: EpisodeResponse
     get() = EpisodeResponse(
@@ -88,7 +86,7 @@ internal val JsonEpisodeStatusUpdate.asModel: EpisodeStatusUpdate
 
 internal val JsonBroadcastUrl.asModel: BroadcastUrl
     get() {
-        val time = DateUtils.getLocalTime(elapsed_time)?.toSecondOfDay()?.times(1000)?.toLong()
+        val time = DateUtils.getLocalTime(elapsed_time).asMilliSeconds
        return BroadcastUrl(broadcast_url, time)
     }
 
