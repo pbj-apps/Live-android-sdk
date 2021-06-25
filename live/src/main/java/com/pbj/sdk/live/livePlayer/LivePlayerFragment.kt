@@ -375,7 +375,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
             productTimeCodeList = getProductTimeCodes()
         }
         else
-            url.broadcastUrl
+            video = url.broadcastUrl
 
         video?.let {
             val videoFragment = VideoPlayerFragment.newInstance(
