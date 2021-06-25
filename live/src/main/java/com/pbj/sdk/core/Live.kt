@@ -3,6 +3,7 @@ package com.pbj.sdk.core
 import android.content.Context
 import com.pbj.sdk.LiveSDK
 import com.pbj.sdk.PbjSDK
+import com.pbj.sdk.analytics.AnalyticsTracker
 import com.pbj.sdk.di.*
 import com.pbj.sdk.domain.chat.LiveChatSource
 import com.pbj.sdk.guest.GuestFeature
@@ -13,7 +14,6 @@ import com.pbj.sdk.user.UserFeature
 import com.pbj.sdk.vod.VodFeature
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.component.inject
-import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import timber.log.Timber
 
@@ -22,7 +22,8 @@ internal class Live(
     apiKey: String,
     environment: ApiEnvironment,
     override var liveNotificationManager: LiveNotificationManager? = null,
-    override var liveChatSource: LiveChatSource? = null
+    override var liveChatSource: LiveChatSource? = null,
+    override var tracker: AnalyticsTracker? = null
 ) : LiveSDK, PbjSDK, LiveKoinComponent {
 
     override val liveFeature: LiveFeature by inject()
@@ -40,7 +41,8 @@ internal class Live(
         userModule,
         vodModule,
         liveModule,
-        productModule
+        productModule,
+        trackingModule
     )
 
     init {

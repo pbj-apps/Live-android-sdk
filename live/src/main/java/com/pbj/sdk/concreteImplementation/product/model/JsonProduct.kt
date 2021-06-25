@@ -21,7 +21,8 @@ internal data class JsonProduct(
     val price: String?,
     val description: String?,
     val store_url: String?,
-    val image: JsonProductImage?
+    val image: JsonProductImage?,
+    val highlight_timings: List<JsonProductHighlightTiming>?
 )
 
 @JsonClass(generateAdapter = true)

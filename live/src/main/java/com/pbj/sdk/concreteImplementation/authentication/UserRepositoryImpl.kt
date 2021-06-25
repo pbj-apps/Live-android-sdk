@@ -2,7 +2,8 @@ package com.pbj.sdk.concreteImplementation.authentication
 
 import android.net.Uri
 import com.pbj.sdk.concreteImplementation.authentication.model.ChangePasswordRequest
-import com.pbj.sdk.concreteImplementation.authentication.model.LoginRequest
+import com.pbj.sdk.concreteImplementation.authentication.model.JsonLoginRequest
+import com.pbj.sdk.concreteImplementation.authentication.model.JsonRegisterRequest
 import com.pbj.sdk.concreteImplementation.authentication.model.UpdateProfileRequest
 import com.pbj.sdk.concreteImplementation.authentication.model.extensions.asModel
 import com.pbj.sdk.concreteImplementation.generic.BaseRepository
@@ -28,12 +29,21 @@ internal class UserRepositoryImpl(
     override suspend fun login(email: String, password: String): Result<User> =
         apiCall(call = {
             api.loginUser(
-                LoginRequest(email, password)
+                JsonLoginRequest(email, password)
             )
         },
             onApiError = { _, code -> code.mapLoginError() }) {
             it?.asModel
         }
+
+    override suspend fun register(registerRequest: JsonRegisterRequest): Result<User> =
+        apiCall(call = {
+            api.registerUser(registerRequest)
+        },
+            onApiError = { e, code -> mapRegisterError(code.code, e) }) {
+            it?.asModel
+        }
+
 
     override suspend fun getUser(): Result<User> =
         apiCall(call = {
@@ -42,7 +52,7 @@ internal class UserRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             }
         ) {
@@ -80,7 +90,7 @@ internal class UserRepositoryImpl(
         }, onApiError = { e, code ->
             mapGenericError(
                 code.code,
-                e?.errors?.firstOrNull()?.message
+                e
             )
         }
         ) {
@@ -102,7 +112,7 @@ internal class UserRepositoryImpl(
         }, onApiError = { e, code ->
             mapGenericError(
                 code.code,
-                e?.errors?.firstOrNull()?.message
+                e
             )
         }
         ) {
@@ -117,7 +127,7 @@ internal class UserRepositoryImpl(
         }, onApiError = { e, code ->
             mapGenericError(
                 code.code,
-                e?.errors?.firstOrNull()?.message
+                e
             )
         }
         ) {
@@ -134,16 +144,8 @@ internal class UserRepositoryImpl(
     override suspend fun getUserToken(): Result<String> = Result.Success(preferences.userToken)
 
     private suspend fun removeCurrentUser(): Result<Any> {
-        preferences.user?.let {
-            removeUser(it)
-        }
-        return Result.Success()
-    }
-
-    override suspend fun removeUser(user: User): Result<Any> {
         preferences.user = null
-        removeToken()
-        return Result.Success()
+        return removeToken()
     }
 
     override suspend fun saveToken(token: String?): Result<Any> {
@@ -152,7 +154,7 @@ internal class UserRepositoryImpl(
     }
 
     override suspend fun removeToken(): Result<Any> {
-        preferences.userToken = ""
+        preferences.userToken = null
         return Result.Success()
     }
 

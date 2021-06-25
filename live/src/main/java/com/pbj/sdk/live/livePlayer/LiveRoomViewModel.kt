@@ -3,6 +3,7 @@ package com.pbj.sdk.live.livePlayer
 import android.os.CountDownTimer
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.pbj.sdk.analytics.AnalyticsTracker
 import com.pbj.sdk.core.SdkHolder
 import com.pbj.sdk.di.LiveKoinComponent
 import com.pbj.sdk.domain.authentication.UserInteractor
@@ -12,6 +13,7 @@ import com.pbj.sdk.domain.chat.LiveChatSource
 import com.pbj.sdk.domain.live.LiveInteractor
 import com.pbj.sdk.domain.live.model.*
 import com.pbj.sdk.domain.product.model.Product
+import com.pbj.sdk.domain.vod.model.VodVideo
 import com.pbj.sdk.notifications.LiveNotificationManager
 import com.pbj.sdk.product.ProductFeature
 import com.pbj.sdk.utils.eventBus.LiveEventBus
@@ -27,6 +29,8 @@ import java.util.concurrent.TimeUnit
 internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNotificationListener,
     LiveUpdateListener, LiveKoinComponent {
 
+    private val tracker: AnalyticsTracker by inject()
+
     private val liveInteractor: LiveInteractor by inject()
 
     private val userInteractor: UserInteractor by inject()
@@ -41,7 +45,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     var nextLiveStream = MutableLiveData<Episode?>(null)
 
-    val streamUrl = MutableLiveData<String?>(null)
+    val streamUrl = MutableLiveData<BroadcastUrl?>(null)
 
     val liveRoomState = MutableLiveData(LiveRoomState.IDLE)
 
@@ -63,9 +67,12 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     var user: User? = null
 
+    var isVideo: Boolean = false
+
     fun init(live: Episode?, nextLive: Episode?) {
         episode = live
         nextLiveStream.value = nextLive
+        isVideo = episode?.video != null
         fetchUser()
         initialize()
     }
@@ -77,9 +84,15 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         initStreamUpdates()
 
         episode?.let {
-            getProducts(it)
-            getHighlightedProducts(it)
-            registerForProductHighlights(it)
+            if (isVideo)
+                it.video?.let { video ->
+                    getProducts(video)
+                }
+            else {
+                getProducts(it)
+                getHighlightedProducts(it)
+                registerForProductHighlights(it)
+            }
         }
 
         liveNotificationManager = SdkHolder.instance.liveNotificationManager
@@ -147,6 +160,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         launch {
             user?.username?.let { username ->
                 postMessage(username, message)
+                episode?.let { tracker.logChatMessageSent(it) }
             }
         }
     }
@@ -289,6 +303,14 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         }
     }
 
+    private fun getProducts(video: VodVideo) {
+        productFeature.getProductsFor(video, {
+            Timber.e(it)
+        }) {
+            productList.postValue(it)
+        }
+    }
+
     private fun getHighlightedProducts(episode: Episode) {
         productFeature.getHighlightedProducts(episode, {
             Timber.e(it)
@@ -333,6 +355,27 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         episode?.let {
             isPlaying = true
             updateLiveRoomState(it)
+        }
+    }
+
+    fun logOnClickProduct(product: Product) {
+        tracker.logFeaturedProductClicked(product)
+    }
+
+    fun changeProductHighLighting(id: String, shouldShow: Boolean) {
+        val highlightedProducts = highlightedProductList.value?.toMutableList() ?: mutableListOf()
+        if (shouldShow) {
+            val product = productList.value?.firstOrNull { it.id == id }
+            product?.let {
+                highlightedProducts.add(it)
+                highlightedProductList.postValue(highlightedProducts)
+            }
+        } else {
+            highlightedProductList.postValue(
+                highlightedProducts.filter { product ->
+                    product.id != id
+                }
+            )
         }
     }
 

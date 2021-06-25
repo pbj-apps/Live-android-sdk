@@ -2,10 +2,8 @@ package com.pbj.sdk.concreteImplementation.live
 
 import com.pbj.sdk.domain.live.LiveInteractor
 import com.pbj.sdk.domain.live.LiveRepository
-import com.pbj.sdk.domain.live.model.Episode
-import com.pbj.sdk.domain.live.model.EpisodeResponse
-import com.pbj.sdk.domain.live.model.EpisodeStatusUpdate
-import com.pbj.sdk.domain.live.model.Show
+import com.pbj.sdk.domain.live.model.*
+import com.pbj.sdk.domain.live.model.BroadcastUrl
 import com.pbj.sdk.domain.onErrorCallBack
 import com.pbj.sdk.domain.onResult
 import com.tinder.scarlet.WebSocket
@@ -137,7 +135,7 @@ internal class LiveInteractorImpl(
     override fun getBroadcastUrl(
         episode: Episode,
         onError: ((Throwable) -> Unit)?,
-        onSuccess: ((String?) -> Unit)?
+        onSuccess: ((BroadcastUrl?) -> Unit)?
     ) {
         scope.launch {
             liveRepository.fetchBroadcastUrl(episode).onResult({

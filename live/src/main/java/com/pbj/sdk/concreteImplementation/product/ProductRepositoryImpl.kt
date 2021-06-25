@@ -4,7 +4,6 @@ import com.pbj.sdk.concreteImplementation.generic.BaseRepository
 import com.pbj.sdk.concreteImplementation.generic.mapGenericError
 import com.pbj.sdk.concreteImplementation.live.model.JsonWebSocketProductRequest
 import com.pbj.sdk.concreteImplementation.product.model.asModel
-import com.pbj.sdk.domain.GenericError
 import com.pbj.sdk.domain.Result
 import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.product.ProductRepository
@@ -25,7 +24,7 @@ internal class ProductRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             },
             onSuccess = { response ->
@@ -38,7 +37,7 @@ internal class ProductRepositoryImpl(
     override suspend fun fetchProductsFor(video: VodVideo): Result<List<Product>> = apiCall(
         call = { api.fetchProductsForVideo(video.id) },
         onApiError = { e, code ->
-            mapGenericError(code.code, e?.errors?.firstOrNull()?.message)
+            mapGenericError(code.code, e)
         },
         onSuccess = { response ->
             response?.results?.mapNotNull {
@@ -53,7 +52,7 @@ internal class ProductRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(
                     code.code,
-                    e?.errors?.firstOrNull()?.message
+                    e
                 )
             },
             onSuccess = { response ->

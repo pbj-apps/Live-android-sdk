@@ -9,8 +9,8 @@ internal val JsonVodPlaylist.asModel: VodPlaylist
         title,
         description,
         vodItemType,
-        preview_asset.image.medium,
-        videos.asVodVideoList,
+        preview_asset?.image?.medium,
+        videos?.asVodVideoList ?: listOf(),
         video_count
     )
 
@@ -22,12 +22,14 @@ internal val JsonVodVideo.asModel: VodVideo
         id = id,
         title = title,
         description = description,
-        thumbnailUrl = preview_asset.image.medium,
-        largeImageUrl = preview_asset.image.full_size,
+        thumbnailUrl = preview_asset?.image?.medium,
+        largeImageUrl = preview_asset?.image?.full_size,
         videoURL = asset.asset_url,
         duration = duration,
         type = vodItemType,
-        instructorList = instructors?.asInstructorList ?: listOf()
+        instructorList = instructors?.asInstructorList ?: listOf(),
+        playlists = playlists?.mapNotNull { it.asModel },
+        categories = categories?.mapNotNull { it?.asModel }
     )
 
 internal val JsonVodItem.vodItemType: VodItemType?

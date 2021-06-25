@@ -3,6 +3,7 @@ package com.pbj.sdk.user
 import android.net.Uri
 import com.pbj.sdk.di.LiveKoinComponent
 import com.pbj.sdk.domain.authentication.UserInteractor
+import com.pbj.sdk.domain.authentication.model.RegisterRequest
 import com.pbj.sdk.domain.authentication.model.User
 import com.pbj.sdk.domain.onErrorCallBack
 import java.io.File
@@ -16,6 +17,14 @@ internal class UserFeatureImpl(private val userInteractor: UserInteractor) : Use
         onSuccess: ((User) -> Unit)?
     ) {
         userInteractor.login(email, password, onError, onSuccess)
+    }
+
+    override fun register(
+        registerRequest: RegisterRequest,
+        onError: onErrorCallBack?,
+        onSuccess: ((User) -> Unit)?
+    ) {
+        userInteractor.register(registerRequest, onError, onSuccess)
     }
 
     override fun getUser(

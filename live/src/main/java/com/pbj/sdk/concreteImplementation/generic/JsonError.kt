@@ -4,7 +4,8 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 internal data class JsonGenericError(
-    val errors: List<JsonError> = listOf()
+    val errors: List<JsonError> = listOf(),
+    val error_type: String? = null
 )
 
 @JsonClass(generateAdapter = true)

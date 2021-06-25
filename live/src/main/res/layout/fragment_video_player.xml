@@ -45,6 +45,7 @@
         android:background="@drawable/ic_product"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="42dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 

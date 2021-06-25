@@ -1,7 +1,7 @@
 package com.pbj.sdk.domain.authentication
 
 import android.net.Uri
-import com.pbj.sdk.domain.Result
+import com.pbj.sdk.domain.authentication.model.RegisterRequest
 import com.pbj.sdk.domain.authentication.model.User
 import com.pbj.sdk.domain.onErrorCallBack
 import java.io.File
@@ -13,6 +13,12 @@ internal interface UserInteractor {
     fun login(
         email: String,
         password: String,
+        onError: onErrorCallBack? = null,
+        onSuccess: ((User) -> Unit)? = null
+    )
+
+    fun register(
+        registerRequest: RegisterRequest,
         onError: onErrorCallBack? = null,
         onSuccess: ((User) -> Unit)? = null
     )
