@@ -13,11 +13,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.exoplayer2.*
-import com.pbj.sdk.databinding.FragmentVideoPlayerBinding
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
+import com.pbj.sdk.databinding.FragmentVideoPlayerBinding
 import com.pbj.sdk.domain.product.model.Product
+import com.pbj.sdk.live.livePlayer.ProductTimeCodes
 import com.pbj.sdk.product.ProductAdapter
 import com.pbj.sdk.utils.initMediaSource
 import kotlinx.coroutines.delay
@@ -29,6 +33,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
         fun onLiveFinished()
         fun onLiveReady()
         fun onPlayerError(errorMessage: String?)
+        fun onProductTimeCodeReached(id: String, isVisible: Boolean)
     }
 
     private lateinit var viewBinding: FragmentVideoPlayerBinding
@@ -64,16 +69,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
 
         context?.let {
             if (savedInstanceState == null) {
-
-                arguments?.apply {
-                    vm.videoUrl.value = getString(VIDEO_URL)
-                    vm.isLive = getBoolean(IS_LIVE)
-                    val products: Array<Product>? =
-                        getParcelableArray(PRODUCT_LIST) as Array<Product>?
-                    products?.toList()?.let {
-                        vm.productList = it
-                    }
-                }
+                getFragmentArguments()
             }
 
             initPlayer(it)
@@ -81,6 +77,26 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
         }
 
         initView()
+    }
+
+    private fun getFragmentArguments() {
+        arguments?.apply {
+            vm.videoUrl.value = getString(VIDEO_URL)
+            vm.isLive = getBoolean(IS_LIVE)
+            vm.timeCode = getLong(TIME_CODE)
+
+            val products: Array<Product>? =
+                getParcelableArray(PRODUCT_LIST) as Array<Product>?
+            products?.toList()?.let { products ->
+                vm.productList = products
+            }
+
+            val productTimeCodes =
+                getParcelableArray(PRODUCTS_TIME_CODES) as Array<ProductTimeCodes>?
+            productTimeCodes?.toList()?.let { timeCodes ->
+                vm.productTimeCodes = timeCodes
+            }
+        }
     }
 
     private fun initView() {
@@ -138,10 +154,40 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
                     videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
                 }
             }
-        }
 
-        vm.videoUrl.value?.let {
-            vm.videoPlayer?.initMediaSource(it, context)
+            vm.videoUrl.value?.let {
+                initMediaSource(it, context)
+                seekTo(vm.timeCode)
+            }
+
+            createProductTimeCodeEvents(this)
+        }
+    }
+
+    private fun createProductTimeCodeEvents(player: SimpleExoPlayer) {
+        vm.productTimeCodes?.forEach {
+            it.apply {
+                createProductTimeCodeEvent(player, productId, startTime, true)
+                createProductTimeCodeEvent(player, productId, endTime, false)
+            }
+        }
+    }
+
+    private fun createProductTimeCodeEvent(
+        player: SimpleExoPlayer,
+        productId: String,
+        timeCode: Long,
+        showProduct: Boolean
+    ) {
+        player.createMessage { messageType, payload ->
+            (payload as? VideoProductVisibility)?.let {
+                liveFragmentListener?.onProductTimeCodeReached(it.productId, it.shouldShow)
+            }
+        }.apply {
+            deleteAfterDelivery = false
+            setPosition(timeCode)
+            payload = VideoProductVisibility(productId, showProduct)
+            send()
         }
     }
 
@@ -163,7 +209,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
 
     private fun toggleProductVisibility(showProducts: Boolean) {
         viewBinding.apply {
-            productButton.isVisible = showProducts
+            productButton.isVisible = showProducts && !vm.productList.isNullOrEmpty()
             toggleProductListVisibility(showProducts && canShowProducts)
         }
     }
@@ -213,7 +259,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
     override fun onStop() {
         super.onStop()
         vm.videoPlayer?.stop()
-        if(isPip) {
+        if (isPip) {
             activity?.finish()
         }
     }
@@ -223,20 +269,27 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
         fun newInstance(
             video: String,
             isLive: Boolean = false,
-            productList: List<Product>? = null
-        ) =
-            VideoPlayerFragment().apply {
-                arguments = Bundle().also {
-                    it.also {
-                        it.putString(VIDEO_URL, video)
-                        it.putBoolean(IS_LIVE, isLive)
-                        it.putParcelableArray(PRODUCT_LIST, productList?.toTypedArray())
+            timeCode: Long? = null,
+            productList: List<Product>? = null,
+            productTimeCodes: List<ProductTimeCodes>? = null
+        ) = VideoPlayerFragment().apply {
+            arguments = Bundle().also {
+                it.also {
+                    it.putString(VIDEO_URL, video)
+                    it.putBoolean(IS_LIVE, isLive)
+                    timeCode?.let { time ->
+                        it.putLong(TIME_CODE, time)
                     }
+                    it.putParcelableArray(PRODUCT_LIST, productList?.toTypedArray())
+                    it.putParcelableArray(PRODUCTS_TIME_CODES, productTimeCodes?.toTypedArray())
                 }
             }
+        }
 
         private const val VIDEO_URL = "VIDEO_URL"
         private const val IS_LIVE = "IS_LIVE"
+        private const val TIME_CODE = "TIME_CODE"
         private const val PRODUCT_LIST = "PRODUCT_LIST"
+        private const val PRODUCTS_TIME_CODES = "PRODUCTS_TIME_CODES"
     }
 }

@@ -47,7 +47,7 @@ class ProductVH(val view: View, private val listener: ProductAdapter.OnProductCl
     fun bind(product: Product) {
         title.text = product.title
         price.text = "$${product.price}"
-        description.text = product.detail
+        description.text = product.detail?.trim()
         image.load(product.image)
 
         view.setOnClickListener {

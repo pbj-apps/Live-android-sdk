@@ -1,10 +1,8 @@
 package com.pbj.sdk.domain.live
 
 import com.pbj.sdk.domain.Result
-import com.pbj.sdk.domain.live.model.Episode
-import com.pbj.sdk.domain.live.model.EpisodeResponse
-import com.pbj.sdk.domain.live.model.EpisodeStatusUpdate
-import com.pbj.sdk.domain.live.model.Show
+import com.pbj.sdk.domain.live.model.*
+import com.pbj.sdk.domain.live.model.BroadcastUrl
 import com.tinder.scarlet.WebSocket
 import kotlinx.coroutines.flow.Flow
 
@@ -22,7 +20,7 @@ internal interface LiveRepository {
     suspend fun registerForRealTimeLiveStreamUpdates(): Flow<EpisodeStatusUpdate>
     suspend fun joinRealTimeLiveStreamUpdates()
     suspend fun leaveRealTimeLiveStreamUpdates()
-    suspend fun fetchBroadcastUrl(episode: Episode): Result<String>
+    suspend fun fetchBroadcastUrl(episode: Episode): Result<BroadcastUrl>
 
     suspend fun subscribeToNotifications(episode: Episode, token: String): Result<Any>
     suspend fun fetchNotificationSubscriptions(): Result<List<String>>

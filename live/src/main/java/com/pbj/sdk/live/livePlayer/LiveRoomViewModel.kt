@@ -13,6 +13,7 @@ import com.pbj.sdk.domain.chat.LiveChatSource
 import com.pbj.sdk.domain.live.LiveInteractor
 import com.pbj.sdk.domain.live.model.*
 import com.pbj.sdk.domain.product.model.Product
+import com.pbj.sdk.domain.vod.model.VodVideo
 import com.pbj.sdk.notifications.LiveNotificationManager
 import com.pbj.sdk.product.ProductFeature
 import com.pbj.sdk.utils.eventBus.LiveEventBus
@@ -44,7 +45,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     var nextLiveStream = MutableLiveData<Episode?>(null)
 
-    val streamUrl = MutableLiveData<String?>(null)
+    val streamUrl = MutableLiveData<BroadcastUrl?>(null)
 
     val liveRoomState = MutableLiveData(LiveRoomState.IDLE)
 
@@ -66,9 +67,12 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     var user: User? = null
 
+    var isVideo: Boolean = false
+
     fun init(live: Episode?, nextLive: Episode?) {
         episode = live
         nextLiveStream.value = nextLive
+        isVideo = episode?.video != null
         fetchUser()
         initialize()
     }
@@ -80,9 +84,15 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         initStreamUpdates()
 
         episode?.let {
-            getProducts(it)
-            getHighlightedProducts(it)
-            registerForProductHighlights(it)
+            if (isVideo)
+                it.video?.let { video ->
+                    getProducts(video)
+                }
+            else {
+                getProducts(it)
+                getHighlightedProducts(it)
+                registerForProductHighlights(it)
+            }
         }
 
         liveNotificationManager = SdkHolder.instance.liveNotificationManager
@@ -293,6 +303,14 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         }
     }
 
+    private fun getProducts(video: VodVideo) {
+        productFeature.getProductsFor(video, {
+            Timber.e(it)
+        }) {
+            productList.postValue(it)
+        }
+    }
+
     private fun getHighlightedProducts(episode: Episode) {
         productFeature.getHighlightedProducts(episode, {
             Timber.e(it)
@@ -342,6 +360,23 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     fun logOnClickProduct(product: Product) {
         tracker.logFeaturedProductClicked(product)
+    }
+
+    fun changeProductHighLighting(id: String, shouldShow: Boolean) {
+        val highlightedProducts = highlightedProductList.value?.toMutableList() ?: mutableListOf()
+        if (shouldShow) {
+            val product = productList.value?.firstOrNull { it.id == id }
+            product?.let {
+                highlightedProducts.add(it)
+                highlightedProductList.postValue(highlightedProducts)
+            }
+        } else {
+            highlightedProductList.postValue(
+                highlightedProducts.filter { product ->
+                    product.id != id
+                }
+            )
+        }
     }
 
     companion object {

@@ -17,10 +17,8 @@ import com.pbj.sdk.domain.vod.model.previewImage
 import com.pbj.sdk.live.livePlayer.LivePlayerFragment
 import com.pbj.sdk.utils.observe
 import com.pbj.sdk.utils.startFragment
-import com.pbj.sdk.videoPlayer.VideoPlayerFragment
 
-class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener,
-    VideoPlayerFragment.LiveFragmentListener {
+class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener {
 
     lateinit var view: ActivitySdkLivePlayerBinding
 
@@ -147,14 +145,6 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
             )
         }
-    }
-
-    override fun onLiveFinished() {
-        vm.onLiveFinished()
-    }
-
-    override fun onLiveReady() {
-        vm.onLiveReady()
     }
 
     companion object {
