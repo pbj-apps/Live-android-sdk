@@ -1,9 +1,7 @@
 package com.pbj.sdk.domain.live
 
-import com.pbj.sdk.domain.live.model.Episode
-import com.pbj.sdk.domain.live.model.EpisodeResponse
-import com.pbj.sdk.domain.live.model.EpisodeStatusUpdate
-import com.pbj.sdk.domain.live.model.Show
+import com.pbj.sdk.domain.live.model.*
+import com.pbj.sdk.domain.live.model.BroadcastUrl
 import com.pbj.sdk.domain.onErrorCallBack
 
 internal interface LiveInteractor {
@@ -53,7 +51,7 @@ internal interface LiveInteractor {
     fun getBroadcastUrl(
         episode: Episode,
         onError: onErrorCallBack? = null,
-        onSuccess: ((String?) -> Unit)? = null
+        onSuccess: ((BroadcastUrl?) -> Unit)? = null
     )
 
     fun subscribeToNotifications(

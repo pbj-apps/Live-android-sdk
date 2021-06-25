@@ -4,6 +4,9 @@ import com.pbj.sdk.concreteImplementation.vod.model.asInstructorList
 import com.pbj.sdk.concreteImplementation.vod.model.asModel
 import com.pbj.sdk.domain.live.model.*
 import com.pbj.sdk.utils.DateUtils
+import java.time.LocalTime
+import java.time.temporal.ChronoField
+import java.time.temporal.TemporalField
 
 internal val JsonEpisodeResponse.asModel: EpisodeResponse
     get() = EpisodeResponse(
@@ -32,7 +35,8 @@ internal val JsonEpisode.asModel: Episode
             endDate = DateUtils.getDateTime(ends_at),
             show = show?.asModel,
             status = getLiveStatus(status),
-            streamer = streamer?.asModel
+            streamer = streamer?.asModel,
+            video = pre_recorded_video?.asModel
         )
     }
 
@@ -74,7 +78,18 @@ private val List<JsonEpisode>.asEpisodeList: List<Episode>
 
 internal val JsonEpisodeStatusUpdate.asModel: EpisodeStatusUpdate
     get() = with(episode) {
-        EpisodeStatusUpdate(id = id, waitingRoomDescription = waiting_room_description, showId =  show_id, status = getLiveStatus(status))
+        EpisodeStatusUpdate(
+            id = id,
+            waitingRoomDescription = waiting_room_description,
+            showId = show_id,
+            status = getLiveStatus(status)
+        )
+    }
+
+internal val JsonBroadcastUrl.asModel: BroadcastUrl
+    get() {
+        val time = DateUtils.getLocalTime(elapsed_time)?.toSecondOfDay()?.times(1000)?.toLong()
+       return BroadcastUrl(broadcast_url, time)
     }
 
 private fun getLiveStatus(status: String?): EpisodeStatus = when (status) {

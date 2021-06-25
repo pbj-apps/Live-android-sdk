@@ -13,6 +13,7 @@ import com.pbj.sdk.domain.chat.LiveChatSource
 import com.pbj.sdk.domain.live.LiveInteractor
 import com.pbj.sdk.domain.live.model.*
 import com.pbj.sdk.domain.product.model.Product
+import com.pbj.sdk.domain.vod.model.VodVideo
 import com.pbj.sdk.notifications.LiveNotificationManager
 import com.pbj.sdk.product.ProductFeature
 import com.pbj.sdk.utils.eventBus.LiveEventBus
@@ -44,7 +45,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     var nextLiveStream = MutableLiveData<Episode?>(null)
 
-    val streamUrl = MutableLiveData<String?>(null)
+    val streamUrl = MutableLiveData<BroadcastUrl?>(null)
 
     val liveRoomState = MutableLiveData(LiveRoomState.IDLE)
 
@@ -80,7 +81,11 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         initStreamUpdates()
 
         episode?.let {
-            getProducts(it)
+            if(it.video == null)
+                getProducts(it)
+            else
+                getProducts(it.video)
+
             getHighlightedProducts(it)
             registerForProductHighlights(it)
         }
@@ -287,6 +292,14 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     private fun getProducts(episode: Episode) {
         productFeature.getProductsFor(episode, {
+            Timber.e(it)
+        }) {
+            productList.postValue(it)
+        }
+    }
+
+    private fun getProducts(video: VodVideo) {
+        productFeature.getProductsFor(video, {
             Timber.e(it)
         }) {
             productList.postValue(it)

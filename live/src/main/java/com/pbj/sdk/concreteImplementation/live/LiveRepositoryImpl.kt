@@ -7,17 +7,14 @@ import com.pbj.sdk.concreteImplementation.live.model.LiveNotificationSubscriptio
 import com.pbj.sdk.concreteImplementation.live.model.asModel
 import com.pbj.sdk.domain.Result
 import com.pbj.sdk.domain.live.LiveRepository
-import com.pbj.sdk.domain.live.model.Episode
-import com.pbj.sdk.domain.live.model.EpisodeResponse
-import com.pbj.sdk.domain.live.model.Show
-import com.pbj.sdk.domain.live.model.showId
+import com.pbj.sdk.domain.live.model.*
+import com.pbj.sdk.domain.live.model.BroadcastUrl
 import kotlinx.coroutines.flow.map
 
 internal class LiveRepositoryImpl(
     private val restApi: LiveApi,
     private val socketApi: LiveWebSocketApi
-) :
-    BaseRepository(), LiveRepository {
+) : BaseRepository(), LiveRepository {
 
     override suspend fun fetchLiveStreams(): Result<EpisodeResponse> =
         apiCall(
@@ -115,7 +112,7 @@ internal class LiveRepositoryImpl(
         socketApi.subscribe(JsonWebSocketRequest("leave-episode-updates"))
     }
 
-    override suspend fun fetchBroadcastUrl(episode: Episode): Result<String> =
+    override suspend fun fetchBroadcastUrl(episode: Episode): Result<BroadcastUrl> =
         apiCall(
             call = { restApi.fetchBroadcastUrl(episode.id) },
             onApiError = { e, code ->
@@ -124,7 +121,7 @@ internal class LiveRepositoryImpl(
                     e
                 )
             }
-        ) { it?.broadcast_url }
+        ) { it?.asModel }
 
     override suspend fun fetchNotificationSubscriptions(): Result<List<String>> =
         apiCall(

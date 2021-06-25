@@ -1,6 +1,7 @@
 package com.pbj.sdk.domain.live.model
 
 import android.os.Parcelable
+import com.pbj.sdk.domain.vod.model.VodVideo
 import kotlinx.parcelize.Parcelize
 import java.time.OffsetDateTime
 
@@ -15,5 +16,6 @@ data class Episode(
     val endDate: OffsetDateTime? = null,
     val show: Show? = null,
     val status: EpisodeStatus,
-    val streamer: Streamer? = null
+    val streamer: Streamer? = null,
+    val video: VodVideo? = null
 ) : Parcelable

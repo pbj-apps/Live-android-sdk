@@ -1,6 +1,8 @@
 package com.pbj.sdk.live.livePlayer
 
 import android.app.PictureInPictureParams
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,8 +25,6 @@ import com.pbj.sdk.utils.observe
 import com.pbj.sdk.utils.startFragment
 import com.pbj.sdk.videoPlayer.VideoPlayerFragment
 import timber.log.Timber
-import android.content.Intent
-import android.net.Uri
 
 
 internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragmentListener,
@@ -365,11 +365,23 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         view.description.text = string?.toUpperCase()
     }
 
-    private fun initVideoPlayer(url: String) {
-        val videoFragment = VideoPlayerFragment.newInstance(url, true).apply {
-            liveFragmentListener = this@LivePlayerFragment
+    private fun initVideoPlayer(url: BroadcastUrl) {
+        val video = if (url.broadcastUrl.isNullOrEmpty())
+            vm.episode?.video?.videoURL
+        else
+            url.broadcastUrl
+
+        video?.let {
+            val videoFragment = VideoPlayerFragment.newInstance(
+                video = it,
+                isLive = true,
+                timeCode = url.elapsedTime
+            ).apply {
+                liveFragmentListener = this@LivePlayerFragment
+            }
+            parentFragmentManager.startFragment(videoFragment, view.videoPlayerContainer.id)
         }
-        parentFragmentManager.startFragment(videoFragment, view.videoPlayerContainer.id)
+
     }
 
     private fun observeViewModel() {

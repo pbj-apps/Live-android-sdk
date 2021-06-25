@@ -13,10 +13,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.exoplayer2.*
-import com.pbj.sdk.databinding.FragmentVideoPlayerBinding
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
+import com.pbj.sdk.databinding.FragmentVideoPlayerBinding
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.product.ProductAdapter
 import com.pbj.sdk.utils.initMediaSource
@@ -68,10 +71,11 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
                 arguments?.apply {
                     vm.videoUrl.value = getString(VIDEO_URL)
                     vm.isLive = getBoolean(IS_LIVE)
+                    vm.timeCode = getLong(TIME_CODE)
                     val products: Array<Product>? =
                         getParcelableArray(PRODUCT_LIST) as Array<Product>?
-                    products?.toList()?.let {
-                        vm.productList = it
+                    products?.toList()?.let { products ->
+                        vm.productList = products
                     }
                 }
             }
@@ -141,7 +145,10 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
         }
 
         vm.videoUrl.value?.let {
-            vm.videoPlayer?.initMediaSource(it, context)
+            vm.videoPlayer?.apply {
+                initMediaSource(it, context)
+                seekTo(vm.timeCode)
+            }
         }
     }
 
@@ -163,7 +170,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
 
     private fun toggleProductVisibility(showProducts: Boolean) {
         viewBinding.apply {
-            productButton.isVisible = showProducts
+            productButton.isVisible = showProducts && !vm.productList.isNullOrEmpty()
             toggleProductListVisibility(showProducts && canShowProducts)
         }
     }
@@ -223,13 +230,16 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
         fun newInstance(
             video: String,
             isLive: Boolean = false,
+            timeCode: Long? = null,
             productList: List<Product>? = null
-        ) =
-            VideoPlayerFragment().apply {
+        ) = VideoPlayerFragment().apply {
                 arguments = Bundle().also {
                     it.also {
                         it.putString(VIDEO_URL, video)
                         it.putBoolean(IS_LIVE, isLive)
+                        timeCode?.let { time ->
+                            it.putLong(TIME_CODE, time)
+                        }
                         it.putParcelableArray(PRODUCT_LIST, productList?.toTypedArray())
                     }
                 }
@@ -237,6 +247,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
 
         private const val VIDEO_URL = "VIDEO_URL"
         private const val IS_LIVE = "IS_LIVE"
+        private const val TIME_CODE = "TIME_CODE"
         private const val PRODUCT_LIST = "PRODUCT_LIST"
     }
 }

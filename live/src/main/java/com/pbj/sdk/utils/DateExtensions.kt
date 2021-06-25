@@ -2,6 +2,7 @@ package com.pbj.sdk.utils
 
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -12,6 +13,7 @@ object DateUtils {
     const val DEFAULT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     const val DAY_AT_TIME = "EEEE 'at' HH:mma"
     const val TIME = "HH:mm"
+    const val LOCAL_TIME = "HH:mm:ss.SSSSSS"
 
     const val DAY_SHORT_NAME = "EE"
     const val DAY_FULL_NAME = "EEEE"
@@ -36,6 +38,18 @@ object DateUtils {
         }
         return if (dateString != null)
             OffsetDateTime.parse(dateString, formatter)
+        else
+            null
+    }
+
+    fun getLocalTime(dateString: String?, formatString: String? = null): LocalTime? {
+        val formatter: DateTimeFormatter = if (formatString == null) {
+            DateTimeFormatter.ofPattern(LOCAL_TIME)
+        } else {
+            DateTimeFormatter.ofPattern(formatString)
+        }
+        return if (dateString != null)
+            LocalTime.parse(dateString, formatter)
         else
             null
     }

@@ -20,6 +20,8 @@ class VideoViewModel : ViewModel(), LiveKoinComponent {
 
     var isLive = false
 
+    var timeCode: Long = 0
+
     var productList: List<Product>? = null
 
     fun logOnClickProduct(product: Product) {
