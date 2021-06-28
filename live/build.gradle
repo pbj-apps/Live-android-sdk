@@ -13,7 +13,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
-        versionName "0.0.41-alpha"
+        versionName "0.0.43-alpha"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -59,11 +59,8 @@ dependencies {
     ext {
         kotlin_version = '1.5.10'
         lifecycle_version = '2.3.1'
-        compose_version = '1.0.0-beta02'
-        compose_viewmodel_version = '1.0.0-alpha03'
-        nav_compose_version = "1.0.0-alpha09"
         accompanist_version = "0.6.2"
-        coroutine_version = '1.4.3'
+        coroutine_version = '1.5.0'
         retrofit_version = '2.9.0'
         koin_version = '3.0.1'
         moshi_version = '1.12.0'
@@ -76,10 +73,10 @@ dependencies {
     }
 
     api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    api 'androidx.core:core-ktx:1.3.2'
-    api 'androidx.appcompat:appcompat:1.2.0'
+    api 'androidx.core:core-ktx:1.5.0'
+    api 'androidx.appcompat:appcompat:1.3.0'
     api 'com.google.android.material:material:1.3.0'
-    api 'androidx.fragment:fragment-ktx:1.3.3'
+    api 'androidx.fragment:fragment-ktx:1.3.5'
     api "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     api "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
@@ -109,7 +106,7 @@ dependencies {
     api "com.tinder.scarlet:message-adapter-moshi:0.1.10"
     api "com.tinder.scarlet:lifecycle-android:0.1.10"
 
-    api "io.coil-kt:coil:1.1.1"
+    api "io.coil-kt:coil:1.2.2"
 
     api 'com.jakewharton.timber:timber:4.7.1'
 
