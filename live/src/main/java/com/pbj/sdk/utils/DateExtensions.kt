@@ -13,7 +13,7 @@ object DateUtils {
     const val DEFAULT = "yyyy-MM-dd'T'hh:mm:ss'Z'"
     const val DAY_AT_TIME_12 = "EEEE 'at' hh:mm a"
     const val TIME_12H = "hh:mm"
-    const val LOCAL_TIME = "hh:mm:ss.SSSSSS"
+    const val LOCAL_TIME = "HH:mm:ss.SSSSSS"
 
     const val DAY_SHORT_NAME = "EE"
     const val DAY_FULL_NAME = "EEEE"
