@@ -117,7 +117,9 @@ internal class LiveRepositoryImpl(
             onApiError = { e, code ->
                 mapGenericError(code.code, e)
             }
-        ) { it?.asModel }
+        ) {
+            it?.asModel
+        }
 
     override suspend fun fetchNotificationSubscriptions(): Result<List<String>> =
         apiCall(
