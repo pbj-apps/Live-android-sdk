@@ -10,9 +10,9 @@ import java.time.temporal.TemporalAccessor
 
 object DateUtils {
 
-    const val DEFAULT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-    const val DAY_AT_TIME = "EEEE 'at' HH:mma"
-    const val TIME = "HH:mm"
+    const val DEFAULT = "yyyy-MM-dd'T'hh:mm:ss'Z'"
+    const val DAY_AT_TIME_12 = "EEEE 'at' hh:mm a"
+    const val TIME_12H = "hh:mm"
     const val LOCAL_TIME = "HH:mm:ss.SSSSSS"
 
     const val DAY_SHORT_NAME = "EE"
@@ -72,10 +72,10 @@ val TemporalAccessor.asJsonString: String
     get() = toString(DateUtils.DEFAULT)
 
 val OffsetDateTime.asDayAtTime: String
-    get() = toString(DateUtils.DAY_AT_TIME)
+    get() = toString(DateUtils.DAY_AT_TIME_12)
 
 val OffsetDateTime.asTime: String
-    get() = toString(DateUtils.TIME)
+    get() = toString(DateUtils.TIME_12H)
 
 val TemporalAccessor.dayShortName: String
     get() = toString(DateUtils.DAY_SHORT_NAME)

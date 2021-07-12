@@ -26,6 +26,7 @@ import com.pbj.sdk.utils.observe
 import com.pbj.sdk.utils.startFragment
 import com.pbj.sdk.videoPlayer.VideoPlayerFragment
 import timber.log.Timber
+import java.util.*
 
 
 internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragmentListener,
@@ -93,13 +94,13 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        observeViewModel()
+
         vm.init(episode, nextEpisode)
 
         vm.episode?.let {
             initView(it)
         }
-
-        observeViewModel()
     }
 
     private fun initView(episode: Episode) {
@@ -282,7 +283,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
     private fun setUpEndBody() {
         vm.nextLiveStream.value?.apply {
-            view.nextStreamTitle.text = title?.toUpperCase()
+            view.nextStreamTitle.text = title?.uppercase(Locale.getDefault())
             view.nextCoachImage.load(streamer?.profileImage?.medium)
             val coachName = "${streamer?.firstName} ${streamer?.lastName}"
             view.nextCoachName.text = getString(R.string.with_coach, coachName)
@@ -354,7 +355,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
             vm.episode?.title
         }
 
-        view.title.text = title?.toUpperCase()
+        view.title.text = title?.uppercase(Locale.getDefault())
     }
 
     private fun setDescription(episode: Episode?) {
@@ -363,11 +364,11 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         else
             episode?.description
 
-        view.description.text = string?.toUpperCase()
+        view.description.text = string?.uppercase(Locale.getDefault())
     }
 
     private fun initVideoPlayer(url: BroadcastUrl) {
-        var video: String? = null
+        val video: String?
         var productTimeCodeList: List<ProductTimeCodes>? = null
 
         if (vm.isVideo) {
