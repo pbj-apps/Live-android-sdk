@@ -13,7 +13,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
-        versionName "0.0.45-alpha"
+        versionName "0.0.47-alpha"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -131,8 +131,9 @@ dependencies {
     testImplementation "io.mockk:mockk:$mockk_version"
 }
 
+//Set env variable GPR_USER & GPR_API_KEY if not adding a properties file
 def githubProperties = new Properties()
-githubProperties.load(new FileInputStream(rootProject.file("github.properties"))) //Set env variable GPR_USER & GPR_API_KEY if not adding a properties file
+githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
 
 def getArtificatId = { ->
     return "live"

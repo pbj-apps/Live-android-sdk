@@ -13,4 +13,8 @@
     <string name="loading_livestream">Loading live stream</string>
     <string name="livestream_error_title">Something wrong happened</string>
     <string name="livestream_error_description">Looks like something went wrong</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="username">Username</string>
+    <string name="chat_username_dialog_description">Pick a username for your chat messages</string>
 </resources>

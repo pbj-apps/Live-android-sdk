@@ -67,6 +67,8 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     var user: User? = null
 
+    var guestUsername: String? = null
+
     var isVideo: Boolean = false
 
     fun init(live: Episode?, nextLive: Episode?) {
@@ -83,6 +85,11 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
         initStreamUpdates()
 
+        liveNotificationManager = SdkHolder.instance.liveNotificationManager
+        liveChatSource = SdkHolder.instance.liveChatSource
+
+        liveNotificationManager?.init(this)
+
         episode?.let {
             if (isVideo)
                 it.video?.let { video ->
@@ -94,11 +101,6 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
                 registerForProductHighlights(it)
             }
         }
-
-        liveNotificationManager = SdkHolder.instance.liveNotificationManager
-        liveChatSource = SdkHolder.instance.liveChatSource
-
-        liveNotificationManager?.init(this)
 
         initCountdown()
     }
@@ -158,9 +160,10 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     fun sendMessage(message: String) {
         launch {
-            user?.username?.let { username ->
-                postMessage(username, message)
-                episode?.let { tracker.logChatMessageSent(it) }
+            val username = user?.username ?: guestUsername
+            username?.let {
+                postMessage(it, message)
+                episode?.let { live -> tracker.logChatMessageSent(live) }
             }
         }
     }
