@@ -9,6 +9,7 @@ import com.pbj.sdk.domain.chat.LiveChatSource
 import com.pbj.sdk.guest.GuestFeature
 import com.pbj.sdk.live.LiveFeature
 import com.pbj.sdk.notifications.LiveNotificationManager
+import com.pbj.sdk.organization.OrganizationFeature
 import com.pbj.sdk.product.ProductFeature
 import com.pbj.sdk.user.UserFeature
 import com.pbj.sdk.vod.VodFeature
@@ -26,6 +27,8 @@ internal class Live(
     override var tracker: AnalyticsTracker? = null
 ) : LiveSDK, PbjSDK, LiveKoinComponent {
 
+    override val organizationFeature: OrganizationFeature by inject()
+
     override val liveFeature: LiveFeature by inject()
 
     override val productFeature: ProductFeature by inject()
@@ -38,6 +41,7 @@ internal class Live(
 
     private val sdkModules = mutableListOf(
         DataModule.init(apiKey, environment),
+        organizationModule,
         userModule,
         vodModule,
         liveModule,

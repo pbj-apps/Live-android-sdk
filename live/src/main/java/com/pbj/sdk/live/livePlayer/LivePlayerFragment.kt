@@ -1,6 +1,5 @@
 package com.pbj.sdk.live.livePlayer
 
-import android.app.AlertDialog
 import android.app.PictureInPictureParams
 import android.content.Intent
 import android.net.Uri
@@ -22,18 +21,10 @@ import com.pbj.sdk.databinding.FragmentLivePlayerBinding
 import com.pbj.sdk.domain.live.model.*
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.product.ProductAdapter
+import com.pbj.sdk.utils.*
 import com.pbj.sdk.videoPlayer.VideoPlayerFragment
 import timber.log.Timber
 import java.util.*
-import android.content.DialogInterface
-
-import android.text.InputType
-
-import android.widget.EditText
-import com.pbj.sdk.utils.*
-import com.pbj.sdk.utils.observe
-import com.pbj.sdk.utils.openInputTextDialog
-import com.pbj.sdk.utils.startFragment
 
 
 internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragmentListener,
@@ -41,9 +32,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
     interface Listener {
         fun onPressClose()
-
         fun enableScreenRotation(enable: Boolean)
-
         fun onPlayerError(errorMessage: String?)
     }
 
@@ -52,25 +41,21 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     private val vm: LiveRoomViewModel by viewModels()
 
     private var episode: Episode? = null
-
     private var nextEpisode: Episode? = null
 
+    private var isChatEnabled: Boolean = false
     private lateinit var chatAdapter: ChatAdapter
-
-    private var productAdapter: ProductAdapter = ProductAdapter(this)
-
     private var isChatVisible = false
 
     private var showProducts = false
-
     private var hasProducts = false
 
     private var isBroadcastingOrPlaying = false
 
     private var listener: Listener? = null
 
+    private var productAdapter: ProductAdapter = ProductAdapter(this)
     private var productList: List<Product> = listOf()
-
     private var highlightedProductList: List<Product> = listOf()
 
     override fun onStart() {
@@ -87,6 +72,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         arguments?.apply {
             episode = getParcelable(LIVE_STREAM)
             nextEpisode = getParcelable(NEXT_LIVE_STREAM)
+            isChatEnabled = getBoolean(IS_CHAT_ENABLED)
         }
     }
 
@@ -277,7 +263,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
                 chatMessageCount.text = vm.messageList.value?.count().toString()
 
                 chatButton.isVisible =
-                    liveRoomState.isValidStateForChat && vm.episode?.isChatEnabled == true
+                    liveRoomState.isValidStateForChat && vm.episode?.isChatEnabled == true && isChatEnabled
 
                 chatInputLayout.isVisible = isChatVisible
                 chatListView.isVisible = isChatVisible
@@ -304,7 +290,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
     private fun sendMessage(message: String) {
         if (message.isNotBlank()) {
-            if(vm.user == null && vm.guestUsername == null) {
+            if (vm.user == null && vm.guestUsername == null) {
                 openUsernameDialog(message)
             } else {
                 vm.sendMessage(message)
@@ -402,8 +388,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         if (vm.isVideo) {
             video = vm.episode?.video?.videoURL
             productTimeCodeList = getProductTimeCodes()
-        }
-        else
+        } else
             video = url.broadcastUrl
 
         video?.let {
@@ -425,11 +410,11 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         productList.forEach { product ->
 
             product.highlightTimingList?.map {
-                    ProductTimeCodes(
-                        productId = product.id,
-                        startTime = it.startTime.asMilliSeconds,
-                        endTime = it.endTime.asMilliSeconds
-                    )
+                ProductTimeCodes(
+                    productId = product.id,
+                    startTime = it.startTime.asMilliSeconds,
+                    endTime = it.endTime.asMilliSeconds
+                )
             }
         }
         return productTimeCodes
@@ -580,13 +565,15 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
         private const val LIVE_STREAM = "LIVE_STREAM"
         private const val NEXT_LIVE_STREAM = "NEXT_LIVE_STREAM"
+        private const val IS_CHAT_ENABLED = "IS_CHAT_ENABLED"
 
         @JvmStatic
-        fun newInstance(episode: Episode?, nextEpisode: Episode?) =
+        fun newInstance(episode: Episode?, nextEpisode: Episode?, isChatEnabled: Boolean) =
             LivePlayerFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(LIVE_STREAM, episode)
                     putParcelable(NEXT_LIVE_STREAM, nextEpisode)
+                    putBoolean(IS_CHAT_ENABLED, isChatEnabled)
                 }
             }
     }

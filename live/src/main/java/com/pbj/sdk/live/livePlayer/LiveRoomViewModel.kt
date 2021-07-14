@@ -30,11 +30,8 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
     LiveUpdateListener, LiveKoinComponent {
 
     private val tracker: AnalyticsTracker by inject()
-
     private val liveInteractor: LiveInteractor by inject()
-
     private val userInteractor: UserInteractor by inject()
-
     private val productFeature: ProductFeature by inject()
 
     var liveChatSource: LiveChatSource? = null

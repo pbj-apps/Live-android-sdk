@@ -36,9 +36,12 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
 
         var nextEpisode: Episode? = null
 
+        var isChatEnabled = true
+
         intent.extras?.apply {
             episode = getParcelable(LIVE_STREAM)
             nextEpisode = getParcelable(NEXT_LIVE_STREAM)
+            isChatEnabled = getBoolean(IS_CHAT_ENABLED)
         }
 
         episode?.let {
@@ -47,7 +50,8 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
 
         val fragment = LivePlayerFragment.newInstance(
             episode = episode,
-            nextEpisode = nextEpisode
+            nextEpisode = nextEpisode,
+            isChatEnabled = isChatEnabled
         )
 
         startFragment(fragment, view.content.id)
@@ -94,5 +98,6 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
     companion object {
         const val LIVE_STREAM = "LIVE_STREAM"
         const val NEXT_LIVE_STREAM = "NEXT_LIVE_STREAM"
+        const val IS_CHAT_ENABLED = "IS_CHAT_ENABLED"
     }
 }
