@@ -1,5 +1,6 @@
 package com.pbj.sdk.live.livePlayer
 
+import android.app.AlertDialog
 import android.app.PictureInPictureParams
 import android.content.Intent
 import android.net.Uri
@@ -21,12 +22,18 @@ import com.pbj.sdk.databinding.FragmentLivePlayerBinding
 import com.pbj.sdk.domain.live.model.*
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.product.ProductAdapter
-import com.pbj.sdk.utils.asMilliSeconds
-import com.pbj.sdk.utils.observe
-import com.pbj.sdk.utils.startFragment
 import com.pbj.sdk.videoPlayer.VideoPlayerFragment
 import timber.log.Timber
 import java.util.*
+import android.content.DialogInterface
+
+import android.text.InputType
+
+import android.widget.EditText
+import com.pbj.sdk.utils.*
+import com.pbj.sdk.utils.observe
+import com.pbj.sdk.utils.openInputTextDialog
+import com.pbj.sdk.utils.startFragment
 
 
 internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragmentListener,
@@ -165,7 +172,6 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
                 return@setOnEditorActionListener when (actionId) {
                     EditorInfo.IME_ACTION_SEND -> {
                         sendMessage(v.text.toString())
-                        v.text = ""
                         true
                     }
                     else -> false
@@ -298,8 +304,30 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
     private fun sendMessage(message: String) {
         if (message.isNotBlank()) {
-            vm.sendMessage(message)
-            view.chatInputText.setText("")
+            if(vm.user == null && vm.guestUsername == null) {
+                openUsernameDialog(message)
+            } else {
+                vm.sendMessage(message)
+                view.chatInputText.setText("")
+            }
+        }
+    }
+
+    private fun openUsernameDialog(message: String) {
+        requireContext().apply {
+            parentFragmentManager.openInputTextDialog(
+                title = getString(R.string.username),
+                description = getString(R.string.chat_username_dialog_description),
+                hint = getString(R.string.username),
+                positiveButtonText = getString(R.string.ok),
+                negativeButtonText = getString(R.string.cancel),
+                listener = object : TextInputDialog.TextInputDialogListener {
+                    override fun onClickPositiveButton(text: String) {
+                        vm.guestUsername = text
+                        sendMessage(message)
+                    }
+                }
+            )
         }
     }
 

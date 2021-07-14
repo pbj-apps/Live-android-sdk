@@ -51,3 +51,23 @@ internal fun FragmentManager.startFragment(
         .replace(containerView, fragment)
         .commit()
 }
+
+internal fun FragmentManager.openInputTextDialog(
+    title: String?,
+    description: String?,
+    hint: String?,
+    positiveButtonText: String?,
+    negativeButtonText: String?,
+    listener: TextInputDialog.TextInputDialogListener
+) {
+    val dialog =
+        TextInputDialog.newInstance(
+            title,
+            description,
+            hint,
+            positiveButtonText,
+            negativeButtonText
+        ).setListener(listener)
+
+    dialog.show(this, null)
+}
