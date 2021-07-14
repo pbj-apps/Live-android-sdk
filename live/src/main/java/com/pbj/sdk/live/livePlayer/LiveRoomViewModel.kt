@@ -334,10 +334,6 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         }
     }
 
-    private fun getOrganizationConfig() {
-
-    }
-
     private fun fetchUser() {
         userInteractor.getLocalUser {
             user = it
