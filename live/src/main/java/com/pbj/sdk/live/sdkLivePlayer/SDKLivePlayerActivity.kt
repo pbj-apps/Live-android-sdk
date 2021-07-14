@@ -80,7 +80,7 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener {
     }
 
     private fun onEpisode(episode: Episode) {
-        val livePlayerFragment = LivePlayerFragment.newInstance(episode, null)
+        val livePlayerFragment = LivePlayerFragment.newInstance(episode, null, true)
         startFragment(livePlayerFragment, view.content.id, false)
     }
 

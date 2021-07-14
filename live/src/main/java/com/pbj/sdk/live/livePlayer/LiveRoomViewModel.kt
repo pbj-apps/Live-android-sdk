@@ -15,6 +15,7 @@ import com.pbj.sdk.domain.live.model.*
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.domain.vod.model.VodVideo
 import com.pbj.sdk.notifications.LiveNotificationManager
+import com.pbj.sdk.organization.OrganizationFeature
 import com.pbj.sdk.product.ProductFeature
 import com.pbj.sdk.utils.eventBus.LiveEventBus
 import com.pbj.sdk.utils.eventBus.LiveNotificationModified
@@ -29,12 +30,10 @@ import java.util.concurrent.TimeUnit
 internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNotificationListener,
     LiveUpdateListener, LiveKoinComponent {
 
+    private val organizationFeature: OrganizationFeature by inject()
     private val tracker: AnalyticsTracker by inject()
-
     private val liveInteractor: LiveInteractor by inject()
-
     private val userInteractor: UserInteractor by inject()
-
     private val productFeature: ProductFeature by inject()
 
     var liveChatSource: LiveChatSource? = null
@@ -333,6 +332,10 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         episode?.let {
             productFeature.unRegisterProductHighlights(it)
         }
+    }
+
+    private fun getOrganizationConfig() {
+
     }
 
     private fun fetchUser() {

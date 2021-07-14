@@ -11,6 +11,7 @@ import com.pbj.sdk.concreteImplementation.interceptors.AuthorizationInterceptor
 import com.pbj.sdk.concreteImplementation.interceptors.TimeZoneInterceptor
 import com.pbj.sdk.concreteImplementation.live.LiveApi
 import com.pbj.sdk.concreteImplementation.live.LiveWebSocketApi
+import com.pbj.sdk.concreteImplementation.organization.OrganizationApi
 import com.pbj.sdk.concreteImplementation.product.ProductApi
 import com.pbj.sdk.concreteImplementation.product.ProductWebSocketApi
 import com.pbj.sdk.concreteImplementation.storage.PBJPreferences
@@ -70,6 +71,10 @@ internal object DataModule {
 
         single {
             provideMoshi()
+        }
+
+        single {
+            provideOrganizationApi(get())
         }
 
         single {
@@ -170,6 +175,9 @@ internal object DataModule {
             .lifecycle(AndroidLifecycle.ofApplicationForeground(application))
             .build()
     }
+
+    private fun provideOrganizationApi(retrofit: Retrofit): OrganizationApi =
+        retrofit.create(OrganizationApi::class.java)
 
     private fun provideUserApi(retrofit: Retrofit): UserApi =
         retrofit.create(UserApi::class.java)

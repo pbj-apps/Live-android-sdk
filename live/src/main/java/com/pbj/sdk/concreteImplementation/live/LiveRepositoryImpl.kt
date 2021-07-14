@@ -33,10 +33,7 @@ internal class LiveRepositoryImpl(
         apiCall(
             call = { restApi.fetchLiveStreamsSchedule(date) },
             onApiError = { e, code ->
-                mapGenericError(
-                    code.code,
-                    e
-                )
+                mapGenericError(code.code, e)
             }
         )
         { response ->
@@ -47,10 +44,7 @@ internal class LiveRepositoryImpl(
         apiCall(
             call = { restApi.fetchLiveStreamsSchedule(daysAhead) },
             onApiError = { e, code ->
-                mapGenericError(
-                    code.code,
-                    e
-                )
+                mapGenericError(code.code, e)
             }
         )
         { response ->
@@ -61,10 +55,7 @@ internal class LiveRepositoryImpl(
         apiCall(
             call = { restApi.fetchCurrentLiveStream() },
             onApiError = { e, code ->
-                mapGenericError(
-                    code.code,
-                    e
-                )
+                mapGenericError(code.code, e)
             }
         )
         { response ->
@@ -75,10 +66,7 @@ internal class LiveRepositoryImpl(
         apiCall(
             call = { restApi.fetchCurrentLiveStream(showId) },
             onApiError = { e, code ->
-                mapGenericError(
-                    code.code,
-                    e
-                )
+                mapGenericError(code.code, e)
             }
         )
         { response ->
@@ -89,10 +77,7 @@ internal class LiveRepositoryImpl(
         apiCall(
             call = { restApi.fetchShowPublic(showId) },
             onApiError = { e, code ->
-                mapGenericError(
-                    code.code,
-                    e
-                )
+                mapGenericError(code.code, e)
             })
         { response ->
             response?.asModel
@@ -125,10 +110,7 @@ internal class LiveRepositoryImpl(
         apiCall(
             call = { restApi.fetchNotificationSubscriptions() },
             onApiError = { e, code ->
-                mapGenericError(
-                    code.code,
-                    e
-                )
+                mapGenericError(code.code, e)
             }
         ) { response ->
             response?.results?.mapNotNull { it.topic_id }
@@ -144,10 +126,7 @@ internal class LiveRepositoryImpl(
         return apiCall(
             call = { restApi.subscribeToNotification(request) },
             onApiError = { e, code ->
-                mapGenericError(
-                    code.code,
-                    e
-                )
+                mapGenericError(code.code, e)
             }
         ) { it }
     }
@@ -164,10 +143,7 @@ internal class LiveRepositoryImpl(
         return apiCall(
             call = { restApi.unsubscribeFromNotifications(request) },
             onApiError = { e, code ->
-                mapGenericError(
-                    code.code,
-                    e
-                )
+                mapGenericError(code.code, e)
             }
         ) { it }
     }
