@@ -4,7 +4,7 @@ import com.pbj.sdk.concreteImplementation.organization.model.JsonOrganizationCon
 import retrofit2.Response
 import retrofit2.http.GET
 
-interface OrganizationApi {
+internal interface OrganizationApi {
 
     @GET("/api/organizations/current")
     suspend fun fetchOrganizationConfig(): Response<JsonOrganizationConfig>
