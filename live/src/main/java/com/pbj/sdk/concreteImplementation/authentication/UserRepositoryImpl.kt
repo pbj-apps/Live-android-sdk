@@ -28,11 +28,11 @@ internal class UserRepositoryImpl(
 
     override suspend fun login(email: String, password: String): Result<User> =
         apiCall(call = {
-            api.loginUser(
-                JsonLoginRequest(email, password)
-            )
+            api.loginUser(JsonLoginRequest(email, password))
         },
-            onApiError = { _, code -> code.mapLoginError() }) {
+            onApiError = { _, code ->
+                code.mapLoginError()
+            }) {
             it?.asModel
         }
 
@@ -50,10 +50,7 @@ internal class UserRepositoryImpl(
             api.getUser()
         },
             onApiError = { e, code ->
-                mapGenericError(
-                    code.code,
-                    e
-                )
+                mapGenericError(code.code, e)
             }
         ) {
             it?.asModel
@@ -88,10 +85,7 @@ internal class UserRepositoryImpl(
                 requestFile
             )
         }, onApiError = { e, code ->
-            mapGenericError(
-                code.code,
-                e
-            )
+            mapGenericError(code.code, e)
         }
         ) {
             it?.asModel
@@ -110,10 +104,7 @@ internal class UserRepositoryImpl(
                 mapOf("profile_image" to profileImage.id)
             )
         }, onApiError = { e, code ->
-            mapGenericError(
-                code.code,
-                e
-            )
+            mapGenericError(code.code, e)
         }
         ) {
             profileImage
@@ -125,10 +116,7 @@ internal class UserRepositoryImpl(
                 ChangePasswordRequest(currentPassword, newPassword)
             )
         }, onApiError = { e, code ->
-            mapGenericError(
-                code.code,
-                e
-            )
+            mapGenericError(code.code, e)
         }
         ) {
             Any()

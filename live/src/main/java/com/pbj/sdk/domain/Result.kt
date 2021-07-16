@@ -32,3 +32,9 @@ val <Value> Result<Value>.successResult: Value?
             else -> null
         }
 
+val <Value> Result<Value>.errorResult: Throwable?
+    get() = when (this) {
+            is Result.Error -> error
+            else -> null
+        }
+
