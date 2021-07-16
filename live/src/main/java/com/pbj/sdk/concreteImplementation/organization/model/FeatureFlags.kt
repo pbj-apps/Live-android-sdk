@@ -1,5 +1,8 @@
 package com.pbj.sdk.concreteImplementation.organization.model
 
-data class FeatureFlags(
-    val is_chat_enabled: Boolean
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
+internal data class FeatureFlags(
+    val is_chat_enabled: Boolean = false
 )

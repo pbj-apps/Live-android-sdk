@@ -40,6 +40,10 @@
     @retrofit2.http.* <methods>;
 }
 
+-keep public class com.pbj.sdk.concreteImplementation.live.model.*
+-keep public class com.pbj.sdk.utils.eventBus.LiveNotificationModified
+-keep public class com.pbj.sdk.utils.eventBus.*
+
 # Ignore annotation used for build tooling.
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 
