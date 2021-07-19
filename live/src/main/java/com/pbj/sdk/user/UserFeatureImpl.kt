@@ -1,6 +1,5 @@
 package com.pbj.sdk.user
 
-import android.net.Uri
 import com.pbj.sdk.di.LiveKoinComponent
 import com.pbj.sdk.domain.authentication.UserInteractor
 import com.pbj.sdk.domain.authentication.model.RegisterRequest
@@ -52,11 +51,10 @@ internal class UserFeatureImpl(private val userInteractor: UserInteractor) : Use
 
     override fun uploadProfilePicture(
         image: File,
-        uri: Uri,
         onError: onErrorCallBack?,
         onSuccess: ((User?) -> Unit)?
     ) {
-        userInteractor.uploadProfilePicture(image, uri, onError, onSuccess)
+        userInteractor.uploadProfilePicture(image, onError, onSuccess)
     }
 
     override fun changePassword(

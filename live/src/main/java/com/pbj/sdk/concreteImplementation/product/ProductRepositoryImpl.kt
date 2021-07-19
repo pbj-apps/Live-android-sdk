@@ -10,13 +10,15 @@ import com.pbj.sdk.domain.product.ProductRepository
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.domain.product.model.ProductUpdate
 import com.pbj.sdk.domain.vod.model.VodVideo
+import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 internal class ProductRepositoryImpl(
     private val api: ProductApi,
-    private val socketApi: ProductWebSocketApi
-) : BaseRepository(), ProductRepository {
+    private val socketApi: ProductWebSocketApi,
+    override val moshi: Moshi
+) : BaseRepository(moshi), ProductRepository {
 
     override suspend fun fetchProductsFor(episode: Episode): Result<List<Product>> =
         apiCall(

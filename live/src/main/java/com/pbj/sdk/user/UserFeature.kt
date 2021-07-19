@@ -1,6 +1,5 @@
 package com.pbj.sdk.user
 
-import android.net.Uri
 import com.pbj.sdk.domain.authentication.model.RegisterRequest
 import com.pbj.sdk.domain.authentication.model.User
 import com.pbj.sdk.domain.onErrorCallBack
@@ -40,7 +39,6 @@ interface UserFeature {
 
     fun uploadProfilePicture(
         image: File,
-        uri: Uri,
         onError: onErrorCallBack? = null,
         onSuccess: ((User?) -> Unit)? = null
     )

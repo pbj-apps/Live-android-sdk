@@ -6,9 +6,11 @@ import com.pbj.sdk.concreteImplementation.organization.model.asModel
 import com.pbj.sdk.domain.Result
 import com.pbj.sdk.domain.organization.OrganizationRepository
 import com.pbj.sdk.domain.organization.model.OrganizationConfig
+import com.squareup.moshi.Moshi
 
-internal class OrganizationRepositoryImpl(val api: OrganizationApi) : BaseRepository(),
-    OrganizationRepository {
+internal class OrganizationRepositoryImpl(val api: OrganizationApi,
+                                          override val moshi: Moshi
+) : BaseRepository(moshi), OrganizationRepository {
 
     override suspend fun fetchOrganizationConfig(): Result<OrganizationConfig> =
         apiCall(

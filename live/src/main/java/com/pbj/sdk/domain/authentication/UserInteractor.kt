@@ -1,6 +1,5 @@
 package com.pbj.sdk.domain.authentication
 
-import android.net.Uri
 import com.pbj.sdk.domain.authentication.model.RegisterRequest
 import com.pbj.sdk.domain.authentication.model.User
 import com.pbj.sdk.domain.onErrorCallBack
@@ -42,7 +41,6 @@ internal interface UserInteractor {
 
     fun uploadProfilePicture(
         image: File,
-        uri: Uri,
         onError: onErrorCallBack? = null,
         onSuccess: ((User?) -> Unit)? = null
     )

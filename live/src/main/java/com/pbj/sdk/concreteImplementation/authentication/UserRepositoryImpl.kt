@@ -1,6 +1,5 @@
 package com.pbj.sdk.concreteImplementation.authentication
 
-import android.net.Uri
 import com.pbj.sdk.concreteImplementation.authentication.model.ChangePasswordRequest
 import com.pbj.sdk.concreteImplementation.authentication.model.JsonLoginRequest
 import com.pbj.sdk.concreteImplementation.authentication.model.JsonRegisterRequest
@@ -16,6 +15,7 @@ import com.pbj.sdk.domain.Result
 import com.pbj.sdk.domain.authentication.UserRepository
 import com.pbj.sdk.domain.authentication.model.User
 import com.pbj.sdk.domain.vod.model.ProfileImage
+import com.squareup.moshi.Moshi
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -23,8 +23,9 @@ import java.io.File
 
 internal class UserRepositoryImpl(
     private val api: UserApi,
-    private val preferences: PBJPreferences
-) : BaseRepository(), UserRepository {
+    private val preferences: PBJPreferences,
+    override val moshi: Moshi
+) : BaseRepository(moshi), UserRepository {
 
     override suspend fun login(email: String, password: String): Result<User> =
         apiCall(call = {
@@ -43,7 +44,6 @@ internal class UserRepositoryImpl(
             onApiError = { e, code -> mapRegisterError(code.code, e) }) {
             it?.asModel
         }
-
 
     override suspend fun getUser(): Result<User> =
         apiCall(call = {
@@ -66,11 +66,14 @@ internal class UserRepositoryImpl(
                 UpdateProfileRequest(firstname, lastname)
             )
         },
-            onApiError = { _, code -> code.mapLoginError() }) {
-            Any()
+            onApiError = { error, code ->
+                mapGenericError(code.code, error)
+            })
+        {
+            it
         }
 
-    override suspend fun uploadProfilePicture(image: File, uri: Uri): Result<ProfileImage> {
+    override suspend fun uploadProfilePicture(image: File): Result<ProfileImage> {
 
         val body = image.asRequestBody("image".toMediaTypeOrNull())
 
@@ -119,7 +122,7 @@ internal class UserRepositoryImpl(
             mapGenericError(code.code, e)
         }
         ) {
-            Any()
+            it
         }
 
     override suspend fun logout(): Result<Any> = removeCurrentUser()
