@@ -8,21 +8,20 @@ import com.pbj.sdk.concreteImplementation.live.model.asModel
 import com.pbj.sdk.domain.Result
 import com.pbj.sdk.domain.live.LiveRepository
 import com.pbj.sdk.domain.live.model.*
+import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.map
 
 internal class LiveRepositoryImpl(
     private val restApi: LiveApi,
-    private val socketApi: LiveWebSocketApi
-) : BaseRepository(), LiveRepository {
+    private val socketApi: LiveWebSocketApi,
+    override val moshi: Moshi
+) : BaseRepository(moshi), LiveRepository {
 
     override suspend fun fetchLiveStreams(): Result<EpisodeResponse> =
         apiCall(
             call = { restApi.fetchLiveStreams() },
             onApiError = { e, code ->
-                mapGenericError(
-                    code.code,
-                    e
-                )
+                mapGenericError(code.code, e)
             }
         )
         { response ->

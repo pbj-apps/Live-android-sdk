@@ -1,6 +1,5 @@
 package com.pbj.sdk.concreteImplementation.authentication
 
-import android.net.Uri
 import com.pbj.sdk.concreteImplementation.authentication.model.asJson
 import com.pbj.sdk.domain.*
 import com.pbj.sdk.domain.authentication.UserInteractor
@@ -128,14 +127,13 @@ internal class UserInteractorImpl(
 
     override fun uploadProfilePicture(
         image: File,
-        uri: Uri,
         onError: onErrorCallBack?,
         onSuccess: ((User?) -> Unit)?
     ) {
         scope.launch {
             var profileImage: ProfileImage? = null
 
-            userRepository.uploadProfilePicture(image, uri).onResult(
+            userRepository.uploadProfilePicture(image).onResult(
                 {
                     onError?.invoke(it)
                 }

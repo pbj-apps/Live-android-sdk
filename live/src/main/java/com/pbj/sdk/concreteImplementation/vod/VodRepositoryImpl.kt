@@ -8,8 +8,11 @@ import com.pbj.sdk.domain.vod.VodRepository
 import com.pbj.sdk.domain.vod.model.VodCategory
 import com.pbj.sdk.domain.vod.model.VodPlaylist
 import com.pbj.sdk.domain.vod.model.VodVideo
+import com.squareup.moshi.Moshi
 
-internal class VodRepositoryImpl(private val api: VodApi) : BaseRepository(), VodRepository {
+internal class VodRepositoryImpl(private val api: VodApi,
+                                 override val moshi: Moshi
+) : BaseRepository(moshi), VodRepository {
 
     override suspend fun getVodCategories(): Result<List<VodCategory>> =
         apiCall(

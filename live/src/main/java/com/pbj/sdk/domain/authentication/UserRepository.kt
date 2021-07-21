@@ -1,6 +1,5 @@
 package com.pbj.sdk.domain.authentication
 
-import android.net.Uri
 import com.pbj.sdk.concreteImplementation.authentication.model.JsonRegisterRequest
 import com.pbj.sdk.domain.Result
 import com.pbj.sdk.domain.authentication.model.User
@@ -19,7 +18,7 @@ internal interface UserRepository {
 
     suspend fun updateUser(firstname: String, lastname: String): Result<Any>
 
-    suspend fun uploadProfilePicture(image: File, uri: Uri): Result<ProfileImage>
+    suspend fun uploadProfilePicture(image: File): Result<ProfileImage>
 
     suspend fun changePassword(currentPassword: String, newPassword: String): Result<Any>
 
