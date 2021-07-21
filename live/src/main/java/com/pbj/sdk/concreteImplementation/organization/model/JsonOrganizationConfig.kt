@@ -1,5 +1,8 @@
 package com.pbj.sdk.concreteImplementation.organization.model
 
-data class JsonOrganizationConfig(
-    val feature_flags: FeatureFlags,
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
+internal data class JsonOrganizationConfig(
+    val feature_flags: FeatureFlags?
 )
