@@ -34,6 +34,8 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         fun onPressClose()
         fun enableScreenRotation(enable: Boolean)
         fun onPlayerError(errorMessage: String?)
+        fun onPlayerLoad()
+        fun onLiveReady()
     }
 
     private lateinit var view: FragmentLivePlayerBinding
@@ -551,10 +553,15 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
     override fun onLiveReady() {
         vm.onLiveReady()
+        listener?.onLiveReady()
     }
 
     override fun onPlayerError(errorMessage: String?) {
         listener?.onPlayerError(errorMessage)
+    }
+
+    override fun onPlayerLoad() {
+        listener?.onPlayerLoad()
     }
 
     override fun onProductTimeCodeReached(id: String, shouldShow: Boolean) {

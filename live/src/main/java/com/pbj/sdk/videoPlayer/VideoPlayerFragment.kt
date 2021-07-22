@@ -33,6 +33,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
         fun onLiveFinished()
         fun onLiveReady()
         fun onPlayerError(errorMessage: String?)
+        fun onPlayerLoad()
         fun onProductTimeCodeReached(id: String, isVisible: Boolean)
     }
 
@@ -139,6 +140,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
                         lifecycleScope.launch {
                             vm.isLoadingVideoPlayer.value = true
                             delay(5000)
+                            liveFragmentListener?.onPlayerLoad()
                             vm.videoPlayer?.prepare()
                         }
 

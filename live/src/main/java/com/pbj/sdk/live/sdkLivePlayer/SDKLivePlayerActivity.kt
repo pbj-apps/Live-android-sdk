@@ -131,6 +131,14 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener {
         vm.onError(errorMessage)
     }
 
+    override fun onPlayerLoad() {
+        vm.onLiveLoad()
+    }
+
+    override fun onLiveReady() {
+        vm.onLiveReady()
+    }
+
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 

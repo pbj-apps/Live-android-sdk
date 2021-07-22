@@ -72,6 +72,14 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
         Timber.e(errorMessage)
     }
 
+    override fun onPlayerLoad() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLiveReady() {
+        TODO("Not yet implemented")
+    }
+
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 

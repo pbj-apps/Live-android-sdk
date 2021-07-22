@@ -9,7 +9,7 @@ interface GuestFeature {
         onSuccess: (() -> Unit)? = null
     )
 
-    fun isEpisodeLive(onError: (Throwable) -> Unit, onSuccess: (Boolean) -> Unit)
+    fun isEpisodeLive(onError: onErrorCallBack? = null, onSuccess: (Boolean) -> Unit)
 
-    fun isEpisodeLive(showId: String, onError: (Throwable) -> Unit, onSuccess: (Boolean) -> Unit)
+    fun isEpisodeLive(showId: String, onError: onErrorCallBack? = null, onSuccess: (Boolean) -> Unit)
 }

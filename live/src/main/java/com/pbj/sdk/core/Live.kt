@@ -4,8 +4,10 @@ import android.content.Context
 import com.pbj.sdk.LiveSDK
 import com.pbj.sdk.PbjSDK
 import com.pbj.sdk.analytics.AnalyticsTracker
+import com.pbj.sdk.concreteImplementation.generic.onError
 import com.pbj.sdk.di.*
 import com.pbj.sdk.domain.chat.LiveChatSource
+import com.pbj.sdk.domain.onErrorCallBack
 import com.pbj.sdk.guest.GuestFeature
 import com.pbj.sdk.live.LiveFeature
 import com.pbj.sdk.notifications.LiveNotificationManager
@@ -68,13 +70,13 @@ internal class Live(
         }
     }
 
-    override fun isEpisodeLive(onError: (Throwable) -> Unit, onSuccess: (Boolean) -> Unit) {
+    override fun isEpisodeLive(onError: onErrorCallBack?, onSuccess: (Boolean) -> Unit) {
         guestFeature.isEpisodeLive(onError, onSuccess)
     }
 
     override fun isEpisodeLive(
         showId: String,
-        onError: (Throwable) -> Unit,
+        onError: onErrorCallBack?,
         onSuccess: (Boolean) -> Unit
     ) {
         guestFeature.isEpisodeLive(showId, onError, onSuccess)
