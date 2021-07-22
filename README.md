@@ -27,7 +27,7 @@ maven {
 ```
 Then, add in gradle at app level
 
-```
+```groovy
 implementation "com.pbj.live:live:$live_version"
 ```
 
@@ -37,7 +37,7 @@ https://github.com/pbj-apps/Live-android-sdk/packages/748723
 
 ## 2. Initialize the LivePlayerSDK with your credentials on App start
 
-```
+```kotlin
  val liveSdk = LiveSDK.initialize(context, "yourApiKey", ApiEnvironment)
 
 ```
