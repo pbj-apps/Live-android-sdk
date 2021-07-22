@@ -18,7 +18,7 @@ internal class GuestFeatureImpl(
         guestInteractor.authenticateAsGuest(onError, onSuccess)
     }
 
-    override fun isEpisodeLive(onError: (Throwable) -> Unit, onSuccess: (Boolean) -> Unit) {
+    override fun isEpisodeLive(onError: onErrorCallBack?, onSuccess: (Boolean) -> Unit) {
         authenticateAsGuest(onError) {
             liveInteractor.getCurrentEpisode(onError) {
                 onSuccess.invoke(it != null)
@@ -28,7 +28,7 @@ internal class GuestFeatureImpl(
 
     override fun isEpisodeLive(
         showId: String,
-        onError: (Throwable) -> Unit,
+        onError: onErrorCallBack?,
         onSuccess: (Boolean) -> Unit
     ) {
         authenticateAsGuest(onError) {

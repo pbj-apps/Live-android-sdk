@@ -164,6 +164,10 @@ internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
         }
     }
 
+    fun onLiveLoad() {
+        screenState.postValue(State.Loading)
+    }
+
     sealed class State {
         object Loading : State()
         object NoLive : State()

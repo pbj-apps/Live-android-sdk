@@ -36,9 +36,11 @@ class MainActivity : AppCompatActivity() {
         watchButton.setOnClickListener {
             val apiKey = organizationApiKeyField.text.toString()
             if (apiKey.isNotBlank()) {
-                Log.d("Click Watch", "Done")
                 Live.init(this, apiKey, sdkEnvironment)
                 Live.instance.startLivePlayer(this, showIdField.text.toString())
+                Live.instance.isEpisodeLive { isLive ->
+
+                }
             }
         }
     }

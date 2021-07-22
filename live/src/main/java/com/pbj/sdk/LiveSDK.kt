@@ -6,6 +6,7 @@ import com.pbj.sdk.analytics.AnalyticsTracker
 import com.pbj.sdk.core.ApiEnvironment
 import com.pbj.sdk.core.Live
 import com.pbj.sdk.core.SdkHolder
+import com.pbj.sdk.domain.onErrorCallBack
 import com.pbj.sdk.guest.GuestFeature
 import com.pbj.sdk.live.sdkLivePlayer.SDKLivePlayerActivity
 
@@ -22,9 +23,9 @@ interface LiveSDK {
         SDKLivePlayerActivity.startLivePlayer(context)
     }
 
-    fun isEpisodeLive(onError: (Throwable) -> Unit, onSuccess: (Boolean) -> Unit)
+    fun isEpisodeLive(onError: onErrorCallBack? = null, onSuccess: (Boolean) -> Unit)
 
-    fun isEpisodeLive(showId: String, onError: (Throwable) -> Unit, onSuccess: (Boolean) -> Unit)
+    fun isEpisodeLive(showId: String, onError: onErrorCallBack? = null, onSuccess: (Boolean) -> Unit)
 
     companion object {
         fun initialize(context: Context, apiKey: String, environment: ApiEnvironment): LiveSDK {
