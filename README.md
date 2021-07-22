@@ -16,7 +16,7 @@ You must use :
 - a github username 
 - a personal access token (https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
-```
+```groovy
 maven {
             url "https://maven.pkg.github.com/pbj-apps/Live-android-sdk"
             credentials {
@@ -44,16 +44,18 @@ https://github.com/pbj-apps/Live-android-sdk/packages/748723
 
 ## 3. (Optional) Check if there is a live episode beforehand
 Typical usage is that you have a "Watch live" button that you only want to show if there is an actual episode currently live.
-```
+
+```kotlin
 liveSdk.isEpisodeLive { isLive ->
 
 }
 ```
+
 You can also pass your showId as a parameter to query live episodes, but this time for a specific show. You can find your showId in your web dashboard. Select the show you want and grab it's id from the browser's url.
 
 ## 4. Start a Player activity
 
-```
+```kotlin
 liveSdk.startLivePlayer(context) // Optionally pass a showId.
 ```
 Without a showId parameter, the player will display the first live show it finds.
