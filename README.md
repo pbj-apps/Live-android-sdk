@@ -13,7 +13,7 @@ Stream your PBJ.live content from your Android App.
 Add in gradle at project level
 
 You must use :
-- a github username 
+- a github username
 - a personal access token (https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
 ```groovy
