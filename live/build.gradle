@@ -3,8 +3,25 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
-    id 'maven-publish'
 }
+
+ext {
+    PUBLISH_GROUP_ID = 'live.pbj.sdk'
+    PUBLISH_VERSION = '0.0.1-alpha'
+    PUBLISH_ARTIFACT_ID = 'live'
+    PUBLISH_DESCRIPTION = 'Stream your PBJ.live content from your Android App.'
+    PUBLISH_URL = 'https://github.com/pbj-apps/Live-ios-sdk'
+    PUBLISH_LICENSE_NAME = 'MIT License'
+    PUBLISH_LICENSE_URL = 'https://github.com/pbj-apps/Live-android-sdk/blob/master/LICENSE'
+    PUBLISH_DEVELOPER_ID = 'Pafgz'
+    PUBLISH_DEVELOPER_NAME = 'Pierre-Antoine Fagniez'
+    PUBLISH_DEVELOPER_EMAIL = 'pierre-antoine@pbj.studio'
+    PUBLISH_SCM_CONNECTION = 'scm:git:github.com/pbj-apps/Live-android-sdk.git'
+    PUBLISH_SCM_DEVELOPER_CONNECTION = 'scm:git:ssh://github.com/pbj-apps/Live-android-sdk.git'
+    PUBLISH_SCM_URL = 'https://github.com/pbj-apps/Live-android-sdk/tree/master'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
     compileSdkVersion 30
@@ -13,7 +30,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
-        versionName "0.0.54-alpha"
+        versionName "0.0.1-alpha"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -134,50 +151,4 @@ dependencies {
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
 
     testImplementation "io.mockk:mockk:$mockk_version"
-}
-
-//Set env variable GPR_USER & GPR_API_KEY if not adding a properties file
-def githubProperties = new Properties()
-githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
-
-def getArtificatId = { ->
-    return "live"
-}
-
-publishing {
-    publications {
-        bar(MavenPublication) {
-            groupId 'com.pbj.live'
-            artifactId getArtificatId()
-            version android.defaultConfig.versionName
-            artifact("$buildDir/outputs/aar/${getArtificatId()}-release.aar")
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-                // Iterate over the api dependencies (we don't want the test ones), adding a <dependency> node for each
-                configurations.api.allDependencies.each {
-                    def dependencyNode = dependenciesNode.appendNode('dependency')
-                    dependencyNode.appendNode('groupId', it.group)
-                    dependencyNode.appendNode('artifactId', it.name)
-                    dependencyNode.appendNode('version', it.version)
-                }
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/pbj-apps/Live-android-sdk")
-            credentials {
-                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
-                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
-            }
-        }
-    }
-}
-
-task assemblePublish {
-    dependsOn 'assemble'
-    dependsOn 'publish'
-    tasks.findByName('publish').mustRunAfter 'assemble'
 }
