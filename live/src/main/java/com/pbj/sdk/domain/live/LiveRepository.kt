@@ -9,8 +9,9 @@ import kotlinx.coroutines.flow.Flow
 internal interface LiveRepository {
 
     suspend fun fetchLiveStreams(): Result<EpisodeResponse>
-    suspend fun fetchLiveStreamsSchedule(date: String): Result<EpisodeResponse>
-    suspend fun fetchLiveStreamsSchedule(daysAhead: Int = 7): Result<EpisodeResponse>
+    suspend fun fetchLiveStreamsSchedule(date: String?, daysAhead: Int?, size: Int? = 30): Result<EpisodeResponse>
+    suspend fun fetchLiveStreamsSchedule(daysAhead: Int, size: Int = 30): Result<EpisodeResponse>
+    suspend fun fetchEpisodesNextPage(nextPageUrl: String): Result<EpisodeResponse>
 
     suspend fun fetchCurrentLiveStream(): Result<Episode>
     suspend fun fetchCurrentLiveStream(showId: String): Result<Episode>

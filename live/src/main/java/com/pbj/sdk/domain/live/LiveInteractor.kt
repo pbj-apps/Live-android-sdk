@@ -1,7 +1,6 @@
 package com.pbj.sdk.domain.live
 
 import com.pbj.sdk.domain.live.model.*
-import com.pbj.sdk.domain.live.model.BroadcastUrl
 import com.pbj.sdk.domain.onErrorCallBack
 
 internal interface LiveInteractor {
@@ -14,13 +13,15 @@ internal interface LiveInteractor {
     )
 
     fun getLiveStreamsSchedule(
-        date: String,
+        date: String? = null,
+        daysAhead: Int? = null,
+        size: Int? = null,
         onError: onErrorCallBack? = null,
         onSuccess: ((EpisodeResponse?) -> Unit)? = null
     )
 
-    fun getLiveStreamsSchedule(
-        daysAhead: Int = 7,
+    fun getEpisodesNextPage(
+        nextPageUrl: String,
         onError: onErrorCallBack? = null,
         onSuccess: ((EpisodeResponse?) -> Unit)? = null
     )

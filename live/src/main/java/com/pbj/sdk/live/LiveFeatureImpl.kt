@@ -13,27 +13,29 @@ internal class LiveFeatureImpl : LiveFeature, LiveKoinComponent {
 
     private val liveInteractor: LiveInteractor by inject()
 
-    override fun fetchLiveStreams(
+    override fun getLiveStreams(
         onError: ((Throwable) -> Unit)?,
         onSuccess: ((EpisodeResponse?) -> Unit)?
     ) {
         liveInteractor.getLiveStreams(onError, onSuccess)
     }
 
-    override fun fetchLiveStreamsSchedule(
-        date: String,
-        onError: ((Throwable) -> Unit)?,
+    override fun getEpisodesNextPage(
+        nextPageUrl: String,
+        onError: onErrorCallBack?,
         onSuccess: ((EpisodeResponse?) -> Unit)?
     ) {
-        liveInteractor.getLiveStreamsSchedule(date, onError, onSuccess)
+        liveInteractor.getEpisodesNextPage(nextPageUrl, onError, onSuccess)
     }
 
-    override fun fetchLiveStreamsSchedule(
-        daysAhead: Int,
+    override fun getLiveStreamsSchedule(
+        date: String?,
+        daysAhead: Int?,
+        size: Int?,
         onError: ((Throwable) -> Unit)?,
         onSuccess: ((EpisodeResponse?) -> Unit)?
     ) {
-        liveInteractor.getLiveStreamsSchedule(daysAhead, onError, onSuccess)
+        liveInteractor.getLiveStreamsSchedule(date, daysAhead, size, onError, onSuccess)
     }
 
     override fun getCurrentLiveStream(
