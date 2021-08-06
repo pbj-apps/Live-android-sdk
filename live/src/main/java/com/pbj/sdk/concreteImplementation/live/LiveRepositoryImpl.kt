@@ -28,9 +28,13 @@ internal class LiveRepositoryImpl(
             response?.asModel
         }
 
-    override suspend fun fetchLiveStreamsSchedule(date: String): Result<EpisodeResponse> =
+    override suspend fun fetchLiveStreamsSchedule(
+        date: String?,
+        daysAhead: Int?,
+        size: Int?
+    ): Result<EpisodeResponse> =
         apiCall(
-            call = { restApi.fetchLiveStreamsSchedule(date) },
+            call = { restApi.fetchLiveStreamsSchedule(date, daysAhead, size) },
             onApiError = { e, code ->
                 mapGenericError(code.code, e)
             }
@@ -39,9 +43,23 @@ internal class LiveRepositoryImpl(
             response?.asModel
         }
 
-    override suspend fun fetchLiveStreamsSchedule(daysAhead: Int): Result<EpisodeResponse> =
+    override suspend fun fetchLiveStreamsSchedule(
+        daysAhead: Int,
+        size: Int
+    ): Result<EpisodeResponse> =
         apiCall(
-            call = { restApi.fetchLiveStreamsSchedule(daysAhead) },
+            call = { restApi.fetchLiveStreamsSchedule(daysAhead, size) },
+            onApiError = { e, code ->
+                mapGenericError(code.code, e)
+            }
+        )
+        { response ->
+            response?.asModel
+        }
+
+    override suspend fun fetchEpisodesNextPage(nextPageUrl: String): Result<EpisodeResponse> =
+        apiCall(
+            call = { restApi.fetchNextEpisodePage(nextPageUrl) },
             onApiError = { e, code ->
                 mapGenericError(code.code, e)
             }

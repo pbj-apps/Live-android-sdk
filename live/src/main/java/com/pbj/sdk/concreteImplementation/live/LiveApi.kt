@@ -10,10 +10,20 @@ internal interface LiveApi {
     suspend fun fetchLiveStreams(): Response<JsonEpisodeResponse>
 
     @GET("live-streams/schedule")
-    suspend fun fetchLiveStreamsSchedule(@Query("starting_at") startDate: String): Response<JsonEpisodeResponse>
+    suspend fun fetchLiveStreamsSchedule(
+        @Query("starting_at") startDate: String?,
+        @Query("days_ahead") daysAhead: Int?,
+        @Query("per_page") size: Int?
+    ): Response<JsonEpisodeResponse>
 
     @GET("live-streams/schedule")
-    suspend fun fetchLiveStreamsSchedule(@Query("days_ahead") daysAhead: Int): Response<JsonEpisodeResponse>
+    suspend fun fetchLiveStreamsSchedule(
+        @Query("days_ahead") daysAhead: Int,
+        @Query("per_page") size: Int
+    ): Response<JsonEpisodeResponse>
+
+    @GET
+    suspend fun fetchNextEpisodePage(@Url url: String): Response<JsonEpisodeResponse>
 
     @GET("episodes/current")
     suspend fun fetchCurrentLiveStream(): Response<JsonEpisodeResponse>

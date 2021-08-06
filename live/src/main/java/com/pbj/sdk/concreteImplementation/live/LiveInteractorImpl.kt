@@ -3,7 +3,6 @@ package com.pbj.sdk.concreteImplementation.live
 import com.pbj.sdk.domain.live.LiveInteractor
 import com.pbj.sdk.domain.live.LiveRepository
 import com.pbj.sdk.domain.live.model.*
-import com.pbj.sdk.domain.live.model.BroadcastUrl
 import com.pbj.sdk.domain.onErrorCallBack
 import com.pbj.sdk.domain.onResult
 import com.tinder.scarlet.WebSocket
@@ -58,12 +57,14 @@ internal class LiveInteractorImpl(
     }
 
     override fun getLiveStreamsSchedule(
-        date: String,
+        date: String?,
+        daysAhead: Int?,
+        size: Int?,
         onError: ((Throwable) -> Unit)?,
         onSuccess: ((EpisodeResponse?) -> Unit)?
     ) {
         scope.launch {
-            liveRepository.fetchLiveStreamsSchedule(date).onResult({
+            liveRepository.fetchLiveStreamsSchedule(date, daysAhead, size).onResult({
                 onError?.invoke(it)
             }) {
                 onSuccess?.invoke(it)
@@ -71,13 +72,13 @@ internal class LiveInteractorImpl(
         }
     }
 
-    override fun getLiveStreamsSchedule(
-        daysAhead: Int,
-        onError: ((Throwable) -> Unit)?,
+    override fun getEpisodesNextPage(
+        nextPageUrl: String,
+        onError: onErrorCallBack?,
         onSuccess: ((EpisodeResponse?) -> Unit)?
     ) {
         scope.launch {
-            liveRepository.fetchLiveStreamsSchedule(daysAhead).onResult({
+            liveRepository.fetchEpisodesNextPage(nextPageUrl).onResult({
                 onError?.invoke(it)
             }) {
                 onSuccess?.invoke(it)

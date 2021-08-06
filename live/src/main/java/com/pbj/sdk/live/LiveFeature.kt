@@ -8,19 +8,21 @@ import com.pbj.sdk.domain.onErrorCallBack
 
 interface LiveFeature {
 
-    fun fetchLiveStreams(
+    fun getLiveStreams(
         onError: onErrorCallBack? = null,
         onSuccess: ((EpisodeResponse?) -> Unit)? = null
     )
 
-    fun fetchLiveStreamsSchedule(
-        date: String,
+    fun getLiveStreamsSchedule(
+        date: String? = null,
+        daysAhead: Int? = null,
+        size: Int? = null,
         onError: onErrorCallBack? = null,
         onSuccess: ((EpisodeResponse?) -> Unit)? = null
     )
 
-    fun fetchLiveStreamsSchedule(
-        daysAhead: Int = 7,
+    fun getEpisodesNextPage(
+        nextPageUrl: String,
         onError: onErrorCallBack? = null,
         onSuccess: ((EpisodeResponse?) -> Unit)? = null
     )
