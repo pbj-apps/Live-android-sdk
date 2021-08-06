@@ -1,14 +1,12 @@
 package com.pbj.sdk.concreteImplementation.vod.model
 
-import com.pbj.sdk.domain.vod.model.VodCategory
-import com.pbj.sdk.domain.vod.model.VodItem
-import com.pbj.sdk.domain.vod.model.VodPlaylist
-import com.pbj.sdk.domain.vod.model.VodVideo
+import com.pbj.sdk.domain.vod.model.*
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 internal data class JsonVodCategoriesPage(
-    val results: List<JsonVodCategory>
+    val next: String? = null,
+    val results: List<JsonVodCategory>? = null
 )
 
 @JsonClass(generateAdapter = true)
@@ -36,6 +34,12 @@ internal data class JsonVodVideoOrPlaylistItem(
     val video_count: Int?,
     val duration: Int?
 )
+
+internal val JsonVodCategoriesPage.asModel: VodCategoriesResponse
+    get() = VodCategoriesResponse(
+        next = next,
+        results = results?.map { it.asModel } ?: listOf()
+    )
 
 internal val JsonVodCategory.asModel: VodCategory
     get() = VodCategory(

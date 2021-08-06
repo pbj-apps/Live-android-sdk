@@ -109,14 +109,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="73dp"
-                android:maxLines="4"
+                android:ellipsize="end"
                 android:textColor="@color/white"
-                android:textSize="50sp"
+                android:maxLines="5"
+                android:textSize="45sp"
                 app:layout_constraintBottom_toTopOf="@id/countdownTitle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:text="Please wait while we're preparing the live to make sure everything is perfect"
-                />
+                tools:text="Please wait while we're preparing the live to make sure everything is perfect" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/countdownTitle"
