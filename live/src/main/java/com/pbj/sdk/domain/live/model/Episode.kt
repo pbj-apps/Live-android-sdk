@@ -17,5 +17,6 @@ data class Episode(
     val show: Show? = null,
     val status: EpisodeStatus,
     val streamer: Streamer? = null,
-    val video: VodVideo? = null
+    val video: VodVideo? = null,
+    val hasReminder: Boolean = false
 ) : Parcelable

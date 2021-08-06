@@ -122,7 +122,7 @@ internal class LiveRepositoryImpl(
     override suspend fun subscribeToNotifications(episode: Episode, token: String): Result<Any> {
         val request = LiveNotificationSubscription(
             "episode",
-            episode.show?.id,
+            episode.id,
             listOf(token)
         )
 
@@ -139,8 +139,8 @@ internal class LiveRepositoryImpl(
         token: String
     ): Result<Any> {
         val request = LiveNotificationSubscription(
-            "show",
-            episode.showId,
+            "episode",
+            episode.id,
             listOf(token)
         )
         return apiCall(

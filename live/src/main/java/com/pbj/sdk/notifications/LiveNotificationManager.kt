@@ -10,7 +10,7 @@ interface LiveNotificationManager {
 
     fun syncSubscriptions(listener: LiveNotificationListener)
 
-    fun isReminderSet(episode: Episode): Boolean?
+    fun isReminderSet(episode: Episode): Boolean
 
     interface LiveNotificationListener {
 

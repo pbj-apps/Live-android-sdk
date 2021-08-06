@@ -16,5 +16,6 @@ internal data class JsonEpisode(
     val status: String?,
     val stream_status: String?,
     val streamer: JsonStreamer?,
-    val pre_recorded_video: JsonVodVideo?
+    val pre_recorded_video: JsonVodVideo?,
+    val is_push_notification_enabled: Boolean = false
 )

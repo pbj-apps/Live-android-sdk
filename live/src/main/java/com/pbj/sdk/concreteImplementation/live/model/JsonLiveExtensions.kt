@@ -34,7 +34,8 @@ internal val JsonEpisode.asModel: Episode
             show = show?.asModel,
             status = getLiveStatus(status),
             streamer = streamer?.asModel,
-            video = pre_recorded_video?.asModel
+            video = pre_recorded_video?.asModel,
+            hasReminder = is_push_notification_enabled
         )
     }
 

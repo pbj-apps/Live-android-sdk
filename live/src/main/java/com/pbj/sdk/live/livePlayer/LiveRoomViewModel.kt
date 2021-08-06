@@ -257,7 +257,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     val isReminderSet: Boolean
         get() = nextLiveStream.value?.let {
-            remindedLiveStreamIdList.value?.contains(it.showId)
+            remindedLiveStreamIdList.value?.contains(it.id)
         } ?: false
 
     override fun onRequestPushNotificationSubscription(
