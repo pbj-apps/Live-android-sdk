@@ -10,7 +10,6 @@ internal interface LiveRepository {
 
     suspend fun fetchLiveStreams(): Result<EpisodeResponse>
     suspend fun fetchLiveStreamsSchedule(date: String?, daysAhead: Int?, size: Int? = 30): Result<EpisodeResponse>
-    suspend fun fetchLiveStreamsSchedule(daysAhead: Int, size: Int = 30): Result<EpisodeResponse>
     suspend fun fetchEpisodesNextPage(nextPageUrl: String): Result<EpisodeResponse>
 
     suspend fun fetchCurrentLiveStream(): Result<Episode>
