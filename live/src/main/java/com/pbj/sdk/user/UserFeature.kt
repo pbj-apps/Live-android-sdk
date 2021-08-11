@@ -53,7 +53,17 @@ interface UserFeature {
 
     fun isUserLoggedIn(onResult: ((Boolean) -> Unit)? = null)
 
-    fun isLoggedInAsGuest(onError: onErrorCallBack? = null, onSuccess: ((Boolean?) -> Unit)?)
+    fun isLoggedInAsGuest(onError: onErrorCallBack? = null, onSuccess: ((Boolean?) -> Unit)? = null)
 
-    fun saveIsLoggedInAsGuest(isGuest: Boolean, onError: onErrorCallBack? = null, onSuccess: (() -> Unit)?)
+    fun saveIsLoggedInAsGuest(
+        isGuest: Boolean,
+        onError: onErrorCallBack? = null,
+        onSuccess: (() -> Unit)? = null
+    )
+
+    fun updateDeviceRegistrationToken(
+        token: String,
+        onError: onErrorCallBack? = null,
+        onSuccess: (() -> Unit)? = null
+    )
 }

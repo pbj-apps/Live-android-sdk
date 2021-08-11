@@ -1,5 +1,6 @@
 package com.pbj.sdk.concreteImplementation.live.model
 
+import com.pbj.sdk.concreteImplementation.vod.model.JsonPreviewAsset
 import com.pbj.sdk.concreteImplementation.vod.model.JsonVodVideo
 import com.squareup.moshi.JsonClass
 
@@ -10,6 +11,7 @@ internal data class JsonEpisode(
     val description: String?,
     val chat_mode: String?,
     val duration: Int?,
+    val preview_asset: JsonPreviewAsset,
     val starting_at: String?,
     val ends_at: String?,
     val show: JsonShow?,

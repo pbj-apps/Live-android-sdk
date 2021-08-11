@@ -1,6 +1,9 @@
 package com.pbj.sdk.concreteImplementation.live
 
-import com.pbj.sdk.concreteImplementation.live.model.*
+import com.pbj.sdk.concreteImplementation.live.model.JsonBroadcastUrl
+import com.pbj.sdk.concreteImplementation.live.model.JsonEpisodeResponse
+import com.pbj.sdk.concreteImplementation.live.model.JsonShow
+import com.pbj.sdk.concreteImplementation.live.model.LiveNotificationSubscription
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -9,7 +12,7 @@ internal interface LiveApi {
     @GET("live-streams")
     suspend fun fetchLiveStreams(): Response<JsonEpisodeResponse>
 
-    @GET("episodes/schedule")
+    @GET("v1/episodes")
     suspend fun fetchLiveStreamsSchedule(
         @Query("starting_at") startDate: String?,
         @Query("days_ahead") daysAhead: Int?,
@@ -30,9 +33,6 @@ internal interface LiveApi {
 
     @GET("live-streams/{id}/watch")
     suspend fun fetchBroadcastUrl(@Path("id") id: String): Response<JsonBroadcastUrl>
-
-    @GET("notifications/subscriptions")
-    suspend fun fetchNotificationSubscriptions(): Response<JsonLiveNotificationResponse>
 
     @POST("push-notifications/subscribe")
     suspend fun subscribeToNotification(@Body request: LiveNotificationSubscription): Response<Any>

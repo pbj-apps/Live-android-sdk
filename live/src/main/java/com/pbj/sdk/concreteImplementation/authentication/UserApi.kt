@@ -1,10 +1,6 @@
 package com.pbj.sdk.concreteImplementation.authentication
 
-import com.pbj.sdk.concreteImplementation.authentication.model.ChangePasswordRequest
-import com.pbj.sdk.concreteImplementation.authentication.model.JsonUser
-import com.pbj.sdk.concreteImplementation.authentication.model.JsonLoginRequest
-import com.pbj.sdk.concreteImplementation.authentication.model.JsonRegisterRequest
-import com.pbj.sdk.concreteImplementation.authentication.model.UpdateProfileRequest
+import com.pbj.sdk.concreteImplementation.authentication.model.*
 import com.pbj.sdk.concreteImplementation.vod.model.JsonProfileImage
 import okhttp3.MultipartBody
 import retrofit2.Response
@@ -35,4 +31,7 @@ internal interface UserApi {
     suspend fun uploadProfilePicture(
         @Part imageFile: MultipartBody.Part
     ): Response<JsonProfileImage>
+
+    @POST("device-registration-tokens")
+    suspend fun updateDeviceRegistrationToken(@Body deviceToken: DeviceToken): Response<Any>
 }

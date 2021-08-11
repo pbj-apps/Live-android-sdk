@@ -69,28 +69,19 @@ internal class LiveFeatureImpl : LiveFeature, LiveKoinComponent {
         liveInteractor.getBroadcastUrl(episode, onError, onSuccess)
     }
 
-    override fun subscribeToNotifications(
+    override fun subscribeToNotificationsFor(
         episode: Episode,
-        token: String,
         onError: ((Throwable) -> Unit)?,
         onSuccess: (() -> Unit)?
     ) {
-        liveInteractor.subscribeToNotifications(episode, token, onError, onSuccess)
+        liveInteractor.subscribeToNotificationsFor(episode, onError, onSuccess)
     }
 
-    override fun getNotificationSubscriptions(
-        onError: ((Throwable) -> Unit)?,
-        onSuccess: ((List<String>) -> Unit)?
-    ) {
-        liveInteractor.getNotificationSubscriptions(onError, onSuccess)
-    }
-
-    override fun unSubscribeFromNotifications(
+    override fun unSubscribeFromNotificationsFor(
         episode: Episode,
-        token: String,
         onError: ((Throwable) -> Unit)?,
         onSuccess: (() -> Unit)?
     ) {
-        liveInteractor.unSubscribeFromNotifications(episode, token, onError, onSuccess)
+        liveInteractor.unSubscribeFromNotificationsFor(episode, onError, onSuccess)
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import com.pbj.sdk.LiveSDK
 import com.pbj.sdk.PbjSDK
 import com.pbj.sdk.analytics.AnalyticsTracker
-import com.pbj.sdk.concreteImplementation.generic.onError
 import com.pbj.sdk.di.*
 import com.pbj.sdk.domain.chat.LiveChatSource
 import com.pbj.sdk.domain.onErrorCallBack
@@ -24,9 +23,8 @@ internal class Live(
     private val appContext: Context,
     apiKey: String,
     environment: ApiEnvironment,
-    override var liveNotificationManager: LiveNotificationManager? = null,
     override var liveChatSource: LiveChatSource? = null,
-    override var tracker: AnalyticsTracker? = null
+    override var tracker: AnalyticsTracker? = null,
 ) : LiveSDK, PbjSDK, LiveKoinComponent {
 
     override val organizationFeature: OrganizationFeature by inject()
@@ -40,6 +38,8 @@ internal class Live(
     override val userFeature: UserFeature by inject()
 
     override val guestFeature: GuestFeature by inject()
+
+    override var liveNotificationManager: LiveNotificationManager? = null
 
     private val sdkModules = mutableListOf(
         DataModule.init(apiKey, environment),
@@ -68,6 +68,10 @@ internal class Live(
                 modules(sdkModules)
             }
         }
+    }
+
+    override fun addLiveNotificationManager(liveNotificationManager: LiveNotificationManager) {
+        this.liveNotificationManager = liveNotificationManager
     }
 
     override fun isEpisodeLive(onError: onErrorCallBack?, onSuccess: (Boolean) -> Unit) {

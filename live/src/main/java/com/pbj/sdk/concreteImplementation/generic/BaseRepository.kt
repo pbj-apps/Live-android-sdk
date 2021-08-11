@@ -1,11 +1,11 @@
 package com.pbj.sdk.concreteImplementation.generic
 
-import com.pbj.sdk.domain.GenericError
 import com.pbj.sdk.domain.Result
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import retrofit2.Response
 import timber.log.Timber
+import java.net.ConnectException
 import java.net.UnknownHostException
 
 internal typealias onError = (JsonGenericError?, code: ErrorCode) -> Throwable
@@ -50,6 +50,7 @@ internal abstract class BaseRepository(open val moshi: Moshi) {
     private fun mapGenericError(throwable: Throwable): GenericError {
         return when (throwable) {
             is UnknownHostException -> GenericError.NoNetwork(throwable.localizedMessage)
+            is ConnectException -> GenericError.NoNetwork(throwable.localizedMessage)
             is JsonDataException -> GenericError.ErrorParsing(throwable.localizedMessage)
             else -> GenericError.Unknown(throwable.localizedMessage)
         }

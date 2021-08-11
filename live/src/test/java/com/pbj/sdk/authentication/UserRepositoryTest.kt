@@ -3,10 +3,10 @@ package com.pbj.sdk.authentication
 import com.pbj.sdk.concreteImplementation.authentication.UserApi
 import com.pbj.sdk.concreteImplementation.authentication.UserRepositoryImpl
 import com.pbj.sdk.concreteImplementation.authentication.model.*
+import com.pbj.sdk.concreteImplementation.generic.GenericError
 import com.pbj.sdk.concreteImplementation.storage.PBJPreferences
 import com.pbj.sdk.core.ApiEnvironment
 import com.pbj.sdk.di.DataModule
-import com.pbj.sdk.domain.GenericError
 import com.pbj.sdk.domain.authentication.LoginError
 import com.pbj.sdk.domain.authentication.RegisterError
 import com.pbj.sdk.domain.authentication.UserRepository
