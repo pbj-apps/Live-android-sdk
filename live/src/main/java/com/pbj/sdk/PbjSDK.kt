@@ -36,16 +36,18 @@ interface PbjSDK {
 
     val guestFeature: GuestFeature
 
+    fun addLiveNotificationManager(liveNotificationManager: LiveNotificationManager)
+
     companion object {
         fun initialize(
             context: Context,
             apiKey: String,
             environment: ApiEnvironment,
-            liveNotificationManager: LiveNotificationManager,
             liveChatSource: LiveChatSource,
             analyticsTracker: AnalyticsTracker
         ): PbjSDK {
-            SdkHolder.instance = Live(context, apiKey, environment, liveNotificationManager, liveChatSource, analyticsTracker)
+            SdkHolder.instance =
+                Live(context, apiKey, environment, liveChatSource, analyticsTracker)
             return SdkHolder.instance
         }
     }

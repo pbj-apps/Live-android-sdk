@@ -29,12 +29,14 @@ internal val JsonEpisode.asModel: Episode
             title = title,
             description = description,
             duration = duration,
+            image = preview_asset.image.asModel,
             startDate = DateUtils.getDateTime(starting_at),
             endDate = DateUtils.getDateTime(ends_at),
             show = show?.asModel,
             status = getLiveStatus(status),
             streamer = streamer?.asModel,
-            video = pre_recorded_video?.asModel
+            video = pre_recorded_video?.asModel,
+            hasReminder = is_push_notification_enabled
         )
     }
 

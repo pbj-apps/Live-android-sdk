@@ -1,7 +1,7 @@
 package com.pbj.sdk.concreteImplementation.generic
 
-import com.pbj.sdk.domain.GenericError
 import com.pbj.sdk.domain.authentication.LoginError
+import com.pbj.sdk.domain.authentication.PushNotificationError
 
 internal fun ErrorCode.mapLoginError(): LoginError =
     when (code) {
@@ -19,5 +19,17 @@ internal fun BaseRepository.mapGenericError(errorCode: Int, error: JsonGenericEr
         errorCode == 403 || error?.error_type == "NotAuthenticated" ->
             GenericError.NoPermission(message)
         else -> GenericError.Unknown(message)
+    }
+}
+
+internal fun BaseRepository.mapPushNotificationError(
+    errorCode: Int,
+    error: JsonGenericError?
+): Throwable {
+    val message = error?.errors?.firstOrNull()?.message
+    return when {
+        errorCode == 400 || error?.error_type == "ValidationError" ->
+            PushNotificationError.ValidationError(message)
+        else -> PushNotificationError.Unknown(message)
     }
 }

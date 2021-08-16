@@ -86,4 +86,12 @@ internal class UserFeatureImpl(private val userInteractor: UserInteractor) : Use
     ) {
         userInteractor.saveIsLoggedInAsGuest(isGuest, onError, onSuccess)
     }
+
+    override fun updateDeviceRegistrationToken(
+        token: String,
+        onError: onErrorCallBack?,
+        onSuccess: (() -> Unit)?
+    ) {
+        userInteractor.updateDeviceRegistrationToken(token, onError, onSuccess)
+    }
 }

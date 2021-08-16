@@ -7,6 +7,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 internal class LiveNotificationSubscription(
     val topic_type: String?,
-    val topic_id: String?,
-    val device_registration_tokens: List<String>?
+    val topic_id: String?
 )

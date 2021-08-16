@@ -1,6 +1,9 @@
 package com.pbj.sdk.concreteImplementation.live
 
-import com.pbj.sdk.concreteImplementation.live.model.*
+import com.pbj.sdk.concreteImplementation.live.model.JsonBroadcastUrl
+import com.pbj.sdk.concreteImplementation.live.model.JsonEpisodeResponse
+import com.pbj.sdk.concreteImplementation.live.model.JsonShow
+import com.pbj.sdk.concreteImplementation.live.model.LiveNotificationSubscription
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -9,17 +12,11 @@ internal interface LiveApi {
     @GET("live-streams")
     suspend fun fetchLiveStreams(): Response<JsonEpisodeResponse>
 
-    @GET("live-streams/schedule")
+    @GET("v1/episodes")
     suspend fun fetchLiveStreamsSchedule(
         @Query("starting_at") startDate: String?,
         @Query("days_ahead") daysAhead: Int?,
         @Query("per_page") size: Int?
-    ): Response<JsonEpisodeResponse>
-
-    @GET("live-streams/schedule")
-    suspend fun fetchLiveStreamsSchedule(
-        @Query("days_ahead") daysAhead: Int,
-        @Query("per_page") size: Int
     ): Response<JsonEpisodeResponse>
 
     @GET
@@ -37,12 +34,9 @@ internal interface LiveApi {
     @GET("live-streams/{id}/watch")
     suspend fun fetchBroadcastUrl(@Path("id") id: String): Response<JsonBroadcastUrl>
 
-    @GET("notifications/subscriptions")
-    suspend fun fetchNotificationSubscriptions(): Response<JsonLiveNotificationResponse>
-
-    @POST("notifications/subscriptions")
+    @POST("push-notifications/subscribe")
     suspend fun subscribeToNotification(@Body request: LiveNotificationSubscription): Response<Any>
 
-    @HTTP(method = "DELETE", path = "notifications/subscriptions", hasBody = true)
+    @POST("push-notifications/unsubscribe")
     suspend fun unsubscribeFromNotifications(@Body request: LiveNotificationSubscription): Response<Any>
 }

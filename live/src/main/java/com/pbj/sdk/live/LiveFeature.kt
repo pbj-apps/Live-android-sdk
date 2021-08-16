@@ -50,21 +50,14 @@ interface LiveFeature {
         onSuccess: ((BroadcastUrl?) -> Unit)? = null
     )
 
-    fun subscribeToNotifications(
+    fun subscribeToNotificationsFor(
         episode: Episode,
-        token: String,
         onError: onErrorCallBack? = null,
         onSuccess: (() -> Unit)? = null
     )
 
-    fun getNotificationSubscriptions(
-        onError: onErrorCallBack? = null,
-        onSuccess: ((List<String>) -> Unit)? = null
-    )
-
-    fun unSubscribeFromNotifications(
+    fun unSubscribeFromNotificationsFor(
         episode: Episode,
-        token: String,
         onError: onErrorCallBack? = null,
         onSuccess: (() -> Unit)? = null
     )

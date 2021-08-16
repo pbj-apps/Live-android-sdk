@@ -2,12 +2,16 @@ package com.pbj.sdk.concreteImplementation.live
 
 import com.pbj.sdk.concreteImplementation.generic.BaseRepository
 import com.pbj.sdk.concreteImplementation.generic.mapGenericError
+import com.pbj.sdk.concreteImplementation.generic.mapPushNotificationError
 import com.pbj.sdk.concreteImplementation.live.model.JsonWebSocketRequest
 import com.pbj.sdk.concreteImplementation.live.model.LiveNotificationSubscription
 import com.pbj.sdk.concreteImplementation.live.model.asModel
 import com.pbj.sdk.domain.Result
 import com.pbj.sdk.domain.live.LiveRepository
-import com.pbj.sdk.domain.live.model.*
+import com.pbj.sdk.domain.live.model.BroadcastUrl
+import com.pbj.sdk.domain.live.model.Episode
+import com.pbj.sdk.domain.live.model.EpisodeResponse
+import com.pbj.sdk.domain.live.model.Show
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.map
 
@@ -35,20 +39,6 @@ internal class LiveRepositoryImpl(
     ): Result<EpisodeResponse> =
         apiCall(
             call = { restApi.fetchLiveStreamsSchedule(date, daysAhead, size) },
-            onApiError = { e, code ->
-                mapGenericError(code.code, e)
-            }
-        )
-        { response ->
-            response?.asModel
-        }
-
-    override suspend fun fetchLiveStreamsSchedule(
-        daysAhead: Int,
-        size: Int
-    ): Result<EpisodeResponse> =
-        apiCall(
-            call = { restApi.fetchLiveStreamsSchedule(daysAhead, size) },
             onApiError = { e, code ->
                 mapGenericError(code.code, e)
             }
@@ -123,44 +113,29 @@ internal class LiveRepositoryImpl(
             it?.asModel
         }
 
-    override suspend fun fetchNotificationSubscriptions(): Result<List<String>> =
-        apiCall(
-            call = { restApi.fetchNotificationSubscriptions() },
-            onApiError = { e, code ->
-                mapGenericError(code.code, e)
-            }
-        ) { response ->
-            response?.results?.mapNotNull { it.topic_id }
-        }
-
-    override suspend fun subscribeToNotifications(episode: Episode, token: String): Result<Any> {
+    override suspend fun subscribeToNotificationsFor(episode: Episode): Result<Any> {
         val request = LiveNotificationSubscription(
-            "show",
-            episode.show?.id,
-            listOf(token)
+            "episode",
+            episode.id
         )
 
         return apiCall(
             call = { restApi.subscribeToNotification(request) },
             onApiError = { e, code ->
-                mapGenericError(code.code, e)
+                mapPushNotificationError(code.code, e)
             }
         ) { it }
     }
 
-    override suspend fun unSubscribeFromNotifications(
-        episode: Episode,
-        token: String
-    ): Result<Any> {
+    override suspend fun unSubscribeFromNotificationsFor(episode: Episode): Result<Any> {
         val request = LiveNotificationSubscription(
-            "show",
-            episode.showId,
-            listOf(token)
+            "episode",
+            episode.id
         )
         return apiCall(
             call = { restApi.unsubscribeFromNotifications(request) },
             onApiError = { e, code ->
-                mapGenericError(code.code, e)
+                mapPushNotificationError(code.code, e)
             }
         ) { it }
     }

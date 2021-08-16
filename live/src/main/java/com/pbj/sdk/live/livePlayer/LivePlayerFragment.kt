@@ -101,7 +101,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     private fun initView(episode: Episode) {
         view.apply {
 
-            bgImage.load(episode.fullSizeImage)
+            bgImage.load(episode.image?.fullSize)
 
             vm.liveChatSource?.let {
                 initChatViews()
@@ -434,10 +434,6 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         vm.liveChatSource?.let {
             observeChatMessages()
         }
-
-        vm.liveNotificationManager?.let {
-            observeNotificationIdList()
-        }
     }
 
     private fun observeLiveUrl() {
@@ -471,12 +467,6 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
                 chatMessageCount.text = it.count().toString()
                 chatListView.smoothScrollToPosition(it.size)
             }
-        }
-    }
-
-    private fun observeNotificationIdList() {
-        observe(vm.remindedLiveStreamIdList) {
-            setRemindButtonText()
         }
     }
 
@@ -541,7 +531,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         view.remindButton.text = getString(
             when {
                 vm.nextLiveStream.value?.isActive == true -> R.string.join_live
-                vm.isReminderSet -> R.string.reminder_set
+                vm.nextLiveStream.value?.hasReminder == true -> R.string.reminder_set
                 else -> R.string.remind_me
             }
         )

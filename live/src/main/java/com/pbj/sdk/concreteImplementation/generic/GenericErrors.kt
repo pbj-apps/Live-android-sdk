@@ -1,4 +1,4 @@
-package com.pbj.sdk.domain
+package com.pbj.sdk.concreteImplementation.generic
 
 sealed class GenericError : Throwable() {
     data class NoNetwork(override val message: String? = null) : GenericError()

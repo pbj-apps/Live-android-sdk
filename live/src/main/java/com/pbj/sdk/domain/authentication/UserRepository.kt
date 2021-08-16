@@ -35,4 +35,6 @@ internal interface UserRepository {
     suspend fun isLoggedInAsGuest(): Result<Boolean>
 
     suspend fun saveIsLoggedInAsGuest(isGuest: Boolean): Result<Any>
+
+    suspend fun updateDeviceRegistrationToken(token: String): Result<Any>
 }

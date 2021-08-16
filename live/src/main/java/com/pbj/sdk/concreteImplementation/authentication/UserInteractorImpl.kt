@@ -12,7 +12,7 @@ import timber.log.Timber
 import java.io.File
 
 internal class UserInteractorImpl(
-    override val userRepository: UserRepository
+    val userRepository: UserRepository
 ) : UserInteractor {
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
@@ -219,6 +219,16 @@ internal class UserInteractorImpl(
                 }) {
                     onSuccess?.invoke()
                 }
+        }
+    }
+
+    override fun updateDeviceRegistrationToken(
+        token: String,
+        onError: onErrorCallBack?,
+        onSuccess: (() -> Unit)?
+    ) {
+        scope.launch {
+            updateDeviceRegistrationToken(token, onError, onSuccess)
         }
     }
 }

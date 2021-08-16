@@ -1,16 +1,13 @@
 package com.pbj.sdk.concreteImplementation.authentication
 
-import com.pbj.sdk.concreteImplementation.authentication.model.ChangePasswordRequest
-import com.pbj.sdk.concreteImplementation.authentication.model.JsonLoginRequest
-import com.pbj.sdk.concreteImplementation.authentication.model.JsonRegisterRequest
-import com.pbj.sdk.concreteImplementation.authentication.model.UpdateProfileRequest
+import com.pbj.sdk.concreteImplementation.authentication.model.*
 import com.pbj.sdk.concreteImplementation.authentication.model.extensions.asModel
 import com.pbj.sdk.concreteImplementation.generic.BaseRepository
+import com.pbj.sdk.concreteImplementation.generic.GenericError
 import com.pbj.sdk.concreteImplementation.generic.mapGenericError
 import com.pbj.sdk.concreteImplementation.generic.mapLoginError
 import com.pbj.sdk.concreteImplementation.storage.PBJPreferences
 import com.pbj.sdk.concreteImplementation.vod.model.asModel
-import com.pbj.sdk.domain.GenericError
 import com.pbj.sdk.domain.Result
 import com.pbj.sdk.domain.authentication.UserRepository
 import com.pbj.sdk.domain.authentication.model.User
@@ -156,4 +153,16 @@ internal class UserRepositoryImpl(
         preferences.isLoggedInAsGuest = isGuest
         return Result.Success()
     }
+
+    override suspend fun updateDeviceRegistrationToken(token: String): Result<Any> =
+        apiCall(call = {
+            api.updateDeviceRegistrationToken(DeviceToken(token))
+        },
+            onApiError = { e, code ->
+                mapGenericError(code.code, e)
+            },
+            onSuccess = {
+                it
+            }
+        )
 }

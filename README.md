@@ -10,30 +10,12 @@ Stream your PBJ.live content from your Android App.
 # Stream to your Android app in 4 simple steps
 
 ## 1. Import the Live-android-sdk package
-Add in gradle at project level
-
-You must use :
-- a github username 
-- a personal access token (https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+Add in gradle at app level
 
 ```groovy
-maven {
-            url "https://maven.pkg.github.com/pbj-apps/Live-android-sdk"
-            credentials {
-                username "GithubUserName"
-                password "personal_access_token"
-            }
-        }
-```
-Then, add in gradle at app level
-
-```groovy
-implementation "com.pbj.live:live:$live_version"
+implementation "live.pbj.sdk:live:$live_version"
 ```
 
-You can find the latest version in the package section of this repository
-
-https://github.com/pbj-apps/Live-android-sdk/packages/748723
 
 ## 2. Initialize the LivePlayerSDK with your credentials on App start
 

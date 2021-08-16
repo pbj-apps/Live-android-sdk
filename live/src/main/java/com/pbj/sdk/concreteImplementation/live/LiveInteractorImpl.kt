@@ -147,14 +147,13 @@ internal class LiveInteractorImpl(
         }
     }
 
-    override fun subscribeToNotifications(
+    override fun subscribeToNotificationsFor(
         episode: Episode,
-        token: String,
         onError: ((Throwable) -> Unit)?,
         onSuccess: (() -> Unit)?
     ) {
         scope.launch {
-            liveRepository.subscribeToNotifications(episode, token).onResult({
+            liveRepository.subscribeToNotificationsFor(episode).onResult({
                 onError?.invoke(it)
             }) {
                 onSuccess?.invoke()
@@ -162,27 +161,13 @@ internal class LiveInteractorImpl(
         }
     }
 
-    override fun getNotificationSubscriptions(
-        onError: ((Throwable) -> Unit)?,
-        onSuccess: ((List<String>) -> Unit)?
-    ) {
-        scope.launch {
-            liveRepository.fetchNotificationSubscriptions().onResult({
-                onError?.invoke(it)
-            }) {
-                onSuccess?.invoke(it ?: listOf())
-            }
-        }
-    }
-
-    override fun unSubscribeFromNotifications(
+    override fun unSubscribeFromNotificationsFor(
         episode: Episode,
-        token: String,
         onError: ((Throwable) -> Unit)?,
         onSuccess: (() -> Unit)?
     ) {
         scope.launch {
-            liveRepository.unSubscribeFromNotifications(episode, token).onResult({
+            liveRepository.unSubscribeFromNotificationsFor(episode).onResult({
                 onError?.invoke(it)
             }) {
                 onSuccess?.invoke()
