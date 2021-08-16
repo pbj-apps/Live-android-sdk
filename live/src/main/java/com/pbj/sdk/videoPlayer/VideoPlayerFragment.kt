@@ -139,7 +139,7 @@ class VideoPlayerFragment : Fragment(), ProductAdapter.OnProductClickListener {
 
                         lifecycleScope.launch {
                             vm.isLoadingVideoPlayer.value = true
-                            delay(5000)
+                            delay(3000)
                             liveFragmentListener?.onPlayerLoad()
                             vm.videoPlayer?.prepare()
                         }

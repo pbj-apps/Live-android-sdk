@@ -1,16 +1,21 @@
 package com.pbj.sdk.domain.vod
 
-import com.pbj.sdk.domain.vod.model.VodCategory
+import com.pbj.sdk.domain.vod.model.VodCategoriesResponse
 import com.pbj.sdk.domain.vod.model.VodPlaylist
 import com.pbj.sdk.domain.vod.model.VodVideo
 
 internal interface VodInteractor {
 
-    val vodRepository: VodRepository
-
     fun getVodCategories(
+        itemsPerCategory: Int,
         onError: ((Throwable) -> Unit)? = null,
-        onSuccess: ((List<VodCategory>) -> Unit)? = null
+        onSuccess: ((VodCategoriesResponse?) -> Unit)? = null
+    )
+
+    fun getNextVodCategoryPage(
+        url: String,
+        onError: ((Throwable) -> Unit)? = null,
+        onSuccess: ((VodCategoriesResponse?) -> Unit)? = null
     )
 
     fun getPlaylist(
