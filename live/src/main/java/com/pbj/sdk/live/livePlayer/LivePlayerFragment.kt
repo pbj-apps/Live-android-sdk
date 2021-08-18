@@ -113,7 +113,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
             initProductList()
 
             root.setOnClickListener {
-                if (vm.liveRoomState.value != LiveRoomViewModel.LiveRoomState.ENDED) {
+                if (vm.liveRoomState.value != LiveRoomViewModel.LiveRoomState.Finished) {
                     overlay.isVisible = !overlay.isVisible
                 }
             }
@@ -192,7 +192,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
         view.apply {
 
-            if (liveRoomState == LiveRoomViewModel.LiveRoomState.ENDED) {
+            if (liveRoomState == LiveRoomViewModel.LiveRoomState.Finished) {
                 overlay.isVisible = true
             }
 
@@ -202,13 +202,13 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
                 activeBody.isVisible = live.isBeforeBroadcast
 
-                endBody.isVisible = liveRoomState == LiveRoomViewModel.LiveRoomState.ENDED
+                endBody.isVisible = liveRoomState == LiveRoomViewModel.LiveRoomState.Finished
                         && vm.nextLiveStream.value != null
 
                 updateChatView(liveRoomState)
 
                 isBroadcastingOrPlaying = live.isBroadcasting
-                        || liveRoomState == LiveRoomViewModel.LiveRoomState.PLAYING
+                        || liveRoomState == LiveRoomViewModel.LiveRoomState.Playing
 
                 bgImage.isVisible = !isBroadcastingOrPlaying
 
@@ -227,21 +227,21 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         view.apply {
             vm.episode?.let { live ->
                 val icon = when {
-                    liveRoomState == LiveRoomViewModel.LiveRoomState.PLAYING || live.isBroadcasting -> R.drawable.ic_live_on
-                    liveRoomState == LiveRoomViewModel.LiveRoomState.ENDED -> R.drawable.ic_chevron_left
+                    liveRoomState == LiveRoomViewModel.LiveRoomState.Playing || live.isBroadcasting -> R.drawable.ic_live_on
+                    liveRoomState == LiveRoomViewModel.LiveRoomState.Finished -> R.drawable.ic_chevron_left
                     else -> R.drawable.ic_up_next
                 }
 
-                if (liveRoomState == LiveRoomViewModel.LiveRoomState.NO_LIVESTREAM)
+                if (liveRoomState == LiveRoomViewModel.LiveRoomState.NoLiveStream)
                     updateNoLive()
 
-                closeIcon.isVisible = liveRoomState != LiveRoomViewModel.LiveRoomState.ENDED
+                closeIcon.isVisible = liveRoomState != LiveRoomViewModel.LiveRoomState.Finished
 
                 liveIcon.apply {
                     background = ContextCompat.getDrawable(context, icon)
 
                     setOnClickListener {
-                        if (liveRoomState == LiveRoomViewModel.LiveRoomState.ENDED) {
+                        if (liveRoomState == LiveRoomViewModel.LiveRoomState.Finished) {
                             listener?.onPressClose()
                         }
                     }
@@ -271,7 +271,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
                 chatListView.isVisible = isChatVisible
             }
             footer.isVisible =
-                liveRoomState != LiveRoomViewModel.LiveRoomState.ENDED && vm.liveChatSource != null
+                liveRoomState != LiveRoomViewModel.LiveRoomState.Finished && vm.liveChatSource != null
         }
     }
 
@@ -365,7 +365,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     }
 
     private fun setStreamTitle(liveState: LiveRoomViewModel.LiveRoomState) {
-        val title = if (liveState == LiveRoomViewModel.LiveRoomState.ENDED) {
+        val title = if (liveState == LiveRoomViewModel.LiveRoomState.Finished) {
             getString(R.string.end_stream_title)
         } else {
             vm.episode?.title
@@ -452,7 +452,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
 
     private fun observeTimer() {
         observe(vm.remainingTime) {
-            if (vm.liveRoomState.value == LiveRoomViewModel.LiveRoomState.ENDED) {
+            if (vm.liveRoomState.value == LiveRoomViewModel.LiveRoomState.Finished) {
                 view.nextCountdown.text = it
             } else {
                 view.countdown.text = it

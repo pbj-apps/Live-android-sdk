@@ -43,7 +43,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
 
     val streamUrl = MutableLiveData<BroadcastUrl?>(null)
 
-    val liveRoomState = MutableLiveData(LiveRoomState.IDLE)
+    val liveRoomState = MutableLiveData(LiveRoomState.Idle)
 
     val remainingTime = MutableLiveData("")
 
@@ -192,17 +192,17 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
         val isBroadcastingOrFinished = live.isBroadcasting || live.isFinished
 
         val roomState = when {
-            isPlaying && isBroadcastingOrFinished -> LiveRoomState.PLAYING
-            live.isActive -> LiveRoomState.ACTIVE
-            live.isFinished && !isPlaying -> LiveRoomState.ENDED
-            else -> LiveRoomState.IDLE
+            isPlaying && isBroadcastingOrFinished -> LiveRoomState.Playing
+            live.isActive -> LiveRoomState.Active
+            live.isFinished && !isPlaying -> LiveRoomState.Finished
+            else -> LiveRoomState.Idle
         }
 
         liveRoomState.postValue(roomState)
 
         Timber.d(roomState.toString())
 
-        if (liveRoomState.value == LiveRoomState.ENDED) {
+        if (liveRoomState.value == LiveRoomState.Finished) {
             nextLiveStream.value?.endDate?.let {
                 startCountdown(it)
             }
@@ -354,17 +354,16 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
     }
 
     enum class LiveRoomState {
-        LOADING,
-        NO_LIVESTREAM,
-        IDLE,
-        ACTIVE,
-        PLAYING,
-        ENDED
+        NoLiveStream,
+        Idle,
+        Active,
+        Playing,
+        Finished
     }
 }
 
 internal val LiveRoomViewModel.LiveRoomState.isValidStateForBody: Boolean
-    get() = this == LiveRoomViewModel.LiveRoomState.IDLE || this == LiveRoomViewModel.LiveRoomState.ACTIVE
+    get() = this == LiveRoomViewModel.LiveRoomState.Idle || this == LiveRoomViewModel.LiveRoomState.Active
 
 internal val LiveRoomViewModel.LiveRoomState.isValidStateForChat: Boolean
-    get() = this == LiveRoomViewModel.LiveRoomState.PLAYING || this == LiveRoomViewModel.LiveRoomState.ACTIVE
+    get() = this == LiveRoomViewModel.LiveRoomState.Playing || this == LiveRoomViewModel.LiveRoomState.Active
