@@ -6,13 +6,13 @@ import com.pbj.sdk.domain.vod.VodRepository
 import com.pbj.sdk.domain.vod.model.VodCategoriesResponse
 import com.pbj.sdk.domain.vod.model.VodPlaylist
 import com.pbj.sdk.domain.vod.model.VodVideo
+import com.pbj.sdk.utils.log
 import kotlinx.coroutines.*
-import timber.log.Timber
 
 internal class VodInteractorImpl(private val vodRepository: VodRepository) : VodInteractor {
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("$throwable")
+        throwable.log()
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + errorHandler)

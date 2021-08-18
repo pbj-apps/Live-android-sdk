@@ -7,16 +7,17 @@ import com.pbj.sdk.domain.authentication.UserRepository
 import com.pbj.sdk.domain.authentication.model.RegisterRequest
 import com.pbj.sdk.domain.authentication.model.User
 import com.pbj.sdk.domain.vod.model.ProfileImage
+import com.pbj.sdk.utils.log
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.File
 
 internal class UserInteractorImpl(
-    val userRepository: UserRepository
+    private val userRepository: UserRepository
 ) : UserInteractor {
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("$throwable")
+        throwable.log()
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + errorHandler)

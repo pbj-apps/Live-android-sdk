@@ -31,7 +31,7 @@ internal interface LiveApi {
     @GET("shows/{id}/public")
     suspend fun fetchShowPublic(@Path("id") showId: String): Response<JsonShow>
 
-    @GET("live-streams/{id}/watch")
+    @GET("v1/episodes/{id}/watch")
     suspend fun fetchBroadcastUrl(@Path("id") id: String): Response<JsonBroadcastUrl>
 
     @POST("push-notifications/subscribe")

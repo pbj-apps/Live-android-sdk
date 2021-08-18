@@ -5,14 +5,14 @@ import com.pbj.sdk.domain.onResult
 import com.pbj.sdk.domain.organization.OrganizationInteractor
 import com.pbj.sdk.domain.organization.OrganizationRepository
 import com.pbj.sdk.domain.organization.model.OrganizationConfig
+import com.pbj.sdk.utils.log
 import kotlinx.coroutines.*
-import timber.log.Timber
 
 internal class OrganizationInteractorImpl(override val organizationRepository: OrganizationRepository) :
     OrganizationInteractor {
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("$throwable")
+        throwable.log()
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + errorHandler)

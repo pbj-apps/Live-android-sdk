@@ -117,7 +117,6 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
 
     override fun listenToEpisode() {
         liveInteractor.registerForRealTimeLiveStreamUpdates {
-
             Timber.d(it.status.toString())
 
             if (episode?.id == it.id) {
@@ -249,19 +248,22 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
     }
 
     fun toggleReminderFor(episode: Episode) {
-        liveNotificationManager?.toggleReminderFor(episode)
+        liveNotificationManager?.toggleReminderFor(episode) { isReminderSet ->
+            updateNextEpisode(episode.id, isReminderSet)
+        }
     }
-
-    val isReminderSet: Boolean
-        get() = nextLiveStream.value?.hasReminder ?: false
 
     private fun listenToNotificationSubscriptions() {
         launch {
             LiveEventBus.listen<LiveNotificationModified>().collect {
-                if (nextLiveStream.value?.id == it.episodeId) {
-                    nextLiveStream.postValue(nextLiveStream.value?.copy(hasReminder = it.isReminderSet))
-                }
+                updateNextEpisode(it.episodeId, it.isReminderSet)
             }
+        }
+    }
+
+    private fun updateNextEpisode(episodeId: String, isReminderSet: Boolean) {
+        if (nextLiveStream.value?.id == episodeId) {
+            nextLiveStream.postValue(nextLiveStream.value?.copy(hasReminder = isReminderSet))
         }
     }
 

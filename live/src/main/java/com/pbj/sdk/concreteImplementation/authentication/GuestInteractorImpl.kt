@@ -8,15 +8,16 @@ import com.pbj.sdk.domain.onError
 import com.pbj.sdk.domain.onErrorCallBack
 import com.pbj.sdk.domain.onSuccess
 import com.pbj.sdk.domain.successResult
+import com.pbj.sdk.utils.log
 import kotlinx.coroutines.*
-import timber.log.Timber
 
-internal class GuestInteractorImpl(override val guestRepository: GuestRepository,
-                                   override val userRepository: UserRepository
+internal class GuestInteractorImpl(
+    override val guestRepository: GuestRepository,
+    override val userRepository: UserRepository
 ) : GuestInteractor, LiveKoinComponent {
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("$throwable")
+        throwable.log()
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + errorHandler)

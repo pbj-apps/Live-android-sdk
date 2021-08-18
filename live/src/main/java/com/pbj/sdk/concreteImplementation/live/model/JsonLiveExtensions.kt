@@ -89,7 +89,13 @@ internal val JsonEpisodeStatusUpdate.asModel: EpisodeStatusUpdate
 internal val JsonBroadcastUrl.asModel: BroadcastUrl
     get() {
         val time = DateUtils.getLocalTime(elapsed_time).asMilliSeconds
-       return BroadcastUrl(broadcast_url, time)
+        return BroadcastUrl(getStreamType(stream_type), broadcast_url, time)
+    }
+
+private fun getStreamType(streamType: String?) =
+    when (streamType) {
+        "pre_recorded_live_stream" -> StreamType.Video
+        else -> StreamType.Live
     }
 
 private fun getLiveStatus(status: String?): EpisodeStatus = when (status) {

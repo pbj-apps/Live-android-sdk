@@ -5,11 +5,11 @@ import com.pbj.sdk.domain.live.LiveRepository
 import com.pbj.sdk.domain.live.model.*
 import com.pbj.sdk.domain.onErrorCallBack
 import com.pbj.sdk.domain.onResult
+import com.pbj.sdk.utils.log
 import com.tinder.scarlet.WebSocket
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
-import timber.log.Timber
 
 internal class LiveInteractorImpl(
     override val liveRepository: LiveRepository
@@ -18,7 +18,7 @@ internal class LiveInteractorImpl(
     private var webSocketStatus: WebSocket.Event? = null
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("$throwable")
+        throwable.log()
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + errorHandler)

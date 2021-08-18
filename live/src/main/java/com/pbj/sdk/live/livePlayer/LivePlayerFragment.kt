@@ -119,7 +119,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
             }
 
             closeIcon.setOnClickListener {
-                Timber.e("CLose")
+                Timber.e("Close")
                 listener?.onPressClose()
             }
         }
@@ -384,14 +384,12 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     }
 
     private fun initVideoPlayer(url: BroadcastUrl) {
-        val video: String?
+        val video = url.broadcastUrl
         var productTimeCodeList: List<ProductTimeCodes>? = null
 
-        if (vm.isVideo) {
-            video = vm.episode?.video?.videoURL
+        if (url.streamType == StreamType.Video) {
             productTimeCodeList = getProductTimeCodes()
-        } else
-            video = url.broadcastUrl
+        }
 
         video?.let {
             val videoFragment = VideoPlayerFragment.newInstance(
