@@ -29,6 +29,6 @@ fun DoubleGradientView() {
 
 @Preview(showBackground = true)
 @Composable
-private fun DoubleGradientViewPreview() {
+fun DoubleGradientViewPreview() {
     DoubleGradientView()
 }

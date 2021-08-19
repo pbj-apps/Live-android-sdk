@@ -132,7 +132,7 @@ internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
 
         val state: State = when {
             hasEpisodePlaying || live?.isBroadcasting == true -> State.HasEpisode(live!!)
-            !isPlaying && live?.status == EpisodeStatus.FINISHED -> State.EpisodeEnd(live)
+            !isPlaying && live?.status == EpisodeStatus.Finished -> State.EpisodeEnd(live)
             show != null -> State.HasShow(show!!)
             else -> State.NoLive
         }

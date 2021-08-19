@@ -93,8 +93,8 @@ internal val JsonBroadcastUrl.asModel: BroadcastUrl
     }
 
 private fun getLiveStatus(status: String?): EpisodeStatus = when (status) {
-    "waiting_room" -> EpisodeStatus.WAITING_ROOM
-    "broadcasting" -> EpisodeStatus.BROADCASTING
-    "finished" -> EpisodeStatus.FINISHED
-    else -> EpisodeStatus.IDLE
+    "waiting_room" -> EpisodeStatus.WaitingRoom
+    "broadcasting" -> EpisodeStatus.Broadcasting
+    "finished" -> EpisodeStatus.Finished
+    else -> EpisodeStatus.Idle
 }
