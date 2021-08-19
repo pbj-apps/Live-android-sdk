@@ -126,7 +126,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
             if (nextLiveStream.value?.id == it.id) {
                 nextLiveStream.postValue(
                     nextLiveStream.value?.copy(
-                        description = it.waitingRoomDescription,
+                        waitingRoomDescription = it.waitingRoomDescription,
                         status = it.status
                     )
                 )
@@ -142,6 +142,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
 
                 episode = episode?.copy(
                     status = status,
+                    waitingRoomDescription = waitingRoomDescription,
                     show = show.copy(waitingRoomDescription = waitingRoomDescription)
                 )
 

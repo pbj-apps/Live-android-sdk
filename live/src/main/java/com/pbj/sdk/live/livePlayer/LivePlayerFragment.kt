@@ -375,7 +375,7 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     }
 
     private fun setDescription(episode: Episode?) {
-        val string = if (episode?.status == EpisodeStatus.WAITING_ROOM)
+        val string = if (episode?.status == EpisodeStatus.WaitingRoom)
             episode.show?.waitingRoomDescription
         else
             episode?.description

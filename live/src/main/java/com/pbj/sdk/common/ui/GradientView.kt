@@ -1,11 +1,13 @@
 package com.pbj.sdk.common.ui
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun GradientView(
@@ -16,6 +18,20 @@ fun GradientView(
     Box(
         modifier = modifier.verticalGradientBackground(colors, startY = startY, endY = endY)
     )
+}
+
+@Composable
+fun BottomGradient(modifier: Modifier = Modifier) {
+    GradientView(
+        modifier = modifier
+            .fillMaxWidth()
+    )
+}
+
+@Preview
+@Composable
+private fun BottomGradientPreview() {
+    BottomGradient()
 }
 
 fun Modifier.verticalGradientBackground(
