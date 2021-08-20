@@ -1,4 +1,4 @@
-package com.pbj.sdk.live.livePlayer.ui.liveInfo
+package com.pbj.sdk.live.livePlayer.ui.liveOverlay
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -1,17 +1,16 @@
-package com.pbj.sdk.live.livePlayer.ui.liveInfo
+package com.pbj.sdk.live.livePlayer.ui.liveOverlay
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,7 +25,7 @@ fun LivePlayerHeader(
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+//        verticalAlignment = Alignment.Top,
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
@@ -40,14 +39,16 @@ fun LivePlayerHeader(
                 .padding(16.dp)
         )
 
-        Text(
-            text = stringResource(R.string.end_stream_title),
-            fontSize = 18.sp,
-            color = Color.White,
-            modifier = Modifier.padding(vertical = 16.dp)
-        )
+        title?.let {
+            Text(
+                text = it,
+                fontSize = 18.sp,
+                color = Color.White,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
+        } ?: Spacer(modifier = Modifier.weight(1f, true))
 
-        Icon(
+        Image(
             painter = painterResource(R.drawable.ic_cross),
             null,
             modifier = Modifier
@@ -55,8 +56,8 @@ fun LivePlayerHeader(
                 .clickable {
                     close()
                 }
-                .size(15.dp)
                 .padding(16.dp)
+                .size(20.dp)
         )
     }
 }
@@ -76,5 +77,14 @@ private fun LivePlayerHeaderPreview() {
     LivePlayerHeader(
         isLive = false,
         title = "Workout of the day"
+    ) {}
+}
+
+@Preview(name = "No Title")
+@Composable
+private fun LivePlayerHeaderNoTitlePreview() {
+    LivePlayerHeader(
+        isLive = false,
+        title = null
     ) {}
 }

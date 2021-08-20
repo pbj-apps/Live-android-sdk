@@ -1,6 +1,10 @@
 package com.pbj.sdk.live.livePlayer
 
 import android.os.CountDownTimer
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pbj.sdk.analytics.AnalyticsTracker
@@ -37,21 +41,21 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
 
     var liveNotificationManager: LiveNotificationManager? = null
 
-    var episode: Episode? = null
+    var episode: Episode? by mutableStateOf(null)
 
-    var nextLiveStream = MutableLiveData<Episode?>(null)
+    var nextLiveStream: Episode? by mutableStateOf(null)
 
     val streamUrl = MutableLiveData<BroadcastUrl?>(null)
 
     val liveRoomState = MutableLiveData(LiveRoomState.Idle)
 
-    val remainingTime = MutableLiveData("")
+    var remainingTime: String by mutableStateOf("")
 
-    val productList = MutableLiveData<List<Product>>(listOf())
+    val productList = mutableStateListOf<Product>()
 
     val highlightedProductList = MutableLiveData<List<Product>>(listOf())
 
-    private var isPlaying = false
+    var isPlaying = false
 
     private var countdownTimer: CountDownTimer? = null
 
@@ -67,7 +71,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
 
     fun init(live: Episode?, nextLive: Episode?) {
         episode = live
-        nextLiveStream.value = nextLive
+        nextLiveStream = nextLive
         isVideo = episode?.video != null
         fetchUser()
         initialize()
@@ -103,7 +107,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
         episode?.startDate?.let {
             startCountdown(it)
         } ?: run {
-            remainingTime.value = "00  00  00"
+            remainingTime = "00  00  00"
         }
     }
 
@@ -123,12 +127,9 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
             if (episode?.id == it.id) {
                 onLiveUpdate(it)
             }
-            if (nextLiveStream.value?.id == it.id) {
-                nextLiveStream.postValue(
-                    nextLiveStream.value?.copy(
-                        waitingRoomDescription = it.waitingRoomDescription,
-                        status = it.status
-                    )
+            if (nextLiveStream?.id == it.id) {
+                nextLiveStream = nextLiveStream?.copy(
+                    status = it.status
                 )
             }
         }
@@ -142,7 +143,6 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
 
                 episode = episode?.copy(
                     status = status,
-                    waitingRoomDescription = waitingRoomDescription,
                     show = show.copy(waitingRoomDescription = waitingRoomDescription)
                 )
 
@@ -204,7 +204,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
         Timber.d(roomState.toString())
 
         if (liveRoomState.value == LiveRoomState.Finished) {
-            nextLiveStream.value?.endDate?.let {
+            nextLiveStream?.endDate?.let {
                 startCountdown(it)
             }
         }
@@ -221,7 +221,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
         launch {
             countdownTimer = object : CountDownTimer(duration, SECOND) {
                 override fun onTick(millisUntilFinished: Long) {
-                    remainingTime.postValue(formatString(millisUntilFinished))
+                    remainingTime = formatString(millisUntilFinished)
                 }
 
                 override fun onFinish() {}
@@ -254,13 +254,13 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
     }
 
     val isReminderSet: Boolean
-        get() = nextLiveStream.value?.hasReminder ?: false
+        get() = nextLiveStream?.hasReminder ?: false
 
     private fun listenToNotificationSubscriptions() {
         launch {
             LiveEventBus.listen<LiveNotificationModified>().collect {
-                if (nextLiveStream.value?.id == it.episodeId) {
-                    nextLiveStream.postValue(nextLiveStream.value?.copy(hasReminder = it.isReminderSet))
+                if (nextLiveStream?.id == it.episodeId) {
+                    nextLiveStream = nextLiveStream?.copy(hasReminder = it.isReminderSet)
                 }
             }
         }
@@ -269,16 +269,26 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
     private fun getProducts(episode: Episode) {
         productFeature.getProductsFor(episode, {
             Timber.e(it)
-        }) {
-            productList.postValue(it)
+        }) { list ->
+            list?.let {
+                productList.apply {
+                    clear()
+                    addAll(it)
+                }
+            }
         }
     }
 
     private fun getProducts(video: VodVideo) {
         productFeature.getProductsFor(video, {
             Timber.e(it)
-        }) {
-            productList.postValue(it)
+        }) { list ->
+            list?.let {
+                productList.apply {
+                    clear()
+                    addAll(it)
+                }
+            }
         }
     }
 
@@ -336,7 +346,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
     fun changeProductHighLighting(id: String, shouldShow: Boolean) {
         val highlightedProducts = highlightedProductList.value?.toMutableList() ?: mutableListOf()
         if (shouldShow) {
-            val product = productList.value?.firstOrNull { it.id == id }
+            val product = productList.firstOrNull { it.id == id }
             product?.let {
                 highlightedProducts.add(it)
                 highlightedProductList.postValue(highlightedProducts)

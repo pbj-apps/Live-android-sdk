@@ -1,5 +1,6 @@
 package com.pbj.sdk.live.livePlayer.ui
 
+import com.pbj.sdk.domain.chat.ChatMessage
 import com.pbj.sdk.domain.live.model.ChatMode
 import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.live.model.EpisodeStatus
@@ -53,5 +54,15 @@ internal object LivePreviewData {
         "", "Title of the live stream",
         "Description of the livestream", ChatMode.ENABLED, 9,
         image, null, null, show, EpisodeStatus.Finished, null
+    )
+
+    val chatMessageList = listOf(
+        ChatMessage("Hey guys what's up?", "Bobby"),
+        ChatMessage("Good how are you mate?", "Syd"),
+        ChatMessage(
+            "Pretty well but I wish I had someone to talk to, I really want to write a novel about my boring life but I'm sure nobody would care and that's a pity cause I have so much to not tell!",
+            "Bobby"
+        ),
+        ChatMessage("Well don't write anything, it's better for everybody dude", "Odin"),
     )
 }
