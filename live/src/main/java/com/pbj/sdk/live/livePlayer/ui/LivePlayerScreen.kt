@@ -19,11 +19,16 @@ import com.pbj.sdk.live.livePlayer.LiveRoomViewModel
 internal fun LivePlayerScreen(
     vm: LiveRoomViewModel = viewModel()
 ) {
-//    Crossfade(vm.liveRoomState) {
-//        when(it) {
-//
-//        }
-//    }
+    vm.apply {
+        episode?.let {
+            LivePlayerView(
+                episode = it,
+                nextEpisode = nextLiveStream,
+                isPlaying = isPlaying,
+                isChatEnabled =
+            )
+        }
+    }
 }
 
 @Composable

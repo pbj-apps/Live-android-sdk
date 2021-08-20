@@ -3,21 +3,18 @@ package com.pbj.sdk.live.livePlayer
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.WindowManager
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import com.pbj.sdk.analytics.AnalyticsTracker
-import com.pbj.sdk.databinding.ActivityLiveRoomBinding
 import com.pbj.sdk.domain.live.model.Episode
-import com.pbj.sdk.utils.startFragment
+import com.pbj.sdk.live.livePlayer.ui.LivePlayerScreen
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
 
     private val analytics : AnalyticsTracker by inject()
-
-    lateinit var view: ActivityLiveRoomBinding
 
     var episode : Episode? = null
 
@@ -28,9 +25,6 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        view = ActivityLiveRoomBinding.inflate(layoutInflater)
-        setContentView(view.root)
 
         episode = null
 
@@ -48,13 +42,13 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
             analytics.logLiveClassStarts(it)
         }
 
-        val fragment = LivePlayerFragment.newInstance(
-            episode = episode,
-            nextEpisode = nextEpisode,
-            isChatEnabled = isChatEnabled
-        )
+        val vm = LiveRoomViewModel()
 
-        startFragment(fragment, view.content.id)
+        vm.init(episode, nextEpisode)
+
+        setContent {
+            LivePlayerScreen(vm = vm)
+        }
     }
 
     override fun onPressClose() {

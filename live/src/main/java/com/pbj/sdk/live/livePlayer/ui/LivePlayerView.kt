@@ -5,19 +5,27 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import com.google.android.exoplayer2.ExoPlayer
+import com.pbj.sdk.domain.chat.ChatMessage
 import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.live.model.EpisodeStatus
 import com.pbj.sdk.domain.live.model.fullSizeImage
 import com.pbj.sdk.domain.live.model.isFinished
+import com.pbj.sdk.domain.product.model.Product
+import com.pbj.sdk.live.livePlayer.ui.liveOverlay.LivePlayerInfo
 
 @Composable
 internal fun LivePlayerView(
     episode: Episode,
     nextEpisode: Episode?,
     isPlaying: Boolean,
-    player: ExoPlayer,
+    isChatEnabled: Boolean,
+    chatText: String?,
+    chatMessageList: List<ChatMessage>,
+    sendMessage: () -> Unit,
     countdownTime: String,
+    productList: List<Product>,
+    featuredProductList: List<Product>,
+    onClickProduct: (Product) -> Unit,
     onClickBack: () -> Unit,
     onClickRemind: (Episode) -> Unit,
     onClickJoin: (Episode) -> Unit
@@ -54,9 +62,19 @@ internal fun LivePlayerView(
                 }
             }
             if (!episode.isFinished) {
-//                LivePlayerInfo(
-//
-//                )
+                LivePlayerInfo(
+                    episode = episode,
+                    isPlaying = isPlaying,
+                    isChatEnabled = isChatEnabled,
+                    chatText = chatText,
+                    chatMessages = chatMessageList,
+                    sendMessage = sendMessage,
+                    products = productList,
+                    featuredProducts = featuredProductList,
+                    onClickProduct = onClickProduct,
+                    countdownTime = countdownTime,
+                    close = onClickBack
+                )
             }
         }
     }
