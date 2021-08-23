@@ -3,6 +3,7 @@ package com.pbj.sdk.vod
 import com.pbj.sdk.di.LiveKoinComponent
 import com.pbj.sdk.domain.vod.VodInteractor
 import com.pbj.sdk.domain.vod.model.VodCategoriesResponse
+import com.pbj.sdk.domain.vod.model.VodItemResponse
 import com.pbj.sdk.domain.vod.model.VodPlaylist
 import com.pbj.sdk.domain.vod.model.VodVideo
 import org.koin.core.component.inject
@@ -41,5 +42,13 @@ internal class VodFeatureImpl : VodFeature, LiveKoinComponent {
         onSuccess: ((VodVideo?) -> Unit)?
     ) {
         vodInteractor.getVideo(id, onError, onSuccess)
+    }
+
+    override fun searchVideos(
+        title: String,
+        onError: ((Throwable) -> Unit)?,
+        onSuccess: ((VodItemResponse?) -> Unit)?
+    ) {
+        vodInteractor.searchVideos(title, onError, onSuccess)
     }
 }

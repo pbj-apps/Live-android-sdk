@@ -5,4 +5,5 @@ internal interface JsonVodItem {
     val title: String
     val description: String?
     val asset_type: String?
+    val item_type: String?
 }

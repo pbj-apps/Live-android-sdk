@@ -1,6 +1,7 @@
 package com.pbj.sdk.concreteImplementation.vod
 
 import com.pbj.sdk.concreteImplementation.vod.model.JsonVodCategoriesPage
+import com.pbj.sdk.concreteImplementation.vod.model.JsonVodItemResponse
 import com.pbj.sdk.concreteImplementation.vod.model.JsonVodPlaylist
 import com.pbj.sdk.concreteImplementation.vod.model.JsonVodVideo
 import retrofit2.Response
@@ -22,4 +23,8 @@ internal interface VodApi {
 
     @GET("vod/videos/{id}")
     suspend fun getVideo(@Path("id") id: String?): Response<JsonVodVideo>
+
+    @GET("vod/items")
+    suspend fun searchForEpisodes(@Query("search") title: String): Response<JsonVodItemResponse>
 }
+

@@ -14,5 +14,6 @@ internal data class JsonVodVideo(
     val preview_asset: JsonPreviewAsset? = null,
     val status: String,
     val instructors: List<JsonInstructor>? = listOf(),
-    override val asset_type: String = "video"
+    override val asset_type: String = "video",
+    override val item_type: String?
 ): JsonVodItem
