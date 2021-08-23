@@ -4,6 +4,7 @@ import com.pbj.sdk.domain.onResult
 import com.pbj.sdk.domain.vod.VodInteractor
 import com.pbj.sdk.domain.vod.VodRepository
 import com.pbj.sdk.domain.vod.model.VodCategoriesResponse
+import com.pbj.sdk.domain.vod.model.VodItemResponse
 import com.pbj.sdk.domain.vod.model.VodPlaylist
 import com.pbj.sdk.domain.vod.model.VodVideo
 import kotlinx.coroutines.*
@@ -73,4 +74,17 @@ internal class VodInteractorImpl(private val vodRepository: VodRepository) : Vod
         }
     }
 
+    override fun searchVideos(
+        title: String,
+        onError: ((Throwable) -> Unit)?,
+        onSuccess: ((VodItemResponse?) -> Unit)?
+    ) {
+        scope.launch {
+            vodRepository.searchForVideos(title).onResult({
+                onError?.invoke(it)
+            }) {
+                onSuccess?.invoke(it)
+            }
+        }
+    }
 }

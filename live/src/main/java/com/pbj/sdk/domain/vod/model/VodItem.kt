@@ -3,7 +3,15 @@ package com.pbj.sdk.domain.vod.model
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-interface VodItem: Parcelable {
+interface VodItem : Parcelable {
+    val id: String
+    val title: String
+    val description: String?
+    val type: VodItemType?
+    val thumbnailUrl: String?
+}
+
+interface VodSearchItem : Parcelable {
     val id: String
     val title: String
     val description: String?
@@ -12,7 +20,8 @@ interface VodItem: Parcelable {
 }
 
 @Parcelize
-enum class VodItemType: Parcelable {
+enum class VodItemType : Parcelable {
     Playlist,
-    Video
+    Video,
+    Category
 }

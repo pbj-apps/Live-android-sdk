@@ -5,8 +5,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class VodCategory(
-    val id: String,
-    val title: String,
+    override val id: String,
+    override val title: String,
+    override val description: String?,
     val items: List<VodItem>,
-    val featuredItems: List<VodItem>
-): Parcelable
+    val featuredItems: List<VodItem>,
+    override val type: VodItemType? = VodItemType.Category,
+    override val thumbnailUrl: String? = null
+) : VodItem, Parcelable

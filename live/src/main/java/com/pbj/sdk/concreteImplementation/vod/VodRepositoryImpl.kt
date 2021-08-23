@@ -6,6 +6,7 @@ import com.pbj.sdk.concreteImplementation.vod.model.asModel
 import com.pbj.sdk.domain.Result
 import com.pbj.sdk.domain.vod.VodRepository
 import com.pbj.sdk.domain.vod.model.VodCategoriesResponse
+import com.pbj.sdk.domain.vod.model.VodItemResponse
 import com.pbj.sdk.domain.vod.model.VodPlaylist
 import com.pbj.sdk.domain.vod.model.VodVideo
 import com.squareup.moshi.Moshi
@@ -49,6 +50,18 @@ internal class VodRepositoryImpl(private val api: VodApi,
     override suspend fun getVideo(id: String): Result<VodVideo> =
         apiCall(
             call = { api.getVideo(id) },
+            onApiError = { e, code ->
+                mapGenericError(code.code, e)
+            }
+        ) {
+            it?.asModel
+        }
+
+    override suspend fun searchForVideos(title: String): Result<VodItemResponse> =
+        apiCall(
+            call = {
+                api.searchForEpisodes(title)
+            },
             onApiError = { e, code ->
                 mapGenericError(code.code, e)
             }

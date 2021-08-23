@@ -1,7 +1,6 @@
 package com.pbj.sdk.concreteImplementation.vod.model
 
 import com.pbj.sdk.domain.vod.model.*
-import java.net.URL
 
 internal val JsonVodPlaylist.asModel: VodPlaylist
     get() = VodPlaylist(
@@ -28,9 +27,56 @@ internal val JsonVodVideo.asModel: VodVideo
         duration = duration,
         type = vodItemType,
         instructorList = instructors?.asInstructorList ?: listOf(),
-        playlists = playlists?.mapNotNull { it.asModel },
-        categories = categories?.mapNotNull { it?.asModel }
+        playlists = playlists?.map { it.asModel },
+        categories = categories?.map { it.asModel }
     )
+
+internal val JsonVodItemResponse.asModel: VodItemResponse
+    get() = VodItemResponse(next, results?.mapNotNull { it.asModel } ?: listOf())
+
+internal val JsonVodItemImpl.asModel: VodItem?
+    get() = when (item_type) {
+        "playlist" -> {
+            VodPlaylist(
+                id = id,
+                title = title,
+                description = description,
+                type = VodItemType.Playlist,
+                thumbnailUrl = preview_asset?.image?.small,
+                videoList = videos?.map { it.asModel } ?: listOf(),
+                videoCount = video_count,
+                isFeatured = is_featured
+            )
+        }
+        "video" -> {
+            VodVideo(
+                id = id,
+                title = title,
+                description = description,
+                thumbnailUrl = preview_asset?.image?.small,
+                largeImageUrl = preview_asset?.image?.small,
+                videoURL = asset.asset_url,
+                duration = duration ?: 0,
+                instructorList = listOf(),
+                type = VodItemType.Video,
+                playlists = playlists?.map { it.asModel } ?: listOf(),
+                categories = categories?.map { it.asModel } ?: listOf(),
+                isFeatured = is_featured
+            )
+        }
+        "category" -> {
+            VodCategory(
+                id = id,
+                title = title,
+                description = description,
+                items = items?.mapNotNull { it.asModel } ?: listOf(),
+                featuredItems = featured_items?.mapNotNull { it.asModel } ?: listOf(),
+                type = VodItemType.Category,
+                thumbnailUrl = null
+            )
+        }
+        else -> null
+    }
 
 internal val JsonVodItem.vodItemType: VodItemType?
     get() = when (asset_type) {

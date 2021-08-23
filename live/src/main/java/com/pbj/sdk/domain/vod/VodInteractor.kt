@@ -1,6 +1,7 @@
 package com.pbj.sdk.domain.vod
 
 import com.pbj.sdk.domain.vod.model.VodCategoriesResponse
+import com.pbj.sdk.domain.vod.model.VodItemResponse
 import com.pbj.sdk.domain.vod.model.VodPlaylist
 import com.pbj.sdk.domain.vod.model.VodVideo
 
@@ -26,5 +27,11 @@ internal interface VodInteractor {
     fun getVideo(
         id: String, onError: ((Throwable) -> Unit)? = null,
         onSuccess: ((VodVideo?) -> Unit)? = null
+    )
+
+    fun searchVideos(
+        title: String,
+        onError: ((Throwable) -> Unit)? = null,
+        onSuccess: ((VodItemResponse?) -> Unit)? = null
     )
 }
