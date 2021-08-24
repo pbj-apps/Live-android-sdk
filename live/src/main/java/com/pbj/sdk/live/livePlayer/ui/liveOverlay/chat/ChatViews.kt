@@ -10,11 +10,13 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -62,10 +64,25 @@ fun ChatInput(
     onChatTextChange: (String) -> Unit,
     send: () -> Unit
 ) {
+    var isSearchFocused by remember {
+        mutableStateOf(false)
+    }
 
-    val text: String =
-        if (textMessage.isNullOrBlank()) stringResource(R.string.type_a_message)
-        else textMessage
+    val hint = stringResource(R.string.type_a_message)
+    var text: String by remember {
+        mutableStateOf(hint)
+    }
+
+    val hasText: Boolean = !textMessage.isNullOrBlank()
+
+    text = if (isSearchFocused && !hasText)
+        ""
+    else if (!isSearchFocused && !hasText)
+        hint
+    else
+        textMessage ?: ""
+
+    val textColor = if (hasText) Color.White else Color.White.copy(0.75f)
 
     Surface(
         modifier = modifier,
@@ -78,19 +95,23 @@ fun ChatInput(
         ) {
             BasicTextField(
                 value = text,
-                onValueChange = {
-                    onChatTextChange(it)
+                onValueChange = { message ->
+                    onChatTextChange(message)
                 },
                 textStyle = TextStyle(
-                    color = Color.White.copy(0.75f),
+                    color = textColor,
                     fontSize = 14.sp,
                     textDecoration = TextDecoration.None
                 ),
                 modifier = Modifier
                     .padding(8.dp)
                     .wrapContentHeight()
-                    .weight(1f),
+                    .weight(1f)
+                    .onFocusChanged {
+                        isSearchFocused = it.isFocused
+                    },
                 singleLine = true,
+                cursorBrush = SolidColor(Color.White)
             )
 
             Icon(

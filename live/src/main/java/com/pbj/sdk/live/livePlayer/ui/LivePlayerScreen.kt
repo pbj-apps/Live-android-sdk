@@ -1,23 +1,24 @@
 package com.pbj.sdk.live.livePlayer.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
+import com.pbj.sdk.domain.live.model.Episode
+import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.live.livePlayer.LiveRoomViewModel
 
 @Composable
 internal fun LivePlayerScreen(
-    vm: LiveRoomViewModel = viewModel()
+    vm: LiveRoomViewModel = viewModel(),
+    isChatEnabled: Boolean,
+    onClickProduct: (Product) -> Unit,
+    onClickJoin: (Episode) -> Unit,
+    onClickBack: () -> Unit
 ) {
     vm.apply {
         episode?.let {
@@ -25,7 +26,18 @@ internal fun LivePlayerScreen(
                 episode = it,
                 nextEpisode = nextLiveStream,
                 isPlaying = isPlaying,
-                isChatEnabled =
+                isChatEnabled = isChatEnabled,
+                chatText = chatText,
+                onChatTextChange = ::onChatTextChange,
+                chatMessageList = messageList,
+                sendMessage = ::sendMessage,
+                countdownTime = remainingTime,
+                productList = productList,
+                featuredProductList = highlightedProductList,
+                onClickProduct = onClickProduct,
+                onClickBack = onClickBack,
+                onClickJoin = onClickJoin,
+                onClickRemind = ::toggleReminderFor
             )
         }
     }
@@ -40,11 +52,7 @@ fun BackgroundImage(url: String) {
                 crossfade(true)
             }),
         contentDescription = null,
-        modifier = Modifier
-            .width(160.dp)
-            .fillMaxHeight()
-            .padding(end = 16.dp)
-            .clip(RoundedCornerShape(10.dp)),
+        modifier = Modifier.fillMaxSize(),
         alignment = Alignment.CenterStart,
         contentScale = ContentScale.Crop,
     )

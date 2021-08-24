@@ -1,4 +1,4 @@
-package com.pbj.sdk.live.livePlayer.ui
+package com.pbj.sdk.live.livePlayer.ui.liveOverlay
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -21,6 +21,8 @@ import coil.compose.rememberImagePainter
 import com.pbj.sdk.R
 import com.pbj.sdk.common.ui.BottomGradient
 import com.pbj.sdk.domain.live.model.Episode
+import com.pbj.sdk.live.livePlayer.ui.LivePreviewData
+import com.pbj.sdk.live.livePlayer.ui.RemindButton
 
 @Composable
 fun LivePlayerFinishedStateOverlay(
@@ -31,7 +33,9 @@ fun LivePlayerFinishedStateOverlay(
     onClickJoin: (Episode) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        BottomGradient(modifier = Modifier.align(Alignment.BottomCenter))
+        BottomGradient(modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .fillMaxSize())
         Column {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -39,32 +43,32 @@ fun LivePlayerFinishedStateOverlay(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
+                    .padding(16.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_chevron_left),
                     "back button",
+                    tint = Color.White,
                     modifier = Modifier
                         .clip(CircleShape)
                         .clickable {
                             onClickBack()
                         }
-                        .size(15.dp)
-                        .padding(vertical = 16.dp)
-                        .padding(start = 16.dp)
+                        .size(20.dp)
                 )
 
                 Text(
                     text = stringResource(R.string.end_stream_title),
                     fontSize = 18.sp,
                     color = Color.White,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp)
+//                        .weight(1f, true)
                 )
 
                 Spacer(
                     modifier = Modifier
                         .size(15.dp)
-                        .padding(vertical = 16.dp)
-                        .padding(end = 16.dp)
+//                        .padding(end = 16.dp)
                 )
             }
 

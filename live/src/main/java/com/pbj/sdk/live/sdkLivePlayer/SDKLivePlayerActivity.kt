@@ -16,7 +16,6 @@ import com.pbj.sdk.domain.live.model.Show
 import com.pbj.sdk.domain.vod.model.previewImage
 import com.pbj.sdk.live.livePlayer.LivePlayerFragment
 import com.pbj.sdk.utils.observe
-import com.pbj.sdk.utils.startFragment
 
 class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener {
 
@@ -80,8 +79,8 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener {
     }
 
     private fun onEpisode(episode: Episode) {
-        val livePlayerFragment = LivePlayerFragment.newInstance(episode, null, true)
-        startFragment(livePlayerFragment, view.content.id, false)
+//        val livePlayerFragment = LivePlayerFragment.newInstance(episode, null, true)
+//        startFragment(livePlayerFragment, view.content.id, false)
     }
 
     private fun onShow(show: Show) {

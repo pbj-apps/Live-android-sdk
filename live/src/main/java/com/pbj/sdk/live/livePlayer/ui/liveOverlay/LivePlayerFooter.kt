@@ -18,13 +18,16 @@ fun LivePlayerFooter(
     canShowChat: Boolean,
     isChatShown: Boolean,
     onClickChatButton: () -> Unit,
+    onChatTextChange: (String) -> Unit,
     sendMessage: () -> Unit,
     productCount: String,
     canShowProducts: Boolean,
     onClickProductButton: () -> Unit
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(40.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -35,7 +38,7 @@ fun LivePlayerFooter(
         if (canShowChat && isChatShown) {
             ChatInput(
                 textMessage = textMessage,
-                onChatTextChange = { },
+                onChatTextChange = onChatTextChange,
                 send = sendMessage
             )
         } else if (canShowProducts) {
@@ -53,6 +56,7 @@ private fun LivePlayerFooterPreview() {
         canShowChat = true,
         isChatShown = true,
         onClickChatButton = {},
+        onChatTextChange = {},
         sendMessage = {},
         productCount = "14",
         canShowProducts = true
@@ -68,6 +72,7 @@ private fun LivePlayerFooterChatNotShownPreview() {
         canShowChat = true,
         isChatShown = false,
         onClickChatButton = {},
+        onChatTextChange = {},
         sendMessage = {},
         productCount = "14",
         canShowProducts = true

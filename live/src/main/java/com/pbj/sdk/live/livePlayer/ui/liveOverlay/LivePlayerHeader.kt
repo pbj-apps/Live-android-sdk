@@ -30,7 +30,7 @@ fun LivePlayerHeader(
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-        Icon(
+        Image(
             painter = painterResource(
                 if (isLive) R.drawable.ic_live_on else R.drawable.ic_up_next
             ),
@@ -48,9 +48,10 @@ fun LivePlayerHeader(
             )
         } ?: Spacer(modifier = Modifier.weight(1f, true))
 
-        Image(
+        Icon(
             painter = painterResource(R.drawable.ic_cross),
             null,
+            tint = Color.White,
             modifier = Modifier
                 .clip(CircleShape)
                 .clickable {

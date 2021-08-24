@@ -7,15 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import androidx.core.content.ContextCompat
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import coil.load
-import com.google.android.material.snackbar.Snackbar
 import com.pbj.sdk.R
 import com.pbj.sdk.databinding.FragmentLivePlayerBinding
 import com.pbj.sdk.domain.live.model.*
@@ -23,7 +17,6 @@ import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.product.ProductAdapter
 import com.pbj.sdk.utils.*
 import com.pbj.sdk.videoPlayer.VideoPlayerFragment
-import timber.log.Timber
 import java.util.*
 
 
@@ -89,299 +82,297 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeViewModel()
-
         vm.init(episode, nextEpisode)
 
-        vm.episode?.let {
-            initView(it)
-        }
+//        vm.episode?.let {
+//            initView(it)
+//        }
     }
 
-    private fun initView(episode: Episode) {
-        view.apply {
+//    private fun initView(episode: Episode) {
+//        view.apply {
+//
+//            bgImage.load(episode.image?.fullSize)
+//
+//            vm.liveChatSource?.let {
+//                initChatViews()
+//            } ?: run {
+//                footer.isVisible = false
+//                chatListView.isVisible = false
+//            }
+//
+//            initProductList()
+//
+//            root.setOnClickListener {
+//                if (vm.liveRoomState.value != LiveRoomViewModel.LiveRoomState.Finished) {
+//                    overlay.isVisible = !overlay.isVisible
+//                }
+//            }
+//
+//            closeIcon.setOnClickListener {
+//                Timber.e("CLose")
+//                listener?.onPressClose()
+//            }
+//        }
+//
+//        setUpEndBody()
+//
+//        vm.streamUrl.value?.let {
+//            initVideoPlayer(it)
+//        }
+//
+//        vm.liveRoomState.value?.let {
+//            updateView(it)
+//        }
+//    }
+//
+//    private fun initChatViews() {
+//        view.apply {
+//            chatAdapter = ChatAdapter(vm.messageList ?: listOf())
+//
+//            chatListView.adapter = chatAdapter
+//            chatListView.layoutManager = LinearLayoutManager(context).apply {
+//                stackFromEnd = true
+//            }
+//
+//            chatListView.setOnClickListener {
+//                overlay.isInvisible = !overlay.isInvisible
+//            }
+//
+//            chatButton.setOnClickListener {
+//                toggleChatVisibility()
+//            }
+//
+//            chatInputLayout.setEndIconOnClickListener {
+//                sendMessage(chatInputText.text.toString())
+//            }
+//
+//            chatInputText.setOnEditorActionListener { v, actionId, event ->
+//                return@setOnEditorActionListener when (actionId) {
+//                    EditorInfo.IME_ACTION_SEND -> {
+//                        sendMessage(v.text.toString())
+//                        true
+//                    }
+//                    else -> false
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun initProductList() {
+//        view.apply {
+//            productListView.apply {
+//                adapter = productAdapter
+//                layoutManager =
+//                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+//            }
+//
+//            productCount.text = productList.toString()
+//
+//            productButton.setOnClickListener {
+//                toggleProductListVisibility()
+//            }
+//        }
+//    }
+//
+//    private fun updateView(liveRoomState: LiveRoomViewModel.LiveRoomState) {
+//        setStreamTitle(liveRoomState)
+//        setDescription(vm.episode)
+//
+//        isChatVisible = false
+//
+//        view.apply {
+//
+//            if (liveRoomState == LiveRoomViewModel.LiveRoomState.Finished) {
+//                overlay.isVisible = true
+//            }
+//
+//            vm.episode?.let { live ->
+//
+//                updateHeader(liveRoomState)
+//
+//                activeBody.isVisible = live.isBeforeBroadcast
+//
+//                endBody.isVisible = liveRoomState == LiveRoomViewModel.LiveRoomState.Finished
+//                        && vm.nextLiveStream != null
+//
+//                updateChatView(liveRoomState)
+//
+//                isBroadcastingOrPlaying = live.isBroadcasting
+//                        || liveRoomState == LiveRoomViewModel.LiveRoomState.Playing
+//
+//                bgImage.isVisible = !isBroadcastingOrPlaying
+//
+//                updateProductButtonVisibility()
+//
+//                toggleProductListVisibility(false)
+//
+//                videoPlayerContainer.isVisible = isBroadcastingOrPlaying
+//
+//                listener?.enableScreenRotation(isBroadcastingOrPlaying)
+//            }
+//        }
+//    }
+//
+//    private fun updateHeader(liveRoomState: LiveRoomViewModel.LiveRoomState) {
+//        view.apply {
+//            vm.episode?.let { live ->
+//                val icon = when {
+//                    liveRoomState == LiveRoomViewModel.LiveRoomState.Playing || live.isBroadcasting -> R.drawable.ic_live_on
+//                    liveRoomState == LiveRoomViewModel.LiveRoomState.Finished -> R.drawable.ic_chevron_left
+//                    else -> R.drawable.ic_up_next
+//                }
+//
+//                if (liveRoomState == LiveRoomViewModel.LiveRoomState.NoLiveStream)
+//                    updateNoLive()
+//
+//                closeIcon.isVisible = liveRoomState != LiveRoomViewModel.LiveRoomState.Finished
+//
+//                liveIcon.apply {
+//                    background = ContextCompat.getDrawable(context, icon)
+//
+//                    setOnClickListener {
+//                        if (liveRoomState == LiveRoomViewModel.LiveRoomState.Finished) {
+//                            listener?.onPressClose()
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun updateNoLive() {
+//        Timber.d("No Live")
+//        view.apply {
+//            countdown.isVisible = false
+//            countdownTitle.isVisible = false
+//            activeBody.isVisible = false
+//        }
+//    }
+//
+//    private fun updateChatView(liveRoomState: LiveRoomViewModel.LiveRoomState) {
+//        view.apply {
+//            vm.liveChatSource?.let {
+//                chatMessageCount.text = vm.messageList.count().toString()
+//
+//                chatButton.isVisible =
+//                    liveRoomState.isValidStateForChat && vm.episode?.isChatEnabled == true && isChatEnabled
+//
+//                chatInputLayout.isVisible = isChatVisible
+//                chatListView.isVisible = isChatVisible
+//            }
+//            footer.isVisible =
+//                liveRoomState != LiveRoomViewModel.LiveRoomState.Finished && vm.liveChatSource != null
+//        }
+//    }
+//
+//    private fun setUpEndBody() {
+//        vm.nextLiveStream?.apply {
+//            view.nextStreamTitle.text = title?.uppercase(Locale.getDefault())
+//            view.nextCoachImage.load(streamer?.profileImage?.medium)
+//            val coachName = "${streamer?.firstName} ${streamer?.lastName}"
+//            view.nextCoachName.text = getString(R.string.with_coach, coachName)
+//
+//            view.remindButton.setOnClickListener {
+//                vm.toggleReminderFor(this)
+//            }
+//
+//            setRemindButtonText()
+//        }
+//    }
+//
+//    private fun sendMessage(message: String) {
+//        if (message.isNotBlank()) {
+//            if (vm.user == null && vm.guestUsername == null) {
+//                openUsernameDialog(message)
+//            } else {
+//                vm.sendMessage()
+//                view.chatInputText.setText("")
+//            }
+//        }
+//    }
+//
+//    private fun openUsernameDialog(message: String) {
+//        requireContext().apply {
+//            parentFragmentManager.openInputTextDialog(
+//                title = getString(R.string.username),
+//                description = getString(R.string.chat_username_dialog_description),
+//                hint = getString(R.string.username),
+//                positiveButtonText = getString(R.string.ok),
+//                negativeButtonText = getString(R.string.cancel),
+//                listener = object : TextInputDialog.TextInputDialogListener {
+//                    override fun onClickPositiveButton(text: String) {
+//                        vm.guestUsername = text
+//                        sendMessage(message)
+//                    }
+//                }
+//            )
+//        }
+//    }
+//
+//    private fun toggleChatVisibility(show: Boolean? = null) {
+//        if (showProducts)
+//            toggleProductListVisibility()
+//
+//        isChatVisible = show ?: !isChatVisible
+//
+//        view.apply {
+//            chatMessageCount.isVisible = !isChatVisible
+//            chatInputLayout.isVisible = isChatVisible
+//            chatListView.isVisible = isChatVisible
+//
+//            updateProductButtonVisibility()
+//
+//            if (vm.liveRoomState.value?.isValidStateForBody == true && vm.episode?.isBroadcasting == false) {
+//                activeBody.isVisible = !isChatVisible
+//            }
+//        }
+//    }
+//
+//    private fun toggleProductListVisibility(show: Boolean? = null) {
+//
+//        showProducts = show ?: !showProducts
+//
+//        val productsToDisplay = if (showProducts)
+//            productList
+//        else
+//            highlightedProductList
+//
+//        productAdapter.update(productsToDisplay)
+//
+//        view.apply {
+//            productListView.isVisible =
+//                (showProducts || highlightedProductList.isNotEmpty()) && isBroadcastingOrPlaying
+//        }
+//
+//        if (isChatVisible)
+//            toggleChatVisibility(!showProducts)
+//    }
+//
+//    private fun updateProductButtonVisibility() {
+//        view.apply {
+//            productButton.isVisible = hasProducts && !isChatVisible && isBroadcastingOrPlaying
+//        }
+//    }
+//
+//    private fun setStreamTitle(liveState: LiveRoomViewModel.LiveRoomState) {
+//        val title = if (liveState == LiveRoomViewModel.LiveRoomState.Finished) {
+//            getString(R.string.end_stream_title)
+//        } else {
+//            vm.episode?.title
+//        }
+//
+//        view.title.text = title?.uppercase(Locale.getDefault())
+//    }
 
-            bgImage.load(episode.image?.fullSize)
-
-            vm.liveChatSource?.let {
-                initChatViews()
-            } ?: run {
-                footer.isVisible = false
-                chatListView.isVisible = false
-            }
-
-            initProductList()
-
-            root.setOnClickListener {
-                if (vm.liveRoomState.value != LiveRoomViewModel.LiveRoomState.Finished) {
-                    overlay.isVisible = !overlay.isVisible
-                }
-            }
-
-            closeIcon.setOnClickListener {
-                Timber.e("CLose")
-                listener?.onPressClose()
-            }
-        }
-
-        setUpEndBody()
-
-        vm.streamUrl.value?.let {
-            initVideoPlayer(it)
-        }
-
-        vm.liveRoomState.value?.let {
-            updateView(it)
-        }
-    }
-
-    private fun initChatViews() {
-        view.apply {
-            chatAdapter = ChatAdapter(vm.messageList.value ?: listOf())
-
-            chatListView.adapter = chatAdapter
-            chatListView.layoutManager = LinearLayoutManager(context).apply {
-                stackFromEnd = true
-            }
-
-            chatListView.setOnClickListener {
-                overlay.isInvisible = !overlay.isInvisible
-            }
-
-            chatButton.setOnClickListener {
-                toggleChatVisibility()
-            }
-
-            chatInputLayout.setEndIconOnClickListener {
-                sendMessage(chatInputText.text.toString())
-            }
-
-            chatInputText.setOnEditorActionListener { v, actionId, event ->
-                return@setOnEditorActionListener when (actionId) {
-                    EditorInfo.IME_ACTION_SEND -> {
-                        sendMessage(v.text.toString())
-                        true
-                    }
-                    else -> false
-                }
-            }
-        }
-    }
-
-    private fun initProductList() {
-        view.apply {
-            productListView.apply {
-                adapter = productAdapter
-                layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            }
-
-            productCount.text = productList.toString()
-
-            productButton.setOnClickListener {
-                toggleProductListVisibility()
-            }
-        }
-    }
-
-    private fun updateView(liveRoomState: LiveRoomViewModel.LiveRoomState) {
-        setStreamTitle(liveRoomState)
-        setDescription(vm.episode)
-
-        isChatVisible = false
-
-        view.apply {
-
-            if (liveRoomState == LiveRoomViewModel.LiveRoomState.Finished) {
-                overlay.isVisible = true
-            }
-
-            vm.episode?.let { live ->
-
-                updateHeader(liveRoomState)
-
-                activeBody.isVisible = live.isBeforeBroadcast
-
-                endBody.isVisible = liveRoomState == LiveRoomViewModel.LiveRoomState.Finished
-                        && vm.nextLiveStream.value != null
-
-                updateChatView(liveRoomState)
-
-                isBroadcastingOrPlaying = live.isBroadcasting
-                        || liveRoomState == LiveRoomViewModel.LiveRoomState.Playing
-
-                bgImage.isVisible = !isBroadcastingOrPlaying
-
-                updateProductButtonVisibility()
-
-                toggleProductListVisibility(false)
-
-                videoPlayerContainer.isVisible = isBroadcastingOrPlaying
-
-                listener?.enableScreenRotation(isBroadcastingOrPlaying)
-            }
-        }
-    }
-
-    private fun updateHeader(liveRoomState: LiveRoomViewModel.LiveRoomState) {
-        view.apply {
-            vm.episode?.let { live ->
-                val icon = when {
-                    liveRoomState == LiveRoomViewModel.LiveRoomState.Playing || live.isBroadcasting -> R.drawable.ic_live_on
-                    liveRoomState == LiveRoomViewModel.LiveRoomState.Finished -> R.drawable.ic_chevron_left
-                    else -> R.drawable.ic_up_next
-                }
-
-                if (liveRoomState == LiveRoomViewModel.LiveRoomState.NoLiveStream)
-                    updateNoLive()
-
-                closeIcon.isVisible = liveRoomState != LiveRoomViewModel.LiveRoomState.Finished
-
-                liveIcon.apply {
-                    background = ContextCompat.getDrawable(context, icon)
-
-                    setOnClickListener {
-                        if (liveRoomState == LiveRoomViewModel.LiveRoomState.Finished) {
-                            listener?.onPressClose()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun updateNoLive() {
-        Timber.d("No Live")
-        view.apply {
-            countdown.isVisible = false
-            countdownTitle.isVisible = false
-            activeBody.isVisible = false
-        }
-    }
-
-    private fun updateChatView(liveRoomState: LiveRoomViewModel.LiveRoomState) {
-        view.apply {
-            vm.liveChatSource?.let {
-                chatMessageCount.text = vm.messageList.value?.count().toString()
-
-                chatButton.isVisible =
-                    liveRoomState.isValidStateForChat && vm.episode?.isChatEnabled == true && isChatEnabled
-
-                chatInputLayout.isVisible = isChatVisible
-                chatListView.isVisible = isChatVisible
-            }
-            footer.isVisible =
-                liveRoomState != LiveRoomViewModel.LiveRoomState.Finished && vm.liveChatSource != null
-        }
-    }
-
-    private fun setUpEndBody() {
-        vm.nextLiveStream.value?.apply {
-            view.nextStreamTitle.text = title?.uppercase(Locale.getDefault())
-            view.nextCoachImage.load(streamer?.profileImage?.medium)
-            val coachName = "${streamer?.firstName} ${streamer?.lastName}"
-            view.nextCoachName.text = getString(R.string.with_coach, coachName)
-
-            view.remindButton.setOnClickListener {
-                vm.toggleReminderFor(this)
-            }
-
-            setRemindButtonText()
-        }
-    }
-
-    private fun sendMessage(message: String) {
-        if (message.isNotBlank()) {
-            if (vm.user == null && vm.guestUsername == null) {
-                openUsernameDialog(message)
-            } else {
-                vm.sendMessage(message)
-                view.chatInputText.setText("")
-            }
-        }
-    }
-
-    private fun openUsernameDialog(message: String) {
-        requireContext().apply {
-            parentFragmentManager.openInputTextDialog(
-                title = getString(R.string.username),
-                description = getString(R.string.chat_username_dialog_description),
-                hint = getString(R.string.username),
-                positiveButtonText = getString(R.string.ok),
-                negativeButtonText = getString(R.string.cancel),
-                listener = object : TextInputDialog.TextInputDialogListener {
-                    override fun onClickPositiveButton(text: String) {
-                        vm.guestUsername = text
-                        sendMessage(message)
-                    }
-                }
-            )
-        }
-    }
-
-    private fun toggleChatVisibility(show: Boolean? = null) {
-        if (showProducts)
-            toggleProductListVisibility()
-
-        isChatVisible = show ?: !isChatVisible
-
-        view.apply {
-            chatMessageCount.isVisible = !isChatVisible
-            chatInputLayout.isVisible = isChatVisible
-            chatListView.isVisible = isChatVisible
-
-            updateProductButtonVisibility()
-
-            if (vm.liveRoomState.value?.isValidStateForBody == true && vm.episode?.isBroadcasting == false) {
-                activeBody.isVisible = !isChatVisible
-            }
-        }
-    }
-
-    private fun toggleProductListVisibility(show: Boolean? = null) {
-
-        showProducts = show ?: !showProducts
-
-        val productsToDisplay = if (showProducts)
-            productList
-        else
-            highlightedProductList
-
-        productAdapter.update(productsToDisplay)
-
-        view.apply {
-            productListView.isVisible =
-                (showProducts || highlightedProductList.isNotEmpty()) && isBroadcastingOrPlaying
-        }
-
-        if (isChatVisible)
-            toggleChatVisibility(!showProducts)
-    }
-
-    private fun updateProductButtonVisibility() {
-        view.apply {
-            productButton.isVisible = hasProducts && !isChatVisible && isBroadcastingOrPlaying
-        }
-    }
-
-    private fun setStreamTitle(liveState: LiveRoomViewModel.LiveRoomState) {
-        val title = if (liveState == LiveRoomViewModel.LiveRoomState.Finished) {
-            getString(R.string.end_stream_title)
-        } else {
-            vm.episode?.title
-        }
-
-        view.title.text = title?.uppercase(Locale.getDefault())
-    }
-
-    private fun setDescription(episode: Episode?) {
-        val string = if (episode?.status == EpisodeStatus.WaitingRoom)
-            episode.show?.waitingRoomDescription
-        else
-            episode?.description
-
-        view.description.text = string?.uppercase(Locale.getDefault())
-    }
+//    private fun setDescription(episode: Episode?) {
+//        val string = if (episode?.status == EpisodeStatus.WaitingRoom)
+//            episode.show?.waitingRoomDescription
+//        else
+//            episode?.description
+//
+//        view.description.text = string?.uppercase(Locale.getDefault())
+//    }
 
     private fun initVideoPlayer(url: BroadcastUrl) {
         val video: String?
@@ -422,93 +413,6 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
         return productTimeCodes
     }
 
-    private fun observeViewModel() {
-        observeRoomState()
-        observeTimer()
-        observeLiveUrl()
-        observeNextStream()
-        observeProductList()
-        observeHighlightedProductList()
-        observeError()
-
-        vm.liveChatSource?.let {
-            observeChatMessages()
-        }
-    }
-
-    private fun observeLiveUrl() {
-        observe(vm.streamUrl) {
-            it?.let {
-                initVideoPlayer(it)
-            }
-        }
-    }
-
-    private fun observeRoomState() {
-        observe(vm.liveRoomState) {
-            updateView(it)
-        }
-    }
-
-    private fun observeTimer() {
-        observe(vm.remainingTime) {
-            if (vm.liveRoomState.value == LiveRoomViewModel.LiveRoomState.Finished) {
-                view.nextCountdown.text = it
-            } else {
-                view.countdown.text = it
-            }
-        }
-    }
-
-    private fun observeChatMessages() {
-        observe(vm.messageList) {
-            chatAdapter.update(it)
-            view.apply {
-                chatMessageCount.text = it.count().toString()
-                chatListView.smoothScrollToPosition(it.size)
-            }
-        }
-    }
-
-    private fun observeProductList() {
-        observe(vm.productList) {
-
-            productList = it
-            hasProducts = it.count() > 0
-
-            view.apply {
-                updateProductButtonVisibility()
-                productCount.text = it.count().toString()
-            }
-        }
-    }
-
-    private fun observeHighlightedProductList() {
-        observe(vm.highlightedProductList) {
-            highlightedProductList = it
-            toggleProductListVisibility(showProducts)
-        }
-    }
-
-    private fun observeNextStream() {
-        observe(vm.nextLiveStream) {
-            setUpEndBody()
-        }
-    }
-
-    private fun observeError() {
-        observe(vm.error) { error ->
-            error?.let {
-                Snackbar.make(
-                    requireContext(),
-                    view.videoPlayerContainer,
-                    it.localizedMessage,
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            }
-        }
-    }
-
     override fun onClickProduct(product: Product) {
         vm.logOnClickProduct(product)
         val params = PictureInPictureParams.Builder().build()
@@ -530,8 +434,8 @@ internal class LivePlayerFragment : Fragment(), VideoPlayerFragment.LiveFragment
     private fun setRemindButtonText() {
         view.remindButton.text = getString(
             when {
-                vm.nextLiveStream.value?.isActive == true -> R.string.join_live
-                vm.nextLiveStream.value?.hasReminder == true -> R.string.reminder_set
+                vm.nextLiveStream?.isActive == true -> R.string.join_live
+                vm.nextLiveStream?.hasReminder == true -> R.string.reminder_set
                 else -> R.string.remind_me
             }
         )

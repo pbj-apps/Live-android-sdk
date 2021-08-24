@@ -5,12 +5,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.pbj.sdk.domain.chat.ChatMessage
 import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.live.model.EpisodeStatus
 import com.pbj.sdk.domain.live.model.fullSizeImage
 import com.pbj.sdk.domain.live.model.isFinished
 import com.pbj.sdk.domain.product.model.Product
+import com.pbj.sdk.live.livePlayer.ui.liveOverlay.LivePlayerFinishedStateOverlay
 import com.pbj.sdk.live.livePlayer.ui.liveOverlay.LivePlayerInfo
 
 @Composable
@@ -21,6 +23,7 @@ internal fun LivePlayerView(
     isChatEnabled: Boolean,
     chatText: String?,
     chatMessageList: List<ChatMessage>,
+    onChatTextChange: (String) -> Unit,
     sendMessage: () -> Unit,
     countdownTime: String,
     productList: List<Product>,
@@ -68,6 +71,7 @@ internal fun LivePlayerView(
                     isChatEnabled = isChatEnabled,
                     chatText = chatText,
                     chatMessages = chatMessageList,
+                    onChatTextChange = onChatTextChange,
                     sendMessage = sendMessage,
                     products = productList,
                     featuredProducts = featuredProductList,
@@ -78,5 +82,27 @@ internal fun LivePlayerView(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun LivePlayerPreview() {
+    LivePlayerView(
+        episode = LivePreviewData.liveChatWaitingRoom,
+        nextEpisode = LivePreviewData.liveChatBroadcastRoom,
+        isPlaying = false,
+        isChatEnabled = true,
+        chatText = "Hi dude",
+        onChatTextChange = {},
+        chatMessageList = listOf(),
+        sendMessage = { },
+        countdownTime = "10 45 29",
+        productList = listOf(),
+        featuredProductList = listOf(),
+        onClickProduct = {},
+        onClickBack = {},
+        onClickJoin = {},
+        onClickRemind = {}
+    )
 }
 

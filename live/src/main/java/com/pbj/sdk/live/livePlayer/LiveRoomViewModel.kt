@@ -2,10 +2,8 @@ package com.pbj.sdk.live.livePlayer
 
 import android.os.CountDownTimer
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pbj.sdk.analytics.AnalyticsTracker
 import com.pbj.sdk.core.SdkHolder
@@ -45,25 +43,25 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
 
     var nextLiveStream: Episode? by mutableStateOf(null)
 
-    val streamUrl = MutableLiveData<BroadcastUrl?>(null)
-
-    val liveRoomState = MutableLiveData(LiveRoomState.Idle)
+    var streamUrl: BroadcastUrl? by mutableStateOf(null)
 
     var remainingTime: String by mutableStateOf("")
 
-    val productList = mutableStateListOf<Product>()
+    var productList by mutableStateOf<List<Product>>(listOf())
 
-    val highlightedProductList = MutableLiveData<List<Product>>(listOf())
+    var highlightedProductList by mutableStateOf<List<Product>>(listOf())
 
     var isPlaying = false
 
     private var countdownTimer: CountDownTimer? = null
 
-    var messageList = MutableLiveData<List<ChatMessage>>(listOf())
+    var messageList by mutableStateOf<List<ChatMessage>>(listOf())
 
-    var error = MutableLiveData<Throwable?>(null)
+    var error by mutableStateOf<Throwable?>(null)
 
     var user: User? = null
+
+    var chatText: String by mutableStateOf("")
 
     var guestUsername: String? = null
 
@@ -113,7 +111,6 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
 
     private fun initStreamUpdates() {
         episode?.let {
-            updateLiveRoomState(it)
             listenToEpisode()
             listenToChat(it)
         }
@@ -137,7 +134,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
 
     private fun onLiveUpdate(episodeStatusUpdate: EpisodeStatusUpdate) {
         episodeStatusUpdate.apply {
-            if (status != episode?.status || waitingRoomDescription != episode?.description) {
+            if (status != episode?.status || waitingRoomDescription != episode?.show?.waitingRoomDescription) {
 
                 val show = episode?.show ?: Show(episodeStatusUpdate.showId)
 
@@ -147,17 +144,28 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
                 )
 
                 episode?.let {
-                    updateLiveRoomState(it)
+                    when (it.status) {
+                        EpisodeStatus.Broadcasting -> getStreamUrl(it)
+                        EpisodeStatus.Finished -> nextLiveStream?.endDate?.let { time ->
+                            startCountdown(time)
+                        }
+                        else -> {
+                        }
+                    }
                 }
             }
         }
     }
 
-    fun sendMessage(message: String) {
+    fun onChatTextChange(text: String) {
+        chatText = text
+    }
+
+    fun sendMessage() {
         launch {
             val username = user?.username ?: guestUsername
             username?.let {
-                postMessage(it, message)
+                postMessage(it, chatText)
                 episode?.let { live -> tracker.logChatMessageSent(live) }
             }
         }
@@ -172,45 +180,19 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
     private fun listenToChat(episode: Episode) {
         launch {
             liveChatSource?.getChatMessages(episode)?.collect {
-                messageList.postValue(it)
+                messageList = it
             }
         }
     }
 
     private fun getStreamUrl(live: Episode) {
-        if (live.isBroadcasting && streamUrl.value == null) {
+        if (streamUrl == null) {
             liveInteractor.getBroadcastUrl(live, {
-                error.postValue(it)
+                error = it
             }) {
-                error.postValue(null)
-                streamUrl.postValue(it)
+                error = null
+                streamUrl = it
             }
-        }
-    }
-
-    private fun updateLiveRoomState(live: Episode) {
-
-        val isBroadcastingOrFinished = live.isBroadcasting || live.isFinished
-
-        val roomState = when {
-            isPlaying && isBroadcastingOrFinished -> LiveRoomState.Playing
-            live.isActive -> LiveRoomState.Active
-            live.isFinished && !isPlaying -> LiveRoomState.Finished
-            else -> LiveRoomState.Idle
-        }
-
-        liveRoomState.postValue(roomState)
-
-        Timber.d(roomState.toString())
-
-        if (liveRoomState.value == LiveRoomState.Finished) {
-            nextLiveStream?.endDate?.let {
-                startCountdown(it)
-            }
-        }
-
-        episode?.let {
-            getStreamUrl(it)
         }
     }
 
@@ -253,9 +235,6 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
         liveNotificationManager?.toggleReminderFor(episode)
     }
 
-    val isReminderSet: Boolean
-        get() = nextLiveStream?.hasReminder ?: false
-
     private fun listenToNotificationSubscriptions() {
         launch {
             LiveEventBus.listen<LiveNotificationModified>().collect {
@@ -271,10 +250,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
             Timber.e(it)
         }) { list ->
             list?.let {
-                productList.apply {
-                    clear()
-                    addAll(it)
-                }
+                productList = it
             }
         }
     }
@@ -284,10 +260,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
             Timber.e(it)
         }) { list ->
             list?.let {
-                productList.apply {
-                    clear()
-                    addAll(it)
-                }
+                productList = it
             }
         }
     }
@@ -296,14 +269,14 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
         productFeature.getHighlightedProducts(episode, {
             Timber.e(it)
         }) {
-            highlightedProductList.postValue(it)
+            highlightedProductList = it ?: listOf()
         }
     }
 
     private fun registerForProductHighlights(episode: Episode) {
         productFeature.registerForProductHighlights(episode) {
             Timber.d("Highlighted Products updated with: ${it.productList.count()}")
-            highlightedProductList.postValue(it.productList)
+            highlightedProductList = it.productList
         }
     }
 
@@ -326,17 +299,11 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
     }
 
     fun onLiveFinished() {
-        episode?.let {
-            isPlaying = false
-            updateLiveRoomState(it)
-        }
+        isPlaying = false
     }
 
     fun onLiveReady() {
-        episode?.let {
-            isPlaying = true
-            updateLiveRoomState(it)
-        }
+        isPlaying = true
     }
 
     fun logOnClickProduct(product: Product) {
@@ -344,37 +311,21 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
     }
 
     fun changeProductHighLighting(id: String, shouldShow: Boolean) {
-        val highlightedProducts = highlightedProductList.value?.toMutableList() ?: mutableListOf()
+        val highlightedProducts = highlightedProductList.toMutableList()
         if (shouldShow) {
             val product = productList.firstOrNull { it.id == id }
             product?.let {
                 highlightedProducts.add(it)
-                highlightedProductList.postValue(highlightedProducts)
+                highlightedProductList = highlightedProducts
             }
         } else {
-            highlightedProductList.postValue(
-                highlightedProducts.filter { product ->
-                    product.id != id
-                }
-            )
+            highlightedProductList = highlightedProducts.filter { product ->
+                product.id != id
+            }
         }
     }
 
     companion object {
         private const val SECOND = 1000L
     }
-
-    enum class LiveRoomState {
-        NoLiveStream,
-        Idle,
-        Active,
-        Playing,
-        Finished
-    }
 }
-
-internal val LiveRoomViewModel.LiveRoomState.isValidStateForBody: Boolean
-    get() = this == LiveRoomViewModel.LiveRoomState.Idle || this == LiveRoomViewModel.LiveRoomState.Active
-
-internal val LiveRoomViewModel.LiveRoomState.isValidStateForChat: Boolean
-    get() = this == LiveRoomViewModel.LiveRoomState.Playing || this == LiveRoomViewModel.LiveRoomState.Active

@@ -26,6 +26,7 @@ fun LivePlayerInfo(
     isChatEnabled: Boolean,
     chatText: String?,
     chatMessages: List<ChatMessage>,
+    onChatTextChange: (String) -> Unit,
     sendMessage: () -> Unit,
     products: List<Product>,
     featuredProducts: List<Product>,
@@ -97,6 +98,7 @@ fun LivePlayerInfo(
                 onClickChatButton = {
                     showChat = !showChat
                 },
+                onChatTextChange = onChatTextChange,
                 sendMessage = sendMessage,
                 productCount = products.count().toString(),
                 canShowProducts = canShowProducts,
@@ -131,6 +133,7 @@ private fun LivePlayerInfoPreview() {
         isPlaying = false,
         isChatEnabled = true,
         chatMessages = listOf(),
+        onChatTextChange = {},
         sendMessage = {},
         products = listOf(),
         featuredProducts = listOf(),
@@ -149,6 +152,7 @@ private fun LivePlayerInfoPlayingPreview() {
         isPlaying = true,
         isChatEnabled = true,
         chatMessages = listOf(),
+        onChatTextChange = {},
         sendMessage = {},
         products = listOf(),
         featuredProducts = listOf(),
