@@ -1,5 +1,6 @@
 package com.pbj.sdk.concreteImplementation.vod
 
+import android.util.Log
 import com.pbj.sdk.domain.onResult
 import com.pbj.sdk.domain.vod.VodInteractor
 import com.pbj.sdk.domain.vod.VodRepository
@@ -13,7 +14,7 @@ import timber.log.Timber
 internal class VodInteractorImpl(private val vodRepository: VodRepository) : VodInteractor {
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("$throwable")
+        Timber.e(Log.getStackTraceString(throwable))
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + errorHandler)

@@ -1,5 +1,6 @@
 package com.pbj.sdk.concreteImplementation.organization
 
+import android.util.Log
 import com.pbj.sdk.domain.onErrorCallBack
 import com.pbj.sdk.domain.onResult
 import com.pbj.sdk.domain.organization.OrganizationInteractor
@@ -12,7 +13,7 @@ internal class OrganizationInteractorImpl(override val organizationRepository: O
     OrganizationInteractor {
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("$throwable")
+        Timber.e(Log.getStackTraceString(throwable))
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + errorHandler)

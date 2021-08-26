@@ -1,5 +1,6 @@
 package com.pbj.sdk.concreteImplementation.authentication
 
+import android.util.Log
 import com.pbj.sdk.concreteImplementation.authentication.model.asJson
 import com.pbj.sdk.domain.*
 import com.pbj.sdk.domain.authentication.UserInteractor
@@ -12,11 +13,12 @@ import timber.log.Timber
 import java.io.File
 
 internal class UserInteractorImpl(
-    val userRepository: UserRepository
+    private val userRepository: UserRepository
 ) : UserInteractor {
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("$throwable")
+        Timber.e(Log.getStackTraceString(throwable))
+        throw throwable
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + errorHandler)
