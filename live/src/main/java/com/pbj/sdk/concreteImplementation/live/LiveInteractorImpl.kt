@@ -1,5 +1,6 @@
 package com.pbj.sdk.concreteImplementation.live
 
+import android.util.Log
 import com.pbj.sdk.domain.live.LiveInteractor
 import com.pbj.sdk.domain.live.LiveRepository
 import com.pbj.sdk.domain.live.model.*
@@ -18,7 +19,8 @@ internal class LiveInteractorImpl(
     private var webSocketStatus: WebSocket.Event? = null
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("$throwable")
+        Timber.e(Log.getStackTraceString(throwable))
+        throw throwable
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + errorHandler)
