@@ -38,12 +38,12 @@ internal data class JsonVodItemImpl(
     val video_count: Int = 0,
     val videos: List<JsonVodVideo>? = null,
     val is_featured: Boolean = false,
-    val asset: JsonAsset,
+    val asset: JsonAsset? = null,
     val categories: List<JsonVodCategory>?,
     val playlists: List<JsonVodPlaylist>?,
     val duration: Int?,
     val preview_asset: JsonPreviewAsset? = null,
-    val status: String,
+    val status: String? = null,
     val instructors: List<JsonInstructor>? = listOf()
 )
 
@@ -86,7 +86,7 @@ internal val JsonVodWrapper.asModel: VodItem?
                 description = item.description,
                 thumbnailUrl = item.preview_asset?.image?.small,
                 largeImageUrl = item.preview_asset?.image?.small,
-                videoURL = item.asset.asset_url,
+                videoURL = item.asset?.asset_url,
                 duration = item.duration ?: 0,
                 instructorList = listOf(),
                 type = VodItemType.Video,
