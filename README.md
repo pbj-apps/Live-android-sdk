@@ -10,6 +10,7 @@ Stream your PBJ.live content from your Android App.
 # Stream to your Android app in 4 simple steps
 
 ## 1. Import the Live-android-sdk package
+
 Add in gradle at app level
 
 ```groovy
