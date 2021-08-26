@@ -13,27 +13,29 @@ internal class LiveFeatureImpl : LiveFeature, LiveKoinComponent {
 
     private val liveInteractor: LiveInteractor by inject()
 
-    override fun fetchLiveStreams(
+    override fun getLiveStreams(
         onError: ((Throwable) -> Unit)?,
         onSuccess: ((EpisodeResponse?) -> Unit)?
     ) {
         liveInteractor.getLiveStreams(onError, onSuccess)
     }
 
-    override fun fetchLiveStreamsSchedule(
-        date: String,
-        onError: ((Throwable) -> Unit)?,
+    override fun getEpisodesNextPage(
+        nextPageUrl: String,
+        onError: onErrorCallBack?,
         onSuccess: ((EpisodeResponse?) -> Unit)?
     ) {
-        liveInteractor.getLiveStreamsSchedule(date, onError, onSuccess)
+        liveInteractor.getEpisodesNextPage(nextPageUrl, onError, onSuccess)
     }
 
-    override fun fetchLiveStreamsSchedule(
-        daysAhead: Int,
+    override fun getLiveStreamsSchedule(
+        date: String?,
+        daysAhead: Int?,
+        size: Int?,
         onError: ((Throwable) -> Unit)?,
         onSuccess: ((EpisodeResponse?) -> Unit)?
     ) {
-        liveInteractor.getLiveStreamsSchedule(daysAhead, onError, onSuccess)
+        liveInteractor.getLiveStreamsSchedule(date, daysAhead, size, onError, onSuccess)
     }
 
     override fun getCurrentLiveStream(
@@ -67,28 +69,19 @@ internal class LiveFeatureImpl : LiveFeature, LiveKoinComponent {
         liveInteractor.getBroadcastUrl(episode, onError, onSuccess)
     }
 
-    override fun subscribeToNotifications(
+    override fun subscribeToNotificationsFor(
         episode: Episode,
-        token: String,
         onError: ((Throwable) -> Unit)?,
         onSuccess: (() -> Unit)?
     ) {
-        liveInteractor.subscribeToNotifications(episode, token, onError, onSuccess)
+        liveInteractor.subscribeToNotificationsFor(episode, onError, onSuccess)
     }
 
-    override fun getNotificationSubscriptions(
-        onError: ((Throwable) -> Unit)?,
-        onSuccess: ((List<String>) -> Unit)?
-    ) {
-        liveInteractor.getNotificationSubscriptions(onError, onSuccess)
-    }
-
-    override fun unSubscribeFromNotifications(
+    override fun unSubscribeFromNotificationsFor(
         episode: Episode,
-        token: String,
         onError: ((Throwable) -> Unit)?,
         onSuccess: (() -> Unit)?
     ) {
-        liveInteractor.unSubscribeFromNotifications(episode, token, onError, onSuccess)
+        liveInteractor.unSubscribeFromNotificationsFor(episode, onError, onSuccess)
     }
 }

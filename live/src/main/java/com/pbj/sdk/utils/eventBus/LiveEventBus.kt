@@ -1,10 +1,7 @@
 package com.pbj.sdk.utils.eventBus
 
 import androidx.annotation.Keep
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.*
 
 @Keep
 object LiveEventBus {
@@ -16,7 +13,12 @@ object LiveEventBus {
         innerEvents.emit(event)
     }
 
-    inline fun <reified T: LiveEvent> listen() = events.filterIsInstance<T>()
+    inline fun <reified T : LiveEvent> listen() = events.filter {
+        it is T
+    }.map {
+        it as T
+    }
 }
 
+@Keep
 interface LiveEvent

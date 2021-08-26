@@ -26,8 +26,7 @@ import java.time.OffsetDateTime
 import java.util.concurrent.TimeUnit
 
 
-internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNotificationListener,
-    LiveUpdateListener, LiveKoinComponent {
+internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComponent {
 
     private val tracker: AnalyticsTracker by inject()
     private val liveInteractor: LiveInteractor by inject()
@@ -56,8 +55,6 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
 
     private var countdownTimer: CountDownTimer? = null
 
-    var remindedLiveStreamIdList = MutableLiveData<MutableList<String>>(mutableListOf())
-
     var messageList = MutableLiveData<List<ChatMessage>>(listOf())
 
     var error = MutableLiveData<Throwable?>(null)
@@ -85,7 +82,7 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
         liveNotificationManager = SdkHolder.instance.liveNotificationManager
         liveChatSource = SdkHolder.instance.liveChatSource
 
-        liveNotificationManager?.init(this)
+        liveNotificationManager?.init()
 
         episode?.let {
             if (isVideo)
@@ -252,45 +249,18 @@ internal class LiveRoomViewModel : ViewModel(), LiveNotificationManager.LiveNoti
     }
 
     fun toggleReminderFor(episode: Episode) {
-        liveNotificationManager?.toggleReminderFor(episode, this)
+        liveNotificationManager?.toggleReminderFor(episode)
     }
 
     val isReminderSet: Boolean
-        get() = nextLiveStream.value?.let {
-            remindedLiveStreamIdList.value?.contains(it.showId)
-        } ?: false
-
-    override fun onRequestPushNotificationSubscription(
-        episode: Episode,
-        token: String,
-        onSuccess: () -> Unit
-    ) {
-        liveInteractor.subscribeToNotifications(episode, token) {
-            onSuccess.invoke()
-        }
-    }
-
-    override fun onRequestPushNotificationUnsubscription(
-        episode: Episode,
-        token: String,
-        onSuccess: () -> Unit
-    ) {
-        liveInteractor.unSubscribeFromNotifications(episode, token) {
-            onSuccess.invoke()
-        }
-    }
-
-    override fun onRequestPushNotificationSubscriptionSync(onSuccess: (List<String>) -> Unit) {
-        liveInteractor.getNotificationSubscriptions {
-            onSuccess.invoke(it)
-            remindedLiveStreamIdList.postValue(it.toMutableList())
-        }
-    }
+        get() = nextLiveStream.value?.hasReminder ?: false
 
     private fun listenToNotificationSubscriptions() {
         launch {
             LiveEventBus.listen<LiveNotificationModified>().collect {
-                remindedLiveStreamIdList.postValue(it.list.toMutableList())
+                if (nextLiveStream.value?.id == it.episodeId) {
+                    nextLiveStream.postValue(nextLiveStream.value?.copy(hasReminder = it.isReminderSet))
+                }
             }
         }
     }

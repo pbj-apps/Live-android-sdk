@@ -1,9 +1,9 @@
 package com.pbj.sdk.concreteImplementation.live
 
+import android.util.Log
 import com.pbj.sdk.domain.live.LiveInteractor
 import com.pbj.sdk.domain.live.LiveRepository
 import com.pbj.sdk.domain.live.model.*
-import com.pbj.sdk.domain.live.model.BroadcastUrl
 import com.pbj.sdk.domain.onErrorCallBack
 import com.pbj.sdk.domain.onResult
 import com.tinder.scarlet.WebSocket
@@ -19,7 +19,8 @@ internal class LiveInteractorImpl(
     private var webSocketStatus: WebSocket.Event? = null
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("$throwable")
+        Timber.e(Log.getStackTraceString(throwable))
+        throw throwable
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + errorHandler)
@@ -58,12 +59,14 @@ internal class LiveInteractorImpl(
     }
 
     override fun getLiveStreamsSchedule(
-        date: String,
+        date: String?,
+        daysAhead: Int?,
+        size: Int?,
         onError: ((Throwable) -> Unit)?,
         onSuccess: ((EpisodeResponse?) -> Unit)?
     ) {
         scope.launch {
-            liveRepository.fetchLiveStreamsSchedule(date).onResult({
+            liveRepository.fetchLiveStreamsSchedule(date, daysAhead, size).onResult({
                 onError?.invoke(it)
             }) {
                 onSuccess?.invoke(it)
@@ -71,13 +74,13 @@ internal class LiveInteractorImpl(
         }
     }
 
-    override fun getLiveStreamsSchedule(
-        daysAhead: Int,
-        onError: ((Throwable) -> Unit)?,
+    override fun getEpisodesNextPage(
+        nextPageUrl: String,
+        onError: onErrorCallBack?,
         onSuccess: ((EpisodeResponse?) -> Unit)?
     ) {
         scope.launch {
-            liveRepository.fetchLiveStreamsSchedule(daysAhead).onResult({
+            liveRepository.fetchEpisodesNextPage(nextPageUrl).onResult({
                 onError?.invoke(it)
             }) {
                 onSuccess?.invoke(it)
@@ -146,14 +149,13 @@ internal class LiveInteractorImpl(
         }
     }
 
-    override fun subscribeToNotifications(
+    override fun subscribeToNotificationsFor(
         episode: Episode,
-        token: String,
         onError: ((Throwable) -> Unit)?,
         onSuccess: (() -> Unit)?
     ) {
         scope.launch {
-            liveRepository.subscribeToNotifications(episode, token).onResult({
+            liveRepository.subscribeToNotificationsFor(episode).onResult({
                 onError?.invoke(it)
             }) {
                 onSuccess?.invoke()
@@ -161,27 +163,13 @@ internal class LiveInteractorImpl(
         }
     }
 
-    override fun getNotificationSubscriptions(
-        onError: ((Throwable) -> Unit)?,
-        onSuccess: ((List<String>) -> Unit)?
-    ) {
-        scope.launch {
-            liveRepository.fetchNotificationSubscriptions().onResult({
-                onError?.invoke(it)
-            }) {
-                onSuccess?.invoke(it ?: listOf())
-            }
-        }
-    }
-
-    override fun unSubscribeFromNotifications(
+    override fun unSubscribeFromNotificationsFor(
         episode: Episode,
-        token: String,
         onError: ((Throwable) -> Unit)?,
         onSuccess: (() -> Unit)?
     ) {
         scope.launch {
-            liveRepository.unSubscribeFromNotifications(episode, token).onResult({
+            liveRepository.unSubscribeFromNotificationsFor(episode).onResult({
                 onError?.invoke(it)
             }) {
                 onSuccess?.invoke()

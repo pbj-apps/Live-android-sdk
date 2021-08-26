@@ -11,7 +11,12 @@ sealed class RegisterError : Throwable() {
 }
 
 sealed class PasswordChangeError : Throwable() {
-    data class PASSWORDS_DONT_MATCH(override val message: String?) : PasswordChangeError()
-    data class PASSWORD_TOO_COMMON(override val message: String?) : PasswordChangeError()
+    data class PasswordNotMatching(override val message: String?) : PasswordChangeError()
+    data class PasswordTooCommon(override val message: String?) : PasswordChangeError()
     data class Unknown(override val message: String?) : PasswordChangeError()
+}
+
+sealed class PushNotificationError : Throwable() {
+    data class ValidationError(override val message: String?) : PushNotificationError()
+    data class Unknown(override val message: String?) : PushNotificationError()
 }

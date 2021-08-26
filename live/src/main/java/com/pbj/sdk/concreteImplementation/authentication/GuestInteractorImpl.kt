@@ -1,5 +1,6 @@
 package com.pbj.sdk.concreteImplementation.authentication
 
+import android.util.Log
 import com.pbj.sdk.di.LiveKoinComponent
 import com.pbj.sdk.domain.authentication.GuestInteractor
 import com.pbj.sdk.domain.authentication.GuestRepository
@@ -16,7 +17,8 @@ internal class GuestInteractorImpl(override val guestRepository: GuestRepository
 ) : GuestInteractor, LiveKoinComponent {
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e("$throwable")
+        Timber.e(Log.getStackTraceString(throwable))
+        throw throwable
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO + errorHandler)

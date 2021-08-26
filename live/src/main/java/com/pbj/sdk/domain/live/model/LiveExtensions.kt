@@ -4,9 +4,6 @@ import com.pbj.sdk.concreteImplementation.authentication.model.GuestAuthResponse
 import com.pbj.sdk.concreteImplementation.live.model.JSONGuestAuthResponse
 import java.time.OffsetDateTime
 
-val Episode.fullSizeImage: String?
-    get() = show?.previewAsset?.image?.fullSize
-
 val Episode.isPast: Boolean
     get() = endDate?.isBefore(OffsetDateTime.now()) ?: false
 
