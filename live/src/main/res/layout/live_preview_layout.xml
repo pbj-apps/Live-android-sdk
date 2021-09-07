@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:fitsSystemWindows="true"
-    tools:context=".live.livePlayer.LiveRoomActivity">
+    tools:context=".live.livePlayer.LiveActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/videoPlayerContainer"

@@ -32,20 +32,20 @@ fun ProductListView(
 ) {
     LazyRow(modifier = modifier) {
         items(productList) { product ->
-            ProductItem(product, onClickProduct)
+            ProductCard(product, onClickProduct)
         }
     }
 }
 
 @Composable
-fun ProductItem(product: Product, onClick: (Product) -> Unit) {
+fun ProductCard(product: Product, onClick: (Product) -> Unit) {
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = Color.White,
         modifier = Modifier
             .clickable { onClick(product) }
             .width(310.dp)
-            .height(132.dp)
+            .height(140.dp)
             .padding(16.dp)
     ) {
         product.apply {
@@ -103,10 +103,26 @@ fun ProductItem(product: Product, onClick: (Product) -> Unit) {
 @Preview
 @Composable
 fun ProductItemPreview() {
-    ProductItem(
+    ProductCard(
         Product(
             "",
             "Handy gloves",
+            "999",
+            "A very handy pair of gloves for any kind of work",
+            null,
+            null,
+            null
+        )
+    ) {}
+}
+
+@Preview
+@Composable
+fun ProductItemLongTitlePreview() {
+    ProductCard(
+        Product(
+            "",
+            "Handy gloves for any kind of work related to gardening and paper work",
             "999",
             "A very handy pair of gloves for any kind of work",
             null,

@@ -3,6 +3,7 @@ package com.pbj.sdk.live.livePlayer.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -25,7 +26,9 @@ internal fun LivePlayerScreen(
             LivePlayerView(
                 episode = it,
                 nextEpisode = nextLiveStream,
+                streamUrl = streamUrl,
                 isPlaying = isPlaying,
+                playerSettings = playerSettings,
                 isChatEnabled = isChatEnabled,
                 chatText = chatText,
                 onChatTextChange = ::onChatTextChange,
@@ -37,7 +40,8 @@ internal fun LivePlayerScreen(
                 onClickProduct = onClickProduct,
                 onClickBack = onClickBack,
                 onClickJoin = onClickJoin,
-                onClickRemind = ::toggleReminderFor
+                onClickRemind = ::toggleReminderFor,
+                onPlayerStateChange = ::onPlayerStateChange
             )
         }
     }

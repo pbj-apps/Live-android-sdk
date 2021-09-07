@@ -1,16 +1,17 @@
 package com.pbj.sdk.live.livePlayer.ui
 
-import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.pbj.sdk.common.ui.PlayerSettings
+import com.pbj.sdk.common.ui.VideoPlayerView
+import com.pbj.sdk.common.ui.VideoState
 import com.pbj.sdk.domain.chat.ChatMessage
-import com.pbj.sdk.domain.live.model.Episode
-import com.pbj.sdk.domain.live.model.EpisodeStatus
-import com.pbj.sdk.domain.live.model.fullSizeImage
-import com.pbj.sdk.domain.live.model.isFinished
+import com.pbj.sdk.domain.live.model.*
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.live.livePlayer.ui.liveOverlay.LivePlayerFinishedStateOverlay
 import com.pbj.sdk.live.livePlayer.ui.liveOverlay.LivePlayerInfo
@@ -19,7 +20,9 @@ import com.pbj.sdk.live.livePlayer.ui.liveOverlay.LivePlayerInfo
 internal fun LivePlayerView(
     episode: Episode,
     nextEpisode: Episode?,
+    streamUrl: BroadcastUrl?,
     isPlaying: Boolean,
+    playerSettings: PlayerSettings,
     isChatEnabled: Boolean,
     chatText: String?,
     chatMessageList: List<ChatMessage>,
@@ -31,13 +34,17 @@ internal fun LivePlayerView(
     onClickProduct: (Product) -> Unit,
     onClickBack: () -> Unit,
     onClickRemind: (Episode) -> Unit,
-    onClickJoin: (Episode) -> Unit
+    onClickJoin: (Episode) -> Unit,
+    onPlayerStateChange: (VideoState) -> Unit
 ) {
     var showOverlay by remember { mutableStateOf(true) }
 
-    Box(Modifier.clickable {
-        showOverlay = !showOverlay
-    }) {
+    Box(
+        Modifier
+            .background(Color.Black)
+            .clickable {
+                showOverlay = !showOverlay
+            }) {
         if (!isPlaying) {
             val bgImageUrl = if (episode.isFinished)
                 nextEpisode?.fullSizeImage
@@ -47,39 +54,41 @@ internal fun LivePlayerView(
             }
         }
 
-        Crossfade(episode.status) {
-            when (it) {
-                EpisodeStatus.Broadcasting -> {
-
-                }
-                EpisodeStatus.Finished -> {
-                    if (!isPlaying) {
-                        LivePlayerFinishedStateOverlay(
-                            episode = episode,
-                            countdownTime = countdownTime,
-                            onClickBack = onClickBack,
-                            onClickRemind = onClickRemind,
-                            onClickJoin = onClickJoin
-                        )
-                    }
-                }
-            }
-            if (!episode.isFinished) {
-                LivePlayerInfo(
-                    episode = episode,
-                    isPlaying = isPlaying,
-                    isChatEnabled = isChatEnabled,
-                    chatText = chatText,
-                    chatMessages = chatMessageList,
-                    onChatTextChange = onChatTextChange,
-                    sendMessage = sendMessage,
-                    products = productList,
-                    featuredProducts = featuredProductList,
-                    onClickProduct = onClickProduct,
-                    countdownTime = countdownTime,
-                    close = onClickBack
+        when {
+            (episode.isBroadcasting || episode.isFinished || isPlaying) && !streamUrl?.broadcastUrl.isNullOrBlank() -> {
+                VideoPlayerView(
+                    url = streamUrl?.broadcastUrl!!,
+                    timeCode = streamUrl.elapsedTime,
+                    settings = playerSettings,
+                    soundEnabled = true,
+                    onVideoPlayerStateChange = onPlayerStateChange
                 )
             }
+            episode.isFinished && !isPlaying -> {
+                LivePlayerFinishedStateOverlay(
+                    episode = episode,
+                    countdownTime = countdownTime,
+                    onClickBack = onClickBack,
+                    onClickRemind = onClickRemind,
+                    onClickJoin = onClickJoin
+                )
+            }
+        }
+        if (!episode.isFinished) {
+            LivePlayerInfo(
+                episode = episode,
+                isPlaying = isPlaying,
+                isChatEnabled = isChatEnabled,
+                chatText = chatText,
+                chatMessages = chatMessageList,
+                onChatTextChange = onChatTextChange,
+                sendMessage = sendMessage,
+                products = productList,
+                featuredProducts = featuredProductList,
+                onClickProduct = onClickProduct,
+                countdownTime = countdownTime,
+                close = onClickBack
+            )
         }
     }
 }
@@ -90,7 +99,9 @@ private fun LivePlayerPreview() {
     LivePlayerView(
         episode = LivePreviewData.liveChatWaitingRoom,
         nextEpisode = LivePreviewData.liveChatBroadcastRoom,
+        streamUrl = null,
         isPlaying = false,
+        playerSettings = PlayerSettings(),
         isChatEnabled = true,
         chatText = "Hi dude",
         onChatTextChange = {},
@@ -102,7 +113,8 @@ private fun LivePlayerPreview() {
         onClickProduct = {},
         onClickBack = {},
         onClickJoin = {},
-        onClickRemind = {}
+        onClickRemind = {},
+        onPlayerStateChange = {}
     )
 }
 

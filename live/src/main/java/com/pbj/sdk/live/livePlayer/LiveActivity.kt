@@ -9,14 +9,16 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
 import com.pbj.sdk.analytics.AnalyticsTracker
+import com.pbj.sdk.common.ui.PlayerSettings
 import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.live.livePlayer.ui.LivePlayerScreen
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
+class LiveActivity : AppCompatActivity(), LivePlayerFragment.Listener {
 
     private val analytics: AnalyticsTracker by inject()
 
@@ -53,6 +55,11 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
         vm.init(episode, nextEpisode)
 
         setContent {
+            LaunchedEffect(vm.isPlaying) {
+                val enableRotation = vm.isPlaying
+                enableScreenRotation(enableRotation)
+            }
+
             LivePlayerScreen(
                 vm = vm,
                 isChatEnabled = isChatEnable,
@@ -79,7 +86,7 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
     }
 
     private fun startLiveRoom(episode: Episode) {
-        val intent = Intent(this, LiveRoomActivity::class.java).apply {
+        val intent = Intent(this, LiveActivity::class.java).apply {
             putExtra(LIVE_STREAM, episode)
             putExtra(IS_CHAT_ENABLED, isChatEnable)
         }
@@ -99,23 +106,25 @@ class LiveRoomActivity : AppCompatActivity(), LivePlayerFragment.Listener {
         Timber.e(errorMessage)
     }
 
-    override fun onPlayerLoad() { }
+    override fun onPlayerLoad() {}
 
-    override fun onLiveReady() { }
+    override fun onLiveReady() {}
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-
+        vm.listenToEpisode()
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
             )
+            vm.onScreenRotation(true)
         } else {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
             )
+            vm.onScreenRotation(false)
         }
     }
 

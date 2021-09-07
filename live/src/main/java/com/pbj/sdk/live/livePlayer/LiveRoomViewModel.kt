@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.pbj.sdk.analytics.AnalyticsTracker
+import com.pbj.sdk.common.ui.PlayerSettings
+import com.pbj.sdk.common.ui.VideoState
 import com.pbj.sdk.core.SdkHolder
 import com.pbj.sdk.di.LiveKoinComponent
 import com.pbj.sdk.domain.authentication.UserInteractor
@@ -51,7 +53,9 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
 
     var highlightedProductList by mutableStateOf<List<Product>>(listOf())
 
-    var isPlaying = false
+    var isPlaying by mutableStateOf(false)
+
+    var playerSettings: PlayerSettings by mutableStateOf(PlayerSettings())
 
     private var countdownTimer: CountDownTimer? = null
 
@@ -96,6 +100,9 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
                 getHighlightedProducts(it)
                 registerForProductHighlights(it)
             }
+
+            if (it.isBroadcasting)
+                getStreamUrl(it)
         }
 
         initCountdown()
@@ -191,7 +198,12 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
                 error = it
             }) {
                 error = null
-                streamUrl = it
+                streamUrl = if (isVideo)
+                    BroadcastUrl(
+                        broadcastUrl = episode?.video?.videoURL,
+                        elapsedTime = it?.elapsedTime
+                    )
+                else it
             }
         }
     }
@@ -298,8 +310,29 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
         unRegisterForProductHighlights()
     }
 
+    fun onPlayerStateChange(playerState: VideoState) {
+        when (playerState) {
+            VideoState.READY -> onLiveReady()
+            VideoState.ENDED -> onLiveFinished()
+        }
+    }
+
+    fun onScreenRotation(isLandscape: Boolean) {
+        playerSettings = if (isLandscape)
+            playerSettings.copy(
+                resizeMode = PlayerSettings.ResizeMode.Fill,
+                scalingMode = PlayerSettings.ScalingMode.FitWithCropping
+            )
+        else
+            playerSettings.copy(
+                resizeMode = PlayerSettings.ResizeMode.Fit,
+                scalingMode = PlayerSettings.ScalingMode.Fit
+            )
+    }
+
     fun onLiveFinished() {
         isPlaying = false
+        episode = episode?.copy(status = EpisodeStatus.Finished)
     }
 
     fun onLiveReady() {

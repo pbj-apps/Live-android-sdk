@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,7 +25,7 @@ fun LivePlayerHeader(
     close: () -> Unit
 ) {
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceEvenly,
 //        verticalAlignment = Alignment.Top,
         modifier = modifier
             .fillMaxWidth()
@@ -35,8 +36,7 @@ fun LivePlayerHeader(
                 if (isLive) R.drawable.ic_live_on else R.drawable.ic_up_next
             ),
             null,
-            modifier = Modifier
-                .padding(16.dp)
+            modifier = Modifier.padding(16.dp)
         )
 
         title?.let {
@@ -44,13 +44,16 @@ fun LivePlayerHeader(
                 text = it,
                 fontSize = 18.sp,
                 color = Color.White,
-                modifier = Modifier.padding(vertical = 16.dp)
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .weight(1f, true),
+                textAlign = TextAlign.Center
             )
         } ?: Spacer(modifier = Modifier.weight(1f, true))
 
         Icon(
             painter = painterResource(R.drawable.ic_cross),
-            null,
+            "Close live",
             tint = Color.White,
             modifier = Modifier
                 .clip(CircleShape)
@@ -77,7 +80,7 @@ private fun LivePlayerHeaderLivePreview() {
 private fun LivePlayerHeaderPreview() {
     LivePlayerHeader(
         isLive = false,
-        title = "Workout of the day"
+        title = "Workout of the day and any kind of training improving your body performances"
     ) {}
 }
 

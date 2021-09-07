@@ -14,7 +14,7 @@
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="true"/>
         <activity
-            android:name=".live.livePlayer.LiveRoomActivity"
+            android:name=".live.livePlayer.LiveActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:theme="@style/Theme.Pbj.NoActionBar.Dark"
             android:launchMode="singleTask"
