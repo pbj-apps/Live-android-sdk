@@ -39,6 +39,10 @@ internal fun LivePlayerView(
 ) {
     var showOverlay by remember { mutableStateOf(true) }
 
+    var showChat by remember {
+        mutableStateOf(false)
+    }
+
     Box(
         Modifier
             .background(Color.Black)
@@ -74,18 +78,25 @@ internal fun LivePlayerView(
                 )
             }
         }
-        if (!episode.isFinished) {
+        if (!episode.isFinished && showOverlay) {
             LivePlayerInfo(
                 episode = episode,
                 isPlaying = isPlaying,
                 isChatEnabled = isChatEnabled,
+                showChat = showChat,
+                onClickChatButton = {
+                    showChat = !showChat
+                },
                 chatText = chatText,
                 chatMessages = chatMessageList,
                 onChatTextChange = onChatTextChange,
                 sendMessage = sendMessage,
                 products = productList,
                 featuredProducts = featuredProductList,
-                onClickProduct = onClickProduct,
+                onClickProduct = {
+                    showOverlay = false
+                    onClickProduct(it)
+                },
                 countdownTime = countdownTime,
                 close = onClickBack
             )

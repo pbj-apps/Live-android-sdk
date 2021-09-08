@@ -80,13 +80,12 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
     }
 
     private fun initialize() {
+        liveNotificationManager = SdkHolder.instance.liveNotificationManager
+        liveChatSource = SdkHolder.instance.liveChatSource
 
         listenToNotificationSubscriptions()
 
         initStreamUpdates()
-
-        liveNotificationManager = SdkHolder.instance.liveNotificationManager
-        liveChatSource = SdkHolder.instance.liveChatSource
 
         liveNotificationManager?.init()
 

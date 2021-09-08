@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -17,13 +19,15 @@ import com.pbj.sdk.live.livePlayer.ui.LivePreviewData
 
 @Composable
 fun ChatListView(modifier: Modifier = Modifier, messageList: List<ChatMessage>) {
-    LazyColumn(modifier = modifier, reverseLayout = true) {
+    val listState = rememberLazyListState(messageList.lastIndex)
+    LazyColumn(modifier = modifier, state = listState) {
         items(messageList) { message ->
             Row {
                 Text(
                     text = message.username,
                     color = Color.White,
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = message.text,

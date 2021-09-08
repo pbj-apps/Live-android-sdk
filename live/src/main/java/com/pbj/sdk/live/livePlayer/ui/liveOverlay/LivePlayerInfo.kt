@@ -2,13 +2,11 @@ package com.pbj.sdk.live.livePlayer.ui.liveOverlay
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.pbj.sdk.R
 import com.pbj.sdk.common.ui.DoubleGradientView
-import com.pbj.sdk.common.ui.TextFieldDialog
 import com.pbj.sdk.domain.chat.ChatMessage
 import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.live.model.EpisodeStatus.Idle
@@ -24,15 +22,16 @@ fun LivePlayerInfo(
     episode: Episode,
     isPlaying: Boolean,
     isChatEnabled: Boolean,
+    showChat: Boolean,
     chatText: String?,
     chatMessages: List<ChatMessage>,
+    onClickChatButton: () -> Unit,
     onChatTextChange: (String) -> Unit,
     sendMessage: () -> Unit,
     products: List<Product>,
     featuredProducts: List<Product>,
     onClickProduct: (Product) -> Unit,
     countdownTime: String,
-    showsUsernameAlert: Boolean = false,
     close: () -> Unit
 ) {
     val isLive = episode.isBroadcasting || isPlaying
@@ -41,22 +40,23 @@ fun LivePlayerInfo(
         mutableStateOf(false)
     }
 
-    var showChat by remember {
-        mutableStateOf(false)
+    val canShowChat = rememberSaveable(
+        isChatEnabled,
+        episode.status == WaitingRoom || episode.isBroadcasting,
+        isPlaying
+    ) {
+        isChatEnabled && (episode.status == WaitingRoom || episode.isBroadcasting || isPlaying)
     }
 
-    val canShowChat = remember {
-        isChatEnabled && (episode.status == WaitingRoom || episode.isBroadcasting)
-    }
-
-    val canShowProducts = remember {
+    val canShowProducts = rememberSaveable(episode.isBroadcasting, products.isNotEmpty()) {
         episode.isBroadcasting && products.isNotEmpty()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
         DoubleGradientView()
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
             LivePlayerHeader(
                 isLive = isLive,
@@ -71,18 +71,21 @@ fun LivePlayerInfo(
                     countdownTime = countdownTime
                 )
             }
-            if (!showProducts && canShowProducts) {
-                ProductListView(productList = featuredProducts, onClickProduct = onClickProduct)
-            }
-            if (showProducts && canShowProducts) {
-                ProductListView(productList = products, onClickProduct = onClickProduct)
+            if (canShowProducts) {
+                val productsToDisplay = if (showProducts) products else featuredProducts
+                ProductListView(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    productList = productsToDisplay,
+                    onClickProduct = onClickProduct
+                )
             }
             if (canShowChat && showChat) {
                 ChatListView(
                     modifier = Modifier
-                        .wrapContentHeight()
                         .padding(horizontal = 16.dp)
-                        .padding(top = 230.dp),
+                        .padding(bottom = 16.dp)
+                        .fillMaxWidth()
+                        .height(250.dp),
                     chatMessages
                 )
             }
@@ -95,9 +98,7 @@ fun LivePlayerInfo(
                 textMessage = chatText,
                 canShowChat = canShowChat,
                 isChatShown = showChat,
-                onClickChatButton = {
-                    showChat = !showChat
-                },
+                onClickChatButton = onClickChatButton,
                 onChatTextChange = onChatTextChange,
                 sendMessage = sendMessage,
                 productCount = products.count().toString(),
@@ -108,21 +109,6 @@ fun LivePlayerInfo(
             )
         }
     }
-
-    if (showsUsernameAlert) {
-        TextFieldDialog(
-            title = stringResource(R.string.username),
-            description = stringResource(R.string.chat_username_dialog_description),
-            confirmButtonText = stringResource(R.string.ok),
-            dismissButtonText = stringResource(R.string.cancel),
-            onConfirm = {
-
-            },
-            onDismiss = {
-
-            }
-        )
-    }
 }
 
 @Preview
@@ -132,6 +118,8 @@ private fun LivePlayerInfoPreview() {
         episode = LivePreviewData.liveChatWaitingRoom,
         isPlaying = false,
         isChatEnabled = true,
+        showChat = false,
+        onClickChatButton = {},
         chatMessages = listOf(),
         onChatTextChange = {},
         sendMessage = {},
@@ -139,8 +127,27 @@ private fun LivePlayerInfoPreview() {
         featuredProducts = listOf(),
         onClickProduct = {},
         chatText = "Hello",
-        countdownTime = "05  58  39",
-        showsUsernameAlert = false
+        countdownTime = "05  58  39"
+    ) {}
+}
+
+@Preview
+@Composable
+private fun LivePlayerInfoChatPreview() {
+    LivePlayerInfo(
+        episode = LivePreviewData.liveChatBroadcastRoom,
+        isPlaying = false,
+        isChatEnabled = true,
+        showChat = true,
+        onClickChatButton = {},
+        chatMessages = LivePreviewData.chatMessageList,
+        onChatTextChange = {},
+        sendMessage = {},
+        products = LivePreviewData.productList,
+        featuredProducts = LivePreviewData.productList,
+        onClickProduct = {},
+        chatText = "Hello",
+        countdownTime = "05  58  39"
     ) {}
 }
 
@@ -151,6 +158,8 @@ private fun LivePlayerInfoPlayingPreview() {
         episode = LivePreviewData.liveChatBroadcastRoom,
         isPlaying = true,
         isChatEnabled = true,
+        showChat = false,
+        onClickChatButton = {},
         chatMessages = listOf(),
         onChatTextChange = {},
         sendMessage = {},
@@ -158,7 +167,6 @@ private fun LivePlayerInfoPlayingPreview() {
         featuredProducts = listOf(),
         onClickProduct = {},
         chatText = "Hello",
-        countdownTime = "05  58  39",
-        showsUsernameAlert = false
+        countdownTime = "05  58  39"
     ) {}
 }

@@ -14,6 +14,7 @@
     <color name="liveButtonBackground">#FFFFFF</color>
     <color name="liveButtonForeground">#000000</color>
     <color name="product_divider">#CACACA</color>
+    <color name="dividerColor">#CACACA</color>
     <color name="livePositiveButtonColor">#8BC34A</color>
     <color name="liveCancelButtonColor">#FFFFFF</color>
     <color name="liveOnPositiveButtonColor">#FFFFFF</color>

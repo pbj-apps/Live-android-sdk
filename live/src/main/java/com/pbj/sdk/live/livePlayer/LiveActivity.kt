@@ -11,7 +11,6 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.LaunchedEffect
 import com.pbj.sdk.analytics.AnalyticsTracker
-import com.pbj.sdk.common.ui.PlayerSettings
 import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.live.livePlayer.ui.LivePlayerScreen

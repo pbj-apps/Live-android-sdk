@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Surface
@@ -31,32 +31,33 @@ fun ProductListView(
     onClickProduct: (Product) -> Unit
 ) {
     LazyRow(modifier = modifier) {
-        items(productList) { product ->
-            ProductCard(product, onClickProduct)
+        itemsIndexed(productList) { i, product ->
+            ProductCard(index = i, product, onClickProduct)
         }
     }
 }
 
 @Composable
-fun ProductCard(product: Product, onClick: (Product) -> Unit) {
+fun ProductCard(index: Int, product: Product, onClick: (Product) -> Unit) {
+    val paddingStart = if (index == 0) 16 else 0
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = Color.White,
         modifier = Modifier
             .clickable { onClick(product) }
             .width(310.dp)
-            .height(140.dp)
-            .padding(16.dp)
+            .height(132.dp)
+            .padding(start = paddingStart.dp, end = 16.dp)
     ) {
         product.apply {
-            Row(modifier = Modifier.padding(8.dp)) {
+            Row(modifier = Modifier.padding(16.dp)) {
                 Column(Modifier.weight(1f, fill = true)) {
                     title?.let {
                         Text(
                             text = it,
                             fontSize = 16.sp,
                             color = Color.Black,
-                            maxLines = 2,
+                            maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
@@ -87,7 +88,9 @@ fun ProductCard(product: Product, onClick: (Product) -> Unit) {
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Image(
-                    modifier = Modifier.aspectRatio(1f),
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .fillMaxHeight(),
                     painter = rememberImagePainter(
                         image,
                         builder = {
@@ -104,7 +107,8 @@ fun ProductCard(product: Product, onClick: (Product) -> Unit) {
 @Composable
 fun ProductItemPreview() {
     ProductCard(
-        Product(
+        index = 0,
+        product = Product(
             "",
             "Handy gloves",
             "999",
@@ -120,7 +124,8 @@ fun ProductItemPreview() {
 @Composable
 fun ProductItemLongTitlePreview() {
     ProductCard(
-        Product(
+        index = 0,
+        product = Product(
             "",
             "Handy gloves for any kind of work related to gardening and paper work",
             "999",
