@@ -1,119 +1,90 @@
 package com.pbj.sdk.live.sdkLivePlayer
 
+import android.app.PictureInPictureParams
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.Crossfade
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.content.ContextCompat
-import com.pbj.sdk.databinding.ActivitySdkLivePlayerBinding
+import com.pbj.sdk.R
 import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.live.model.Show
-import com.pbj.sdk.domain.vod.model.previewImage
+import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.live.livePlayer.LivePlayerFragment
-import com.pbj.sdk.utils.observe
+import com.pbj.sdk.live.livePlayer.LiveRoomViewModel
+import com.pbj.sdk.live.livePlayer.ui.LivePlayerScreen
 
 class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener {
 
-    lateinit var view: ActivitySdkLivePlayerBinding
+    private val sdkVm: SDKLivePlayerViewModel by viewModels()
 
-    private val vm: SDKLivePlayerViewModel by viewModels()
+    private val liveVm: LiveRoomViewModel by viewModels()
 
     var showId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        view = ActivitySdkLivePlayerBinding.inflate(layoutInflater)
-        setContentView(view.root)
+        setContent {
+            Crossfade(sdkVm.screenState) {
+                when (it) {
+                    is SDKLivePlayerViewModel.State.Loading -> SdkLoadingEpisodeView()
+                    is SDKLivePlayerViewModel.State.NoLive -> SdkInformationView(
+                        title = R.string.no_live,
+                        description = R.string.no_live_description,
+                        close = ::finish
+                    )
+                    is SDKLivePlayerViewModel.State.HasEpisode -> EpisodeView(it.episode)
+                    is SDKLivePlayerViewModel.State.HasShow -> SdkShowDetailsView(it.show, ::finish)
+                    is SDKLivePlayerViewModel.State.EpisodeEnd -> SdkEpisodeEndView(
+                        show = it.episode?.show,
+                        close = ::finish
+                    )
+                    is SDKLivePlayerViewModel.State.Error -> SdkInformationView(
+                        title = R.string.livestream_error_title,
+                        description = R.string.livestream_error_description,
+                        close = ::finish
+                    )
+                }
+            }
+        }
 
         intent.extras?.apply {
             showId = getString(SHOW_ID)
         }
 
-        observerScreenState()
-        vm.init(showId)
+        sdkVm.init(showId)
     }
 
-    private fun observerScreenState() {
-        observe(vm.screenState) { state ->
-            when (state) {
-                is SDKLivePlayerViewModel.State.Loading -> onLoading()
-                is SDKLivePlayerViewModel.State.NoLive -> onNoLive()
-                is SDKLivePlayerViewModel.State.HasEpisode -> onEpisode(state.episode)
-                is SDKLivePlayerViewModel.State.HasShow -> onShow(state.show)
-                is SDKLivePlayerViewModel.State.EpisodeEnd -> onEpisodeEnd(state.episode)
-                is SDKLivePlayerViewModel.State.Error -> onError()
-            }
+    @Composable
+    private fun EpisodeView(episode: Episode) {
+        LaunchedEffect(episode) {
+            liveVm.init(episode, null)
         }
-    }
 
-    private fun onLoading() {
-        replaceView(
-            SdkLoadingEpisodeView(this@SDKLivePlayerActivity)
+        LivePlayerScreen(
+            vm = liveVm,
+            isChatEnabled = true,
+            onClickBack = ::finish,
+            onClickProduct = ::onClickProduct,
+            onClickJoin = {}
         )
     }
 
-    private fun onNoLive() {
-        replaceView(
-            SdkNoEpisodeView(this).apply {
-                closeButton.setOnClickListener {
-                    finish()
-                }
-            }
-        )
-    }
-
-    private fun onError() {
-        replaceView(
-            SdkEpisodeErrorView(this).apply {
-                closeButton.setOnClickListener {
-                    finish()
-                }
-            }
-        )
-    }
-
-    private fun onEpisode(episode: Episode) {
-//        val livePlayerFragment = LivePlayerFragment.newInstance(episode, null, true)
-//        startFragment(livePlayerFragment, view.content.id, false)
-    }
-
-    private fun onShow(show: Show) {
-        replaceView(
-            SdkShowPreview(
-                this,
-                show.previewAsset?.previewImage,
-                show.title,
-                show.description
-            ).apply {
-                closeButton.setOnClickListener {
-                    finish()
-                }
-            }
-        )
-    }
-
-    private fun onEpisodeEnd(episode: Episode?) {
-        replaceView(
-            SdkEpisodeEndView(this, episode?.show?.previewAsset?.previewImage).apply {
-                closeButton.setOnClickListener {
-                    finish()
-                }
-            }
-        )
-    }
-
-    private fun replaceView(v: View) {
-        view.content.apply {
-            removeAllViews()
-            addView(v)
+    @Composable
+    private fun EpisodeEndView(show: Show?) =
+        SdkEpisodeEndView(show) {
+            finish()
         }
-    }
 
     override fun onPressClose() {
         finish()
@@ -127,15 +98,15 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener {
     }
 
     override fun onPlayerError(errorMessage: String?) {
-        vm.onError(errorMessage)
+        sdkVm.onError(errorMessage)
     }
 
     override fun onPlayerLoad() {
-        vm.onLiveLoad()
+        sdkVm.onLiveLoad()
     }
 
     override fun onLiveReady() {
-        vm.onLiveReady()
+        sdkVm.onLiveReady()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -152,6 +123,17 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
             )
         }
+    }
+
+    private fun onClickProduct(product: Product) {
+        liveVm.logOnClickProduct(product)
+        val params = PictureInPictureParams.Builder().build()
+        enterPictureInPictureMode(params)
+
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(product.link)).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        }
+        startActivity(browserIntent)
     }
 
     companion object {

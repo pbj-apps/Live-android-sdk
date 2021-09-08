@@ -15,7 +15,7 @@ internal object LivePreviewData {
 
     private val image = Image(URL, URL, URL)
 
-    private val show = Show(
+    val show = Show(
         "d",
         "Show Title",
         "Show Description",

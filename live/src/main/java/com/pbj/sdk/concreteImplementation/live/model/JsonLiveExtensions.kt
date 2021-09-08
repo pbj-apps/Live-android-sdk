@@ -29,7 +29,7 @@ internal val JsonEpisode.asModel: Episode
             title = title,
             description = description,
             duration = duration,
-            image = preview_asset.image.asModel,
+            image = preview_asset?.image?.asModel,
             startDate = DateUtils.getDateTime(starting_at),
             endDate = DateUtils.getDateTime(ends_at),
             show = show?.asModel,

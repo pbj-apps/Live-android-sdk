@@ -1,6 +1,8 @@
 package com.pbj.sdk.live.sdkLivePlayer
 
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.pbj.sdk.di.LiveKoinComponent
 import com.pbj.sdk.domain.authentication.GuestInteractor
@@ -23,7 +25,7 @@ internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
 
     private var show: Show? = null
 
-    val screenState = MutableLiveData<State>(State.Loading)
+    var screenState by mutableStateOf<State>(State.Loading)
 
     var user: User? = null
 
@@ -33,7 +35,7 @@ internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
     }
 
     private fun getLiveStreamAsGuest(showId: String?) {
-        screenState.postValue(State.Loading)
+        screenState = State.Loading
         guestInteractor.authenticateAsGuest({
             onError(it.localizedMessage)
         }) {
@@ -82,7 +84,7 @@ internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
     }
 
     fun onError(message: String?) {
-        screenState.postValue(State.Error(message))
+        screenState = State.Error(message)
         Timber.e(message)
     }
 
@@ -137,11 +139,11 @@ internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
             else -> State.NoLive
         }
 
-        if (state is State.HasEpisode && screenState.value is State.HasEpisode) {
+        if (state is State.HasEpisode && screenState is State.HasEpisode) {
             return
         }
 
-        screenState.postValue(state)
+        screenState = state
 
         Timber.d(state.toString())
     }
@@ -165,7 +167,7 @@ internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
     }
 
     fun onLiveLoad() {
-        screenState.postValue(State.Loading)
+        screenState = State.Loading
     }
 
     sealed class State {
