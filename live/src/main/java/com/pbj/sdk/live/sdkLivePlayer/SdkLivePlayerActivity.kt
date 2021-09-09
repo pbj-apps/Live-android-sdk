@@ -17,39 +17,39 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.core.content.ContextCompat
 import com.pbj.sdk.R
 import com.pbj.sdk.domain.live.model.Episode
-import com.pbj.sdk.domain.live.model.Show
 import com.pbj.sdk.domain.product.model.Product
-import com.pbj.sdk.live.livePlayer.LivePlayerFragment
-import com.pbj.sdk.live.livePlayer.LiveRoomViewModel
+import com.pbj.sdk.live.livePlayer.LiveViewModel
 import com.pbj.sdk.live.livePlayer.ui.LivePlayerScreen
 
-class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener {
+class SdkLivePlayerActivity : AppCompatActivity() {
 
-    private val sdkVm: SDKLivePlayerViewModel by viewModels()
+    private val sdkVm: SdkLivePlayerViewModel by viewModels()
 
-    private val liveVm: LiveRoomViewModel by viewModels()
+    private val liveVm: LiveViewModel by viewModels()
 
     var showId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        enableScreenRotation(true)
+
         setContent {
             Crossfade(sdkVm.screenState) {
                 when (it) {
-                    is SDKLivePlayerViewModel.State.Loading -> SdkLoadingEpisodeView()
-                    is SDKLivePlayerViewModel.State.NoLive -> SdkInformationView(
+                    is SdkLivePlayerViewModel.State.Loading -> SdkLoadingEpisodeView()
+                    is SdkLivePlayerViewModel.State.NoLive -> SdkInformationView(
                         title = R.string.no_live,
                         description = R.string.no_live_description,
                         close = ::finish
                     )
-                    is SDKLivePlayerViewModel.State.HasEpisode -> EpisodeView(it.episode)
-                    is SDKLivePlayerViewModel.State.HasShow -> SdkShowDetailsView(it.show, ::finish)
-                    is SDKLivePlayerViewModel.State.EpisodeEnd -> SdkEpisodeEndView(
+                    is SdkLivePlayerViewModel.State.HasEpisode -> EpisodeView(it.episode)
+                    is SdkLivePlayerViewModel.State.HasShow -> SdkShowDetailsView(it.show, ::finish)
+                    is SdkLivePlayerViewModel.State.EpisodeEnd -> SdkEpisodeEndView(
                         show = it.episode?.show,
                         close = ::finish
                     )
-                    is SDKLivePlayerViewModel.State.Error -> SdkInformationView(
+                    is SdkLivePlayerViewModel.State.Error -> SdkInformationView(
                         title = R.string.livestream_error_title,
                         description = R.string.livestream_error_description,
                         close = ::finish
@@ -73,6 +73,8 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener {
 
         LivePlayerScreen(
             vm = liveVm,
+            onPlayerError = { onPlayerError(it.localizedMessage) },
+            onPlayerStateChange = sdkVm::onPlayerStateChange,
             isChatEnabled = true,
             onClickBack = ::finish,
             onClickProduct = ::onClickProduct,
@@ -80,33 +82,15 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener {
         )
     }
 
-    @Composable
-    private fun EpisodeEndView(show: Show?) =
-        SdkEpisodeEndView(show) {
-            finish()
-        }
-
-    override fun onPressClose() {
-        finish()
-    }
-
-    override fun enableScreenRotation(enable: Boolean) {
+    private fun enableScreenRotation(enable: Boolean) {
         requestedOrientation = if (enable)
             ActivityInfo.SCREEN_ORIENTATION_SENSOR
         else
             ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
     }
 
-    override fun onPlayerError(errorMessage: String?) {
+    private fun onPlayerError(errorMessage: String?) {
         sdkVm.onError(errorMessage)
-    }
-
-    override fun onPlayerLoad() {
-        sdkVm.onLiveLoad()
-    }
-
-    override fun onLiveReady() {
-        sdkVm.onLiveReady()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -150,7 +134,7 @@ class SDKLivePlayerActivity : AppCompatActivity(), LivePlayerFragment.Listener {
         }
 
         private fun startLivePlayerActivity(context: Context, bundle: Bundle? = null) {
-            val intent = Intent(context, SDKLivePlayerActivity::class.java).apply {
+            val intent = Intent(context, SdkLivePlayerActivity::class.java).apply {
                 bundle?.let {
                     putExtras(it)
                 }

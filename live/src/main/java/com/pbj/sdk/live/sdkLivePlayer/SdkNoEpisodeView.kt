@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pbj.sdk.R
-import com.pbj.sdk.common.ui.CloseButton
+import com.pbj.sdk.common.ui.ClickableIcon
 
 @Composable
 internal fun SdkNoEpisodeView(close: () -> Unit) {
@@ -28,7 +28,7 @@ internal fun SdkNoEpisodeView(close: () -> Unit) {
             .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
-        CloseButton(modifier = Modifier.align(TopEnd)) { close() }
+        ClickableIcon(drawable = R.drawable.ic_cross, modifier = Modifier.align(TopEnd)) { close() }
 
         Column(horizontalAlignment = CenterHorizontally, modifier = Modifier.padding(16.dp)) {
             Text(

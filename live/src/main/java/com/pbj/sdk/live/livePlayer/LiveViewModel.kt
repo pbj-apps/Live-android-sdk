@@ -30,22 +30,21 @@ import java.time.OffsetDateTime
 import java.util.concurrent.TimeUnit
 
 
-internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComponent {
+class LiveViewModel : ViewModel(), LiveUpdateListener, LiveKoinComponent {
 
     private val tracker: AnalyticsTracker by inject()
     private val liveInteractor: LiveInteractor by inject()
     private val userInteractor: UserInteractor by inject()
     private val productFeature: ProductFeature by inject()
 
-    var liveChatSource: LiveChatSource? = null
-
-    var liveNotificationManager: LiveNotificationManager? = null
+    private var liveChatSource: LiveChatSource? = null
+    private var liveNotificationManager: LiveNotificationManager? = null
 
     var episode: Episode? by mutableStateOf(null)
 
     var nextLiveStream: Episode? by mutableStateOf(null)
 
-    var streamUrl: BroadcastUrl? by mutableStateOf(null)
+    var streamUrl: String? by mutableStateOf(null)
 
     var remainingTime: String by mutableStateOf("")
 
@@ -197,12 +196,11 @@ internal class LiveRoomViewModel : ViewModel(), LiveUpdateListener, LiveKoinComp
                 error = it
             }) {
                 error = null
-                streamUrl = if (isVideo)
-                    BroadcastUrl(
-                        broadcastUrl = episode?.video?.videoURL,
-                        elapsedTime = it?.elapsedTime
-                    )
-                else it
+                streamUrl =
+                    if (isVideo) {
+                        playerSettings = playerSettings.copy(startTimeCode = it?.elapsedTime)
+                        episode?.video?.videoURL
+                    } else it?.broadcastUrl
             }
         }
     }

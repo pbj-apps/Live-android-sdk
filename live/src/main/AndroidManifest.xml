@@ -8,7 +8,7 @@
 
     <application>
         <activity
-            android:name=".live.sdkLivePlayer.SDKLivePlayerActivity"
+            android:name=".live.sdkLivePlayer.SdkLivePlayerActivity"
             android:launchMode="singleTask"
             android:supportsPictureInPicture="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"

@@ -77,7 +77,7 @@ fun ProductCard(index: Int, product: Product, onClick: (Product) -> Unit) {
                     )
                     detail?.let {
                         Text(
-                            text = it,
+                            text = it.trim(),
                             fontSize = 10.sp,
                             color = Color.Black.copy(0.5f),
                             maxLines = 2,

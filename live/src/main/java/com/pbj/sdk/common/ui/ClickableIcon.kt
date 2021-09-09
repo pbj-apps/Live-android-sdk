@@ -1,5 +1,6 @@
 package com.pbj.sdk.common.ui
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -11,27 +12,30 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.pbj.sdk.R
 
 @Composable
-fun CloseButton(
+fun ClickableIcon(
+    @DrawableRes drawable: Int,
     modifier: Modifier = Modifier,
-    size: Int = 20,
-    clickAreaSize: Int = 16,
+    description: String? = null,
+    size: Dp = 20.dp,
+    tint: Color = Color.White,
+    clickAreaSize: Dp = 16.dp,
     clickAreaShape: Shape = CircleShape,
-    close: () -> Unit
+    onClick: () -> Unit
 ) {
     Icon(
-        painter = painterResource(R.drawable.ic_cross),
-        "Close",
-        tint = Color.White,
+        painter = painterResource(drawable),
+        description,
+        tint = tint,
         modifier = modifier
             .clip(clickAreaShape)
             .clickable {
-                close()
+                onClick()
             }
-            .padding(clickAreaSize.dp)
-            .size(size.dp)
+            .padding(clickAreaSize)
+            .size(size)
     )
 }

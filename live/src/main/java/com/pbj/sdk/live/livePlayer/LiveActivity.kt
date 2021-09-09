@@ -15,15 +15,14 @@ import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.live.livePlayer.ui.LivePlayerScreen
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
-class LiveActivity : AppCompatActivity(), LivePlayerFragment.Listener {
+class LiveActivity : AppCompatActivity() {
 
     private val analytics: AnalyticsTracker by inject()
 
     var episode: Episode? = null
 
-    private lateinit var vm: LiveRoomViewModel
+    private lateinit var vm: LiveViewModel
 
     private var isChatEnable: Boolean = false
 
@@ -49,7 +48,7 @@ class LiveActivity : AppCompatActivity(), LivePlayerFragment.Listener {
             analytics.logLiveClassStarts(it)
         }
 
-        vm = LiveRoomViewModel()
+        vm = LiveViewModel()
 
         vm.init(episode, nextEpisode)
 
@@ -63,14 +62,11 @@ class LiveActivity : AppCompatActivity(), LivePlayerFragment.Listener {
                 vm = vm,
                 isChatEnabled = isChatEnable,
                 onClickProduct = ::onClickProduct,
+                onPlayerStateChange = vm::onPlayerStateChange,
                 onClickJoin = ::startLiveRoom,
                 onClickBack = ::onBackPressed
             )
         }
-    }
-
-    override fun onPressClose() {
-        onBackPressed()
     }
 
     private fun onClickProduct(product: Product) {
@@ -94,20 +90,12 @@ class LiveActivity : AppCompatActivity(), LivePlayerFragment.Listener {
         startActivity(intent)
     }
 
-    override fun enableScreenRotation(enable: Boolean) {
+    private fun enableScreenRotation(enable: Boolean) {
         requestedOrientation = if (enable)
             ActivityInfo.SCREEN_ORIENTATION_SENSOR
         else
             ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
     }
-
-    override fun onPlayerError(errorMessage: String?) {
-        Timber.e(errorMessage)
-    }
-
-    override fun onPlayerLoad() {}
-
-    override fun onLiveReady() {}
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)

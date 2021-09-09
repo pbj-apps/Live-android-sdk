@@ -11,7 +11,10 @@ import com.pbj.sdk.common.ui.PlayerSettings
 import com.pbj.sdk.common.ui.VideoPlayerView
 import com.pbj.sdk.common.ui.VideoState
 import com.pbj.sdk.domain.chat.ChatMessage
-import com.pbj.sdk.domain.live.model.*
+import com.pbj.sdk.domain.live.model.Episode
+import com.pbj.sdk.domain.live.model.fullSizeImage
+import com.pbj.sdk.domain.live.model.isBroadcasting
+import com.pbj.sdk.domain.live.model.isFinished
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.live.livePlayer.ui.liveOverlay.LivePlayerFinishedStateOverlay
 import com.pbj.sdk.live.livePlayer.ui.liveOverlay.LivePlayerInfo
@@ -20,9 +23,10 @@ import com.pbj.sdk.live.livePlayer.ui.liveOverlay.LivePlayerInfo
 internal fun LivePlayerView(
     episode: Episode,
     nextEpisode: Episode?,
-    streamUrl: BroadcastUrl?,
+    streamUrl: String?,
     isPlaying: Boolean,
     playerSettings: PlayerSettings,
+    onPlayerError: ((Throwable) -> Unit)? = null,
     isChatEnabled: Boolean,
     chatText: String?,
     chatMessageList: List<ChatMessage>,
@@ -59,12 +63,12 @@ internal fun LivePlayerView(
         }
 
         when {
-            (episode.isBroadcasting || episode.isFinished || isPlaying) && !streamUrl?.broadcastUrl.isNullOrBlank() -> {
+            (episode.isBroadcasting || episode.isFinished || isPlaying) && !streamUrl.isNullOrBlank() -> {
                 VideoPlayerView(
-                    url = streamUrl?.broadcastUrl!!,
-                    timeCode = streamUrl.elapsedTime,
+                    url = streamUrl,
                     settings = playerSettings,
                     soundEnabled = true,
+                    onPlayerError = onPlayerError,
                     onVideoPlayerStateChange = onPlayerStateChange
                 )
             }

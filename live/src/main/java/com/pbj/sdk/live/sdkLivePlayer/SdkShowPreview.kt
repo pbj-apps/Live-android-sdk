@@ -11,7 +11,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pbj.sdk.common.ui.CloseButton
+import com.pbj.sdk.R
+import com.pbj.sdk.common.ui.ClickableIcon
 import com.pbj.sdk.common.ui.DoubleGradientView
 import com.pbj.sdk.domain.live.model.Show
 import com.pbj.sdk.domain.vod.model.previewImage
@@ -46,7 +47,10 @@ fun SdkShowDetailsView(show: Show, close: () -> Unit) {
                         )
                     } ?: Spacer(modifier = Modifier.weight(1f, true))
 
-                    CloseButton(modifier = Modifier.align(Alignment.Top)) { close() }
+                    ClickableIcon(
+                        drawable = R.drawable.ic_cross,
+                        modifier = Modifier.align(Alignment.Top)
+                    ) { close() }
                 }
 
                 description?.let {

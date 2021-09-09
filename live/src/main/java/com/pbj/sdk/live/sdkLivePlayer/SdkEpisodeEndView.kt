@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pbj.sdk.R
-import com.pbj.sdk.common.ui.CloseButton
+import com.pbj.sdk.common.ui.ClickableIcon
 import com.pbj.sdk.domain.live.model.Show
 import com.pbj.sdk.domain.vod.model.previewImage
 import com.pbj.sdk.live.livePlayer.ui.BackgroundImage
@@ -44,7 +44,7 @@ fun SdkEpisodeEndView(show: Show?, close: () -> Unit) {
             )
         }
 
-        CloseButton { close() }
+        ClickableIcon(drawable = R.drawable.ic_cross) { close() }
     }
 }
 

@@ -2,13 +2,12 @@ package com.pbj.sdk
 
 import android.content.Context
 import androidx.annotation.Keep
-import com.pbj.sdk.analytics.AnalyticsTracker
 import com.pbj.sdk.core.ApiEnvironment
 import com.pbj.sdk.core.Live
 import com.pbj.sdk.core.SdkHolder
 import com.pbj.sdk.domain.onErrorCallBack
 import com.pbj.sdk.guest.GuestFeature
-import com.pbj.sdk.live.sdkLivePlayer.SDKLivePlayerActivity
+import com.pbj.sdk.live.sdkLivePlayer.SdkLivePlayerActivity
 
 @Keep
 interface LiveSDK {
@@ -16,11 +15,11 @@ interface LiveSDK {
     val guestFeature: GuestFeature
 
     fun startLivePlayer(context: Context, showId: String) {
-        SDKLivePlayerActivity.startLivePlayer(context, showId)
+        SdkLivePlayerActivity.startLivePlayer(context, showId)
     }
 
     fun startLivePlayer(context: Context) {
-        SDKLivePlayerActivity.startLivePlayer(context)
+        SdkLivePlayerActivity.startLivePlayer(context)
     }
 
     fun isEpisodeLive(onError: onErrorCallBack? = null, onSuccess: (Boolean) -> Unit)

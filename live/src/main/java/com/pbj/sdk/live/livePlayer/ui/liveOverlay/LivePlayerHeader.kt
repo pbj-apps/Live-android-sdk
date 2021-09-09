@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pbj.sdk.R
-import com.pbj.sdk.common.ui.CloseButton
+import com.pbj.sdk.common.ui.ClickableIcon
 
 @Composable
 fun LivePlayerHeader(
@@ -47,7 +47,7 @@ fun LivePlayerHeader(
             )
         } ?: Spacer(modifier = Modifier.weight(1f, true))
 
-        CloseButton { close() }
+        ClickableIcon(drawable = R.drawable.ic_cross) { close() }
     }
 }
 

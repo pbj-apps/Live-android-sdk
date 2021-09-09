@@ -10,14 +10,17 @@ import androidx.compose.ui.res.stringResource
 import coil.compose.rememberImagePainter
 import com.pbj.sdk.R
 import com.pbj.sdk.common.ui.TextFieldDialog
+import com.pbj.sdk.common.ui.VideoState
 import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.product.model.Product
-import com.pbj.sdk.live.livePlayer.LiveRoomViewModel
+import com.pbj.sdk.live.livePlayer.LiveViewModel
 
 @Composable
-internal fun LivePlayerScreen(
-    vm: LiveRoomViewModel,
+fun LivePlayerScreen(
+    vm: LiveViewModel,
     isChatEnabled: Boolean,
+    onPlayerStateChange: (VideoState) -> Unit,
+    onPlayerError: ((Throwable) -> Unit)? = null,
     onClickProduct: (Product) -> Unit,
     onClickJoin: (Episode) -> Unit,
     onClickBack: () -> Unit
@@ -34,6 +37,7 @@ internal fun LivePlayerScreen(
                 streamUrl = streamUrl,
                 isPlaying = isPlaying,
                 playerSettings = playerSettings,
+                onPlayerError = onPlayerError,
                 isChatEnabled = isChatEnabled,
                 chatText = chatText,
                 onChatTextChange = ::onChatTextChange,
@@ -50,7 +54,7 @@ internal fun LivePlayerScreen(
                 onClickBack = onClickBack,
                 onClickJoin = onClickJoin,
                 onClickRemind = ::toggleReminderFor,
-                onPlayerStateChange = ::onPlayerStateChange
+                onPlayerStateChange = onPlayerStateChange
             )
         }
 

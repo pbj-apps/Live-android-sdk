@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.pbj.sdk.common.ui.VideoState
 import com.pbj.sdk.di.LiveKoinComponent
 import com.pbj.sdk.domain.authentication.GuestInteractor
 import com.pbj.sdk.domain.authentication.model.User
@@ -13,7 +14,7 @@ import com.pbj.sdk.live.livePlayer.LiveUpdateListener
 import org.koin.core.component.inject
 import timber.log.Timber
 
-internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoinComponent {
+internal class SdkLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoinComponent {
 
     private val liveInteractor: LiveInteractor by inject()
 
@@ -148,9 +149,17 @@ internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
         Timber.d(state.toString())
     }
 
+    fun onPlayerStateChange(state: VideoState) {
+        when (state) {
+            VideoState.LOADING -> onLiveLoad()
+            VideoState.READY -> onLiveReady()
+            VideoState.ENDED -> onLiveFinished()
+        }
+    }
+
     fun onLiveFinished() {
         episode?.let {
-            if(isPlaying) {
+            if (isPlaying) {
                 isPlaying = false
                 updateRoomState(it)
             }

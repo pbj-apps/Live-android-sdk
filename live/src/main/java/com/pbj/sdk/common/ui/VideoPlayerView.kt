@@ -1,5 +1,6 @@
 package com.pbj.sdk.common.ui
 
+import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import androidx.compose.runtime.*
@@ -23,11 +24,12 @@ import kotlin.concurrent.schedule
 @Composable
 fun VideoPlayerView(
     url: String,
-    timeCode: Long?,
     modifier: Modifier = Modifier,
-    settings: PlayerSettings,
-    soundEnabled: Boolean,
-    onVideoPlayerStateChange: (VideoState) -> Unit
+    settings: PlayerSettings = PlayerSettings(),
+    soundEnabled: Boolean = true,
+    onUiVisibilityChange: ((Boolean) -> Unit)? = null,
+    onPlayerError: ((Throwable) -> Unit)? = null,
+    onVideoPlayerStateChange: ((VideoState) -> Unit)? = null
 ) {
     val context = LocalContext.current
 
@@ -35,16 +37,16 @@ fun VideoPlayerView(
         Date().time
     }
 
-    val mustPreparePlayer = remember {
+    var mustPreparePlayer by remember {
         mutableStateOf(false)
     }
 
-    val exoPlayer = remember(settings) {
+    val exoPlayer = remember {
         SimpleExoPlayer.Builder(context)
             .build()
             .apply {
                 initMediaSource(url, context)
-                onVideoPlayerStateChange.invoke(VideoState.LOADING)
+                onVideoPlayerStateChange?.invoke(VideoState.LOADING)
                 addListener(
                     object : Player.Listener {
                         override fun onPlaybackStateChanged(state: Int) {
@@ -55,16 +57,17 @@ fun VideoPlayerView(
                                 Player.STATE_ENDED -> VideoState.ENDED
                                 else -> VideoState.IDLE
                             }
-                            onVideoPlayerStateChange.invoke(videoState)
+                            onVideoPlayerStateChange?.invoke(videoState)
                         }
 
                         override fun onPlayerError(error: ExoPlaybackException) {
                             super.onPlayerError(error)
-                            onVideoPlayerStateChange.invoke(VideoState.LOADING)
+                            onVideoPlayerStateChange?.invoke(VideoState.LOADING)
 
                             Timer(false).schedule(delay = 5000) {
-                                mustPreparePlayer.value = true
+                                mustPreparePlayer = true
                             }
+                            onPlayerError?.invoke(error)
                         }
                     }
                 )
@@ -86,16 +89,16 @@ fun VideoPlayerView(
     else
         exoPlayer.volume = 0f
 
-    timeCode?.let {
+    settings.startTimeCode?.let {
         val currentTime = Date().time
         val timeSinceInit = currentTime - playerInitTime
         val seekTime = timeSinceInit + it
         exoPlayer.seekTo(seekTime)
     }
 
-    if (mustPreparePlayer.value) {
+    if (mustPreparePlayer) {
         exoPlayer.prepare()
-        mustPreparePlayer.value = false
+        mustPreparePlayer = false
     }
 
     val resizeSetting = when (settings.resizeMode) {
@@ -112,17 +115,22 @@ fun VideoPlayerView(
             factory = {
                 PlayerView(context).apply {
                     hideController()
-                    useController = false
-                    setShowBuffering(
-                        if (settings.showBufferingWhenPlaying) SHOW_BUFFERING_WHEN_PLAYING
-                        else SHOW_BUFFERING_NEVER
-                    )
+                    setControllerVisibilityListener { visibility ->
+                        onUiVisibilityChange?.invoke(
+                            visibility == View.VISIBLE
+                        )
+                    }
                     player = exoPlayer
                     layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
                 }
             }, update = {
                 it.apply {
+                    useController = settings.useController
                     resizeMode = resizeSetting
+                    setShowBuffering(
+                        if (settings.showBufferingWhenPlaying) SHOW_BUFFERING_WHEN_PLAYING
+                        else SHOW_BUFFERING_NEVER
+                    )
                 }
             })
     ) {
@@ -142,7 +150,8 @@ enum class VideoState {
 data class PlayerSettings(
     val resizeMode: ResizeMode = ResizeMode.Fit,
     val scalingMode: ScalingMode = ScalingMode.Fit,
-    val showUI: Boolean = false,
+    val useController: Boolean = false,
+    val startTimeCode: Long? = null,
     val playWhenReady: Boolean = true,
     val showBufferingWhenPlaying: Boolean = true
 ) {
@@ -158,5 +167,45 @@ data class PlayerSettings(
         FixedHeight,
         Fill,
         Zoom
+    }
+}
+
+data class PlayerMessage(
+    val payload: Any,
+    val startTime: Long?,
+    val endTime: Long?
+)
+
+private fun List<PlayerMessage>.createPlayerEvents(
+    player: SimpleExoPlayer,
+    eventToTrigger: (Any) -> Any,
+    onEventTimeCodeReached: (Any?) -> Unit
+) {
+    forEach { message ->
+        message.apply {
+            startTime?.let {
+                createPlayerEvent(player, payload, it, eventToTrigger, onEventTimeCodeReached)
+            }
+            endTime?.let {
+                createPlayerEvent(player, payload, it, eventToTrigger, onEventTimeCodeReached)
+            }
+        }
+    }
+}
+
+private fun createPlayerEvent(
+    player: SimpleExoPlayer,
+    data: Any,
+    timeCode: Long,
+    eventToTrigger: (Any) -> Any,
+    onEventTimeCodeReached: (Any?) -> Unit
+) {
+    player.createMessage { messageType, payload ->
+        onEventTimeCodeReached(payload)
+    }.apply {
+        deleteAfterDelivery = false
+        setPosition(timeCode)
+        payload = eventToTrigger(data)
+        send()
     }
 }
