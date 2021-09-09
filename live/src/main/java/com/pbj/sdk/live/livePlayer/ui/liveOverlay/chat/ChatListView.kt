@@ -1,5 +1,6 @@
 package com.pbj.sdk.live.livePlayer.ui.liveOverlay.chat
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -19,8 +20,10 @@ import com.pbj.sdk.live.livePlayer.ui.LivePreviewData
 
 @Composable
 fun ChatListView(modifier: Modifier = Modifier, messageList: List<ChatMessage>) {
-    val listState = rememberLazyListState(messageList.lastIndex)
-    LazyColumn(modifier = modifier, state = listState) {
+    val listState = rememberLazyListState(
+        if (messageList.isEmpty()) 0 else messageList.lastIndex
+    )
+    LazyColumn(modifier = modifier, state = listState, verticalArrangement = Arrangement.Bottom) {
         items(messageList) { message ->
             Row {
                 Text(
@@ -45,4 +48,10 @@ fun ChatListView(modifier: Modifier = Modifier, messageList: List<ChatMessage>) 
 @Composable
 private fun ChatListPreview() {
     ChatListView(messageList = LivePreviewData.chatMessageList)
+}
+
+@Preview(name = "No message")
+@Composable
+private fun ChatListNoMessagePreview() {
+    ChatListView(messageList = listOf())
 }

@@ -16,6 +16,7 @@ import com.pbj.sdk.domain.chat.ChatMessage
 import com.pbj.sdk.domain.chat.LiveChatSource
 import com.pbj.sdk.domain.live.LiveInteractor
 import com.pbj.sdk.domain.live.model.*
+import com.pbj.sdk.domain.onSuccess
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.domain.vod.model.VodVideo
 import com.pbj.sdk.notifications.LiveNotificationManager
@@ -29,8 +30,7 @@ import timber.log.Timber
 import java.time.OffsetDateTime
 import java.util.concurrent.TimeUnit
 
-
-class LiveViewModel : ViewModel(), LiveUpdateListener, LiveKoinComponent {
+class LivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoinComponent {
 
     private val tracker: AnalyticsTracker by inject()
     private val liveInteractor: LiveInteractor by inject()
@@ -178,7 +178,9 @@ class LiveViewModel : ViewModel(), LiveUpdateListener, LiveKoinComponent {
 
     private suspend fun postMessage(username: String, message: String) {
         episode?.let {
-            liveChatSource?.postChatMessage(username, message, it)
+            liveChatSource?.postChatMessage(username, message, it)?.onSuccess {
+                chatText = ""
+            }
         }
     }
 

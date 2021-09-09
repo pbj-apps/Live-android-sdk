@@ -22,7 +22,7 @@ class LiveActivity : AppCompatActivity() {
 
     var episode: Episode? = null
 
-    private lateinit var vm: LiveViewModel
+    private lateinit var vm: LivePlayerViewModel
 
     private var isChatEnable: Boolean = false
 
@@ -48,7 +48,7 @@ class LiveActivity : AppCompatActivity() {
             analytics.logLiveClassStarts(it)
         }
 
-        vm = LiveViewModel()
+        vm = LivePlayerViewModel()
 
         vm.init(episode, nextEpisode)
 

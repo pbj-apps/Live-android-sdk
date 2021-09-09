@@ -53,7 +53,7 @@ internal fun LivePlayerView(
             .clickable {
                 showOverlay = !showOverlay
             }) {
-        if (!isPlaying) {
+        if (!episode.isBroadcasting || !isPlaying) {
             val bgImageUrl = if (episode.isFinished)
                 nextEpisode?.fullSizeImage
             else episode.fullSizeImage

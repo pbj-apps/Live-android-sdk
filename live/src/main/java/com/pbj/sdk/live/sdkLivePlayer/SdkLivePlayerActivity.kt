@@ -18,14 +18,14 @@ import androidx.core.content.ContextCompat
 import com.pbj.sdk.R
 import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.product.model.Product
-import com.pbj.sdk.live.livePlayer.LiveViewModel
+import com.pbj.sdk.live.livePlayer.LivePlayerViewModel
 import com.pbj.sdk.live.livePlayer.ui.LivePlayerScreen
 
 class SdkLivePlayerActivity : AppCompatActivity() {
 
     private val sdkVm: SdkLivePlayerViewModel by viewModels()
 
-    private val liveVm: LiveViewModel by viewModels()
+    private val liveVm: LivePlayerViewModel by viewModels()
 
     var showId: String? = null
 

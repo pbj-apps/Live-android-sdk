@@ -13,11 +13,11 @@ import com.pbj.sdk.common.ui.TextFieldDialog
 import com.pbj.sdk.common.ui.VideoState
 import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.product.model.Product
-import com.pbj.sdk.live.livePlayer.LiveViewModel
+import com.pbj.sdk.live.livePlayer.LivePlayerViewModel
 
 @Composable
 fun LivePlayerScreen(
-    vm: LiveViewModel,
+    vm: LivePlayerViewModel,
     isChatEnabled: Boolean,
     onPlayerStateChange: (VideoState) -> Unit,
     onPlayerError: ((Throwable) -> Unit)? = null,
