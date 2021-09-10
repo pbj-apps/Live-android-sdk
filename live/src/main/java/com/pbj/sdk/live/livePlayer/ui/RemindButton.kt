@@ -67,7 +67,7 @@ fun RemindButton(
                         .padding(start = 8.dp)
                         .size(16.dp)
                         .align(Alignment.CenterVertically),
-//                    tint = textColor
+                    tint = colorResource(R.color.liveButtonForeground)
                 )
             }
         }

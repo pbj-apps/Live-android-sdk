@@ -59,18 +59,17 @@ internal val JsonShow.asModel: Show
 
 private val JsonStreamer.asModel: Streamer
     get() = Streamer(
-        id,
-        dob,
-        email,
-        first_name,
-        last_name,
-        username,
-        is_content_programmer,
-        is_instructor,
-        is_staff,
-        is_survey_attempted,
-        is_verified,
-        profile_image?.asModel
+        id = id,
+        dob = dob,
+        firstName = first_name,
+        lastName = last_name,
+        username = username,
+        isContentProgrammer = is_content_programmer,
+        isInstructor = is_instructor,
+        isStaff = is_staff,
+        isSurveyAttempted = is_survey_attempted,
+        isVerified = is_verified,
+        profileImage = profile_image?.asModel
     )
 
 private val List<JsonEpisode>.asEpisodeList: List<Episode>

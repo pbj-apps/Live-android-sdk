@@ -1,13 +1,11 @@
 package com.pbj.sdk.live.livePlayer.ui
 
 import com.pbj.sdk.domain.chat.ChatMessage
-import com.pbj.sdk.domain.live.model.ChatMode
-import com.pbj.sdk.domain.live.model.Episode
-import com.pbj.sdk.domain.live.model.EpisodeStatus
-import com.pbj.sdk.domain.live.model.Show
+import com.pbj.sdk.domain.live.model.*
 import com.pbj.sdk.domain.product.model.Product
 import com.pbj.sdk.domain.vod.model.Asset
 import com.pbj.sdk.domain.vod.model.Image
+import com.pbj.sdk.domain.vod.model.ProfileImage
 
 internal object LivePreviewData {
 
@@ -33,28 +31,35 @@ internal object LivePreviewData {
         )
     )
 
+    val streamer = Streamer(
+        id = "90",
+        firstName = "George",
+        lastName = "Harrison",
+        profileImage = ProfileImage("asd6", URL, URL, URL)
+    )
+
     val liveChatIdle = Episode(
         "", "Title of the live stream",
         "Description of the livestream", ChatMode.ENABLED, 9,
-        image, null, null, show, EpisodeStatus.Idle, null
+        image, null, null, show, EpisodeStatus.Idle, streamer
     )
 
     val liveChatWaitingRoom = Episode(
         "", "Title of the live stream",
         "Description of the livestream", ChatMode.ENABLED, 9,
-        image, null, null, show, EpisodeStatus.WaitingRoom, null
+        image, null, null, show, EpisodeStatus.WaitingRoom, streamer
     )
 
     val liveChatBroadcastRoom = Episode(
         "", "Title of the live stream",
         "Description of the livestream", ChatMode.ENABLED, 9,
-        image, null, null, show, EpisodeStatus.Broadcasting, null
+        image, null, null, show, EpisodeStatus.Broadcasting, streamer
     )
 
     val liveChatFinishedRoom = Episode(
         "", "Title of the live stream",
         "Description of the livestream", ChatMode.ENABLED, 9,
-        image, null, null, show, EpisodeStatus.Finished, null
+        image, null, null, show, EpisodeStatus.Finished, streamer
     )
 
     val chatMessageList = listOf(
