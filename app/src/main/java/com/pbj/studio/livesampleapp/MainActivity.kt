@@ -1,12 +1,10 @@
 package com.pbj.studio.livesampleapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.RadioGroup
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
-import com.pbj.sdk.LiveSDK
 import com.pbj.sdk.core.ApiEnvironment
 
 class MainActivity : AppCompatActivity() {
@@ -38,9 +36,6 @@ class MainActivity : AppCompatActivity() {
             if (apiKey.isNotBlank()) {
                 Live.init(this, apiKey, sdkEnvironment)
                 Live.instance.startLivePlayer(this, showIdField.text.toString())
-                Live.instance.isEpisodeLive { isLive ->
-
-                }
             }
         }
     }

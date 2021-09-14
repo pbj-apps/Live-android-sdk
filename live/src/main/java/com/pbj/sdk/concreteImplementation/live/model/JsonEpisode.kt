@@ -11,7 +11,7 @@ internal data class JsonEpisode(
     val description: String?,
     val chat_mode: String?,
     val duration: Int?,
-    val preview_asset: JsonPreviewAsset,
+    val preview_asset: JsonPreviewAsset?,
     val starting_at: String?,
     val ends_at: String?,
     val show: JsonShow?,

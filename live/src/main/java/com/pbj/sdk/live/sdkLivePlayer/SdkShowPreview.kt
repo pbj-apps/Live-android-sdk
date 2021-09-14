@@ -1,32 +1,82 @@
 package com.pbj.sdk.live.sdkLivePlayer
 
-import android.content.Context
-import android.util.AttributeSet
-import android.view.LayoutInflater
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import coil.load
-import com.pbj.sdk.databinding.SdkShowPreviewLayoutBinding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.pbj.sdk.R
+import com.pbj.sdk.common.ui.ClickableIcon
+import com.pbj.sdk.common.ui.DoubleGradientView
+import com.pbj.sdk.domain.live.model.Show
+import com.pbj.sdk.domain.vod.model.previewImage
+import com.pbj.sdk.live.livePlayer.ui.BackgroundImage
+import com.pbj.sdk.live.livePlayer.ui.LivePreviewData
 
-class SdkShowPreview @JvmOverloads constructor(
-    context: Context,
-    private val showPreview: String?,
-    private val showTitle: String?,
-    private val showDescription: String?,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : ConstraintLayout(context, attrs, defStyleAttr) {
+@Composable
+fun SdkShowDetailsView(show: Show, close: () -> Unit) {
+    show.apply {
+        Box(modifier = Modifier.background(Color.Black)) {
+            show.previewAsset?.previewImage?.let {
+                BackgroundImage(it)
+            }
+            DoubleGradientView()
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(16.dp)
+                ) {
+                    title?.let {
+                        Text(
+                            text = it,
+                            fontSize = 18.sp,
+                            color = Color.White,
+                            modifier = Modifier.weight(1f, true)
+                        )
+                    } ?: Spacer(modifier = Modifier.weight(1f, true))
 
-    private var view: SdkShowPreviewLayoutBinding = SdkShowPreviewLayoutBinding
-        .inflate(LayoutInflater.from(context), this)
+                    ClickableIcon(
+                        drawable = R.drawable.ic_cross,
+                        modifier = Modifier.align(Alignment.Top)
+                    ) { close() }
+                }
 
-    val closeButton: AppCompatImageView = view.closeIcon
-
-    init {
-        view.apply {
-            bgImage.load(showPreview)
-            title.text = showTitle
-            description.text = showDescription
+                description?.let {
+                    Text(
+                        modifier = Modifier
+                            .padding(bottom = 73.dp)
+                            .padding(horizontal = 16.dp),
+                        text = it,
+                        fontSize = 50.sp,
+                        maxLines = 5,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.White
+                    )
+                }
+            }
         }
     }
+}
+
+@Preview
+@Composable
+private fun SdkShowDetailsPreview() {
+    SdkShowDetailsView(
+        LivePreviewData.show.copy(
+            title = "Best live to get to know better the proudcts you need before you even think about buying them",
+            description = "Best live to get to know better the proudcts you need before you even think about buying them"
+        )
+    ) {}
 }
