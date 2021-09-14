@@ -1,20 +1,55 @@
 package com.pbj.sdk.live.sdkLivePlayer
 
-import android.content.Context
-import android.util.AttributeSet
-import android.view.LayoutInflater
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.pbj.sdk.databinding.SdkNoLivestreamLayoutBinding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.TopEnd
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.pbj.sdk.R
+import com.pbj.sdk.common.ui.ClickableIcon
 
-class SdkNoEpisodeView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : ConstraintLayout(context, attrs, defStyleAttr) {
+@Composable
+internal fun SdkNoEpisodeView(close: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
+        contentAlignment = Alignment.Center
+    ) {
+        ClickableIcon(drawable = R.drawable.ic_cross, modifier = Modifier.align(TopEnd)) { close() }
 
-    private val view: SdkNoLivestreamLayoutBinding =
-        SdkNoLivestreamLayoutBinding.inflate(LayoutInflater.from(context), this)
-
-    val closeButton: AppCompatImageView = view.noLivecloseIcon
+        Column(horizontalAlignment = CenterHorizontally, modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = stringResource(R.string.no_live),
+                fontSize = 24.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = stringResource(R.string.no_live_description),
+                fontSize = 18.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
 }
+
+@Preview
+@Composable
+private fun SdkNoEpisodePreview() {
+    SdkNoEpisodeView {}
+}
+

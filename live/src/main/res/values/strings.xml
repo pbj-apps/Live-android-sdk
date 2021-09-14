@@ -17,4 +17,5 @@
     <string name="ok">Ok</string>
     <string name="username">Username</string>
     <string name="chat_username_dialog_description">Pick a username for your chat messages</string>
+    <string name="type_guest_username">Enter you</string>
 </resources>

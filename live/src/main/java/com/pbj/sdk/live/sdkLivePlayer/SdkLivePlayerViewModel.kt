@@ -1,7 +1,10 @@
 package com.pbj.sdk.live.sdkLivePlayer
 
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.pbj.sdk.common.ui.VideoState
 import com.pbj.sdk.di.LiveKoinComponent
 import com.pbj.sdk.domain.authentication.GuestInteractor
 import com.pbj.sdk.domain.authentication.model.User
@@ -11,7 +14,7 @@ import com.pbj.sdk.live.livePlayer.LiveUpdateListener
 import org.koin.core.component.inject
 import timber.log.Timber
 
-internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoinComponent {
+internal class SdkLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoinComponent {
 
     private val liveInteractor: LiveInteractor by inject()
 
@@ -23,7 +26,7 @@ internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
 
     private var show: Show? = null
 
-    val screenState = MutableLiveData<State>(State.Loading)
+    var screenState by mutableStateOf<State>(State.Loading)
 
     var user: User? = null
 
@@ -33,7 +36,7 @@ internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
     }
 
     private fun getLiveStreamAsGuest(showId: String?) {
-        screenState.postValue(State.Loading)
+        screenState = State.Loading
         guestInteractor.authenticateAsGuest({
             onError(it.localizedMessage)
         }) {
@@ -82,7 +85,7 @@ internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
     }
 
     fun onError(message: String?) {
-        screenState.postValue(State.Error(message))
+        screenState = State.Error(message)
         Timber.e(message)
     }
 
@@ -132,23 +135,31 @@ internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
 
         val state: State = when {
             hasEpisodePlaying || live?.isBroadcasting == true -> State.HasEpisode(live!!)
-            !isPlaying && live?.status == EpisodeStatus.FINISHED -> State.EpisodeEnd(live)
+            !isPlaying && live?.status == EpisodeStatus.Finished -> State.EpisodeEnd(live)
             show != null -> State.HasShow(show!!)
             else -> State.NoLive
         }
 
-        if (state is State.HasEpisode && screenState.value is State.HasEpisode) {
+        if (state is State.HasEpisode && screenState is State.HasEpisode) {
             return
         }
 
-        screenState.postValue(state)
+        screenState = state
 
         Timber.d(state.toString())
     }
 
+    fun onPlayerStateChange(state: VideoState) {
+        when (state) {
+            VideoState.LOADING -> onLiveLoad()
+            VideoState.READY -> onLiveReady()
+            VideoState.ENDED -> onLiveFinished()
+        }
+    }
+
     fun onLiveFinished() {
         episode?.let {
-            if(isPlaying) {
+            if (isPlaying) {
                 isPlaying = false
                 updateRoomState(it)
             }
@@ -165,7 +176,7 @@ internal class SDKLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
     }
 
     fun onLiveLoad() {
-        screenState.postValue(State.Loading)
+        screenState = State.Loading
     }
 
     sealed class State {

@@ -29,7 +29,7 @@ internal val JsonEpisode.asModel: Episode
             title = title,
             description = description,
             duration = duration,
-            image = preview_asset.image.asModel,
+            image = preview_asset?.image?.asModel,
             startDate = DateUtils.getDateTime(starting_at),
             endDate = DateUtils.getDateTime(ends_at),
             show = show?.asModel,
@@ -59,18 +59,17 @@ internal val JsonShow.asModel: Show
 
 private val JsonStreamer.asModel: Streamer
     get() = Streamer(
-        id,
-        dob,
-        email,
-        first_name,
-        last_name,
-        username,
-        is_content_programmer,
-        is_instructor,
-        is_staff,
-        is_survey_attempted,
-        is_verified,
-        profile_image?.asModel
+        id = id,
+        dob = dob,
+        firstName = first_name,
+        lastName = last_name,
+        username = username,
+        isContentProgrammer = is_content_programmer,
+        isInstructor = is_instructor,
+        isStaff = is_staff,
+        isSurveyAttempted = is_survey_attempted,
+        isVerified = is_verified,
+        profileImage = profile_image?.asModel
     )
 
 private val List<JsonEpisode>.asEpisodeList: List<Episode>
@@ -93,8 +92,8 @@ internal val JsonBroadcastUrl.asModel: BroadcastUrl
     }
 
 private fun getLiveStatus(status: String?): EpisodeStatus = when (status) {
-    "waiting_room" -> EpisodeStatus.WAITING_ROOM
-    "broadcasting" -> EpisodeStatus.BROADCASTING
-    "finished" -> EpisodeStatus.FINISHED
-    else -> EpisodeStatus.IDLE
+    "waiting_room" -> EpisodeStatus.WaitingRoom
+    "broadcasting" -> EpisodeStatus.Broadcasting
+    "finished" -> EpisodeStatus.Finished
+    else -> EpisodeStatus.Idle
 }
