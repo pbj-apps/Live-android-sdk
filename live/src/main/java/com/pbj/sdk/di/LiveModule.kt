@@ -17,7 +17,7 @@ internal val liveModule = module {
 
     single { provideLiveInteractor(get()) }
 
-    single { provideLiveFeature() }
+    single { provideLiveFeature(get()) }
 }
 
 internal fun provideLiveRepository(api: LiveApi, socketApi: LiveWebSocketApi, moshi: Moshi): LiveRepository =
@@ -26,4 +26,5 @@ internal fun provideLiveRepository(api: LiveApi, socketApi: LiveWebSocketApi, mo
 internal fun provideLiveInteractor(liveRepository: LiveRepository): LiveInteractor =
     LiveInteractorImpl(liveRepository)
 
-internal fun provideLiveFeature(): LiveFeature = LiveFeatureImpl()
+internal fun provideLiveFeature(liveInteractor: LiveInteractor): LiveFeature =
+    LiveFeatureImpl(liveInteractor)

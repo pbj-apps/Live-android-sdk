@@ -3,8 +3,15 @@ package com.pbj.sdk.concreteImplementation.storage
 import android.content.Context
 import com.pbj.sdk.domain.authentication.model.User
 import com.squareup.moshi.Moshi
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 
 internal class PBJPreferences(context: Context, moshi: Moshi) : AbstractPreferences(context, moshi) {
+
+    init {
+        updateIsGuestOnTokenChange()
+    }
 
     var user: User?
         get() = retrieveObject(USER)
@@ -29,6 +36,17 @@ internal class PBJPreferences(context: Context, moshi: Moshi) : AbstractPreferen
         set(value) {
             save(LOGGED_IN_AS_GUEST, value)
         }
+
+    private fun updateIsGuestOnTokenChange() {
+        observeKey(TOKEN, "")
+            ?.map {
+                user == null && userToken != null
+            }
+            ?.onEach { isGuest ->
+                isLoggedInAsGuest = isGuest
+            }
+            ?.distinctUntilChanged()
+    }
 
     companion object {
         private const val USER = "USER"

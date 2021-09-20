@@ -105,16 +105,10 @@ interface UserFeature {
      */
     fun isLoggedInAsGuest(onError: onErrorCallBack? = null, onSuccess: ((Boolean?) -> Unit)? = null)
 
-    /** Check if user is a guest or not
+    /** Update device registration token
      * @param onError callback called when an error occurred
-     * @param onSuccess callback returning true if the current user is a guest or false if not
+     * @param onSuccess callback called when the token has been updated successfully
      */
-    fun saveIsLoggedInAsGuest(
-        isGuest: Boolean,
-        onError: onErrorCallBack? = null,
-        onSuccess: (() -> Unit)? = null
-    )
-
     fun updateDeviceRegistrationToken(
         token: String,
         onError: onErrorCallBack? = null,

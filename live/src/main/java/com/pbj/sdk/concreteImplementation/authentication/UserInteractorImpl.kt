@@ -71,7 +71,6 @@ internal class UserInteractorImpl(
             userRepository.apply {
                 saveUser(it)
                 saveToken(it.authToken)
-                saveIsLoggedInAsGuest(false)
             }
         }
     }
@@ -204,22 +203,6 @@ internal class UserInteractorImpl(
                     onError?.invoke(it)
                 }) {
                     onSuccess?.invoke(it)
-                }
-        }
-    }
-
-    override fun saveIsLoggedInAsGuest(
-        isGuest: Boolean,
-        onError: onErrorCallBack?,
-        onSuccess: (() -> Unit)?
-    ) {
-        scope.launch {
-            userRepository.saveIsLoggedInAsGuest(isGuest)
-                .onResult({
-                    Timber.e(it)
-                    onError?.invoke(it)
-                }) {
-                    onSuccess?.invoke()
                 }
         }
     }
