@@ -230,7 +230,12 @@ internal class UserInteractorImpl(
         onSuccess: (() -> Unit)?
     ) {
         scope.launch {
-            updateDeviceRegistrationToken(token, onError, onSuccess)
+            userRepository.updateDeviceRegistrationToken(token).onResult({
+                Timber.e(it)
+                onError?.invoke(it)
+            }) {
+                onSuccess?.invoke()
+            }
         }
     }
 }
