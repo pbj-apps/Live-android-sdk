@@ -8,7 +8,7 @@ import com.pbj.sdk.domain.live.model.EpisodeResponse
 import com.pbj.sdk.domain.live.model.EpisodeStatusUpdate
 import com.pbj.sdk.domain.onErrorCallBack
 
-internal class LiveFeatureImpl(val liveInteractor: LiveInteractor) : LiveFeature,
+internal class LiveFeatureImpl(private val liveInteractor: LiveInteractor) : LiveFeature,
     LiveKoinComponent {
 
     override fun getLiveStreams(
