@@ -33,12 +33,12 @@ internal class PBJPreferences(context: Context, moshi: Moshi) : AbstractPreferen
     var isLoggedInAsGuest: Boolean?
         get() =
             retrieve(LOGGED_IN_AS_GUEST, true)
-        set(value) {
+        private set(value) {
             save(LOGGED_IN_AS_GUEST, value)
         }
 
     private fun updateIsGuestOnTokenChange() {
-        observeKey(TOKEN, "")
+        observeKey<String?>(TOKEN, null)
             ?.map {
                 user == null && userToken != null
             }
