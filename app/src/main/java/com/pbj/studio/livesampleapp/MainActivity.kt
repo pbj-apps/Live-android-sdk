@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
             if (apiKey.isNotBlank()) {
                 Live.init(this, apiKey, sdkEnvironment)
                 Live.instance.startLivePlayer(this, showIdField.text.toString())
-                Live.instance.guestFeature.authenticateAsGuest()
             }
         }
     }
