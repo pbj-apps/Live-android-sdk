@@ -272,7 +272,7 @@ internal class UserInteractorTest : KoinTest {
         coEvery { repository.getUserToken() } returns Result.Success(STRING)
 
         //When
-        interactor.isUserLoggedIn {
+        interactor.isLoggedIn {
             //Then
             it shouldBe true
         }
@@ -285,7 +285,7 @@ internal class UserInteractorTest : KoinTest {
             coEvery { repository.getUserToken() } returns Result.Success(null)
 
             //When
-            interactor.isUserLoggedIn {
+            interactor.isLoggedIn {
                 //Then
                 it shouldBe true
             }
@@ -298,7 +298,7 @@ internal class UserInteractorTest : KoinTest {
         coEvery { repository.getUserToken() } returns Result.Error(error)
 
         //When
-        interactor.isUserLoggedIn {
+        interactor.isLoggedIn {
             //Then
             it shouldBe false
         }

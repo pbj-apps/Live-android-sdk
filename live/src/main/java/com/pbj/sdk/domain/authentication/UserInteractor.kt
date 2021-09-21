@@ -51,9 +51,11 @@ internal interface UserInteractor {
 
     fun logout(onError: onErrorCallBack?, onSuccess: (() -> Unit)?)
 
-    fun isUserLoggedIn(onResult: ((Boolean) -> Unit)? = null)
+    fun isLoggedIn(onResult: ((Boolean) -> Unit)? = null)
 
     fun isLoggedInAsGuest(onError: onErrorCallBack?, onSuccess: ((Boolean?) -> Unit)?)
+
+    fun saveIsLoggedInAsGuest(isGuest: Boolean, onError: onErrorCallBack?, onSuccess: (() -> Unit)?)
 
     fun updateDeviceRegistrationToken(
         token: String,

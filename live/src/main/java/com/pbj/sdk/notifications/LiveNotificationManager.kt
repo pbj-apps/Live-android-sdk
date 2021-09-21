@@ -8,6 +8,7 @@ interface LiveNotificationManager {
 
     fun toggleReminderFor(
         episode: Episode,
+        onError: ((Throwable) -> Unit)?,
         onReminderSet: ((Boolean) -> Unit)? = null
     )
 }

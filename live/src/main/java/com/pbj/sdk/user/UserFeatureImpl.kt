@@ -69,8 +69,8 @@ internal class UserFeatureImpl(private val userInteractor: UserInteractor) : Use
         userInteractor.logout(onError, onSuccess)
     }
 
-    override fun isUserLoggedIn(onResult: ((Boolean) -> Unit)?) =
-        userInteractor.isUserLoggedIn(onResult)
+    override fun isLoggedIn(onResult: ((Boolean) -> Unit)?) =
+        userInteractor.isLoggedIn(onResult)
 
     override fun isLoggedInAsGuest(
         onError: onErrorCallBack?,

@@ -149,10 +149,16 @@ internal class UserRepositoryImpl(
     override suspend fun isLoggedInAsGuest(): Result<Boolean> =
         Result.Success(preferences.isLoggedInAsGuest)
 
+    override suspend fun saveIsLoggedInAsGuest(isGuest: Boolean): Result<Any> {
+        preferences.isLoggedInAsGuest = isGuest
+        return Result.Success()
+    }
+
     override suspend fun updateDeviceRegistrationToken(token: String): Result<Any> =
-        apiCall(call = {
-            api.updateDeviceRegistrationToken(DeviceToken(token))
-        },
+        apiCall(
+            call = {
+                api.updateDeviceRegistrationToken(DeviceToken(token))
+            },
             onApiError = { e, code ->
                 mapGenericError(code.code, e)
             },

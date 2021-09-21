@@ -63,9 +63,6 @@ internal abstract class AbstractPreferences(val context: Context, protected val 
         }
     }
 
-    inline fun <reified T> observeKey(key: String, defaultValue: T): Flow<T?>? =
-        preferences?.observeKey(key, defaultValue)
-
     companion object {
         const val PREF_NAME = "PBJ"
     }

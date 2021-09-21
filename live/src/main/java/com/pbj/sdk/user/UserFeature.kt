@@ -97,7 +97,7 @@ interface UserFeature {
      * @param onError callback called when an error occurred
      * @param onSuccess callback returning true if the user is logged in or false if not
      */
-    fun isUserLoggedIn(onResult: ((Boolean) -> Unit)? = null)
+    fun isLoggedIn(onResult: ((Boolean) -> Unit)? = null)
 
     /** Check if user is a guest or not
      * @param onError callback called when an error occurred
