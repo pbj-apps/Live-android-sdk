@@ -7,7 +7,7 @@ plugins {
 
 ext {
     PUBLISH_GROUP_ID = 'live.pbj.sdk'
-    PUBLISH_VERSION = '0.1.3-alpha'
+    PUBLISH_VERSION = '0.1.4-alpha'
     PUBLISH_ARTIFACT_ID = 'live'
     PUBLISH_DESCRIPTION = 'Stream your PBJ.live content from your Android App.'
     PUBLISH_URL = 'https://github.com/pbj-apps/Live-ios-sdk'
@@ -30,7 +30,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 31
         versionCode 1
-        versionName "0.1.3-alpha"
+        versionName "0.1.4-alpha"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -79,8 +79,8 @@ dependencies {
     ext {
         kotlin_version = '1.5.21'
         lifecycle_version = '2.3.1'
-        compose_version = '1.0.1'
-        compose_lifecycle_version = '1.0.0-alpha07'
+        compose_version = '1.0.2'
+        compose_lifecycle_version = '2.4.0-beta01'
         coil_version = '1.3.2'
         accompanist_version = "0.6.2"
         coroutine_version = '1.5.0'
@@ -90,7 +90,7 @@ dependencies {
         okhttp_version = '4.9.1'
         mockk_version = '1.12.0'
         kotest_version = '4.3.1'
-        exoPlayer_version = '2.14.1'
+        exoPlayer_version = '2.15.0'
         scarlet_version = '0.1.10'
         timber_version = '4.7.1'
     }

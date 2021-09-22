@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -60,7 +60,7 @@ fun VideoPlayerView(
                             onVideoPlayerStateChange?.invoke(videoState)
                         }
 
-                        override fun onPlayerError(error: ExoPlaybackException) {
+                        override fun onPlayerError(error: PlaybackException) {
                             super.onPlayerError(error)
                             onVideoPlayerStateChange?.invoke(VideoState.LOADING)
 
