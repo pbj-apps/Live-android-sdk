@@ -159,10 +159,7 @@ internal object DataModule {
         }
 
         val connectionEstablisher: OkHttpWebSocket.ConnectionEstablisher =
-            OkHttpClientWebSocketConnectionEstablisher(
-                okHttpClient,
-                requestFactory
-            )
+            OkHttpClientWebSocketConnectionEstablisher(okHttpClient, requestFactory)
 
         val webSocketFactory: WebSocket.Factory = OkHttpWebSocket.Factory(connectionEstablisher)
         val backoffStrategy = ExponentialWithJitterBackoffStrategy(5000, 5000)

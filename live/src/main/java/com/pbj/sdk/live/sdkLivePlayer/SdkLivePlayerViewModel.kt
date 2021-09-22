@@ -151,13 +151,12 @@ internal class SdkLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
 
     fun onPlayerStateChange(state: VideoState) {
         when (state) {
-            VideoState.LOADING -> onLiveLoad()
             VideoState.READY -> onLiveReady()
             VideoState.ENDED -> onLiveFinished()
         }
     }
 
-    fun onLiveFinished() {
+    private fun onLiveFinished() {
         episode?.let {
             if (isPlaying) {
                 isPlaying = false
@@ -166,17 +165,13 @@ internal class SdkLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
         }
     }
 
-    fun onLiveReady() {
+    private fun onLiveReady() {
         episode?.let {
-            if(!isPlaying) {
+            if (!isPlaying) {
                 isPlaying = true
                 updateRoomState(it)
             }
         }
-    }
-
-    fun onLiveLoad() {
-        screenState = State.Loading
     }
 
     sealed class State {

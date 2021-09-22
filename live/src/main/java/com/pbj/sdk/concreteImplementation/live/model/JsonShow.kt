@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 internal data class JsonShow(
-    val id: String,
+    val id: String?,
     val title: String?,
     val description: String?,
     val waiting_room_description: String?,
