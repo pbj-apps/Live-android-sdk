@@ -243,7 +243,7 @@ class LivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoinComponent {
     }
 
     fun toggleReminderFor(episode: Episode) {
-        liveNotificationManager?.toggleReminderFor(episode)
+        liveNotificationManager?.toggleReminderFor(episode, null)
     }
 
     private fun listenToNotificationSubscriptions() {

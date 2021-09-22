@@ -32,8 +32,10 @@ internal class GuestInteractorImpl(override val guestRepository: GuestRepository
                 }.successResult
 
             userRepository.apply {
-                saveToken(guestToken?.authToken)
-                saveIsLoggedInAsGuest(true)
+                guestToken?.authToken?.let {
+                    saveToken(it)
+                    saveIsLoggedInAsGuest(true)
+                }
             }
         }
     }

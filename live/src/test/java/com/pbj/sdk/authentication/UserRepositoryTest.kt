@@ -30,7 +30,6 @@ import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
 import retrofit2.Response
-import java.io.File
 
 internal class UserRepositoryTest: KoinTest {
 
@@ -139,7 +138,7 @@ internal class UserRepositoryTest: KoinTest {
     fun `test on error getUser returns response with ValidationError`() = mainCoroutineRule.runBlockingTest {
         //Given
         coEvery { api.getUser() } returns
-                Response.error(403, "{}".toResponseBody())
+                Response.error(401, "{}".toResponseBody())
 
         //When
         val result = repository.getUser().errorResult
@@ -201,7 +200,7 @@ internal class UserRepositoryTest: KoinTest {
     }
 
     @Test
-    fun `test on success changePassword returns ProfileImage`() = mainCoroutineRule.runBlockingTest {
+    fun `test on success changePassword returns any`() = mainCoroutineRule.runBlockingTest {
         //Given
         val any = Any()
         val changePasswordRequest = ChangePasswordRequest(STRING, STRING)
@@ -217,7 +216,6 @@ internal class UserRepositoryTest: KoinTest {
     @Test
     fun `test on error changePassword returns GenericError`() = mainCoroutineRule.runBlockingTest {
         //Given
-        val file = File(STRING)
         val changePasswordRequest = ChangePasswordRequest(STRING, STRING)
         coEvery { api.changePassword(changePasswordRequest) } returns
                 Response.error(408, "{}".toResponseBody())

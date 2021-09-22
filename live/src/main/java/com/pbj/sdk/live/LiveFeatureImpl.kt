@@ -7,11 +7,9 @@ import com.pbj.sdk.domain.live.model.Episode
 import com.pbj.sdk.domain.live.model.EpisodeResponse
 import com.pbj.sdk.domain.live.model.EpisodeStatusUpdate
 import com.pbj.sdk.domain.onErrorCallBack
-import org.koin.core.component.inject
 
-internal class LiveFeatureImpl : LiveFeature, LiveKoinComponent {
-
-    private val liveInteractor: LiveInteractor by inject()
+internal class LiveFeatureImpl(private val liveInteractor: LiveInteractor) : LiveFeature,
+    LiveKoinComponent {
 
     override fun getLiveStreams(
         onError: ((Throwable) -> Unit)?,
