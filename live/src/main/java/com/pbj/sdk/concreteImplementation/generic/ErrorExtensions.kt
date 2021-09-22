@@ -16,7 +16,7 @@ internal fun ErrorCode.mapLoginError(): LoginError =
 internal fun BaseRepository.mapGenericError(errorCode: Int, error: JsonGenericError?): Throwable {
     val message = error?.errors?.firstOrNull()?.message
     return when {
-        errorCode == 403 || error?.error_type == "NotAuthenticated" ->
+        errorCode == 401 || error?.error_type == "NotAuthenticated" || error?.error_type == "PermissionDenied" ->
             GenericError.NoPermission(message)
         else -> GenericError.Unknown(message)
     }
@@ -30,6 +30,15 @@ internal fun BaseRepository.mapPushNotificationError(
     return when {
         errorCode == 400 || error?.error_type == "ValidationError" ->
             PushNotificationError.ValidationError(message)
-        else -> PushNotificationError.Unknown(message)
+        else -> mapGenericError(errorCode, error)
     }
+}
+
+
+sealed class GenericError : Throwable() {
+    data class NoNetwork(override val message: String? = null) : GenericError()
+    data class EmptyResponse(override val message: String? = null) : GenericError()
+    data class NoPermission(override val message: String? = null) : GenericError()
+    data class ErrorParsing(override val message: String? = null) : GenericError()
+    data class Unknown(override val message: String? = null) : GenericError()
 }

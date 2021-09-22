@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 internal data class JsonProductResponse(
-    val count: Int,
+    val count: Int?,
     val results: List<JsonProductItem>?
 )
 

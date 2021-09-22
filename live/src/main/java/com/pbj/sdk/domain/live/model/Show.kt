@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Show(
-    val id: String,
+    val id: String?,
     val title: String? = null,
     val description: String? = null,
     val waitingRoomDescription: String? = null,

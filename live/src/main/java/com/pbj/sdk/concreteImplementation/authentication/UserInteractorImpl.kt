@@ -182,7 +182,7 @@ internal class UserInteractorImpl(
         }
     }
 
-    override fun isUserLoggedIn(onResult: ((Boolean) -> Unit)?) {
+    override fun isLoggedIn(onResult: ((Boolean) -> Unit)?) {
         scope.launch {
             userRepository.getUserToken()
                 .onResult({
@@ -230,7 +230,12 @@ internal class UserInteractorImpl(
         onSuccess: (() -> Unit)?
     ) {
         scope.launch {
-            updateDeviceRegistrationToken(token, onError, onSuccess)
+            userRepository.updateDeviceRegistrationToken(token).onResult({
+                Timber.e(it)
+                onError?.invoke(it)
+            }) {
+                onSuccess?.invoke()
+            }
         }
     }
 }
