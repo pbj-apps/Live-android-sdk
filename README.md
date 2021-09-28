@@ -36,7 +36,7 @@ liveSdk.isEpisodeLive { isLive ->
 
 You can also pass your showId as a parameter to query live episodes, but this time for a specific show. You can find your showId in your web dashboard. Select the show you want and grab it's id from the browser's url.
 
-## 4. Start a Live Player activity
+## 4. Start a Live Player
 
 ```kotlin
 //Start Live player as an activity
