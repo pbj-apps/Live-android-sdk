@@ -7,116 +7,142 @@
     android:background="#24174D"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="PBJ Live"
-        android:textColor="#E8386D"
-        android:layout_margin="16dp"
-        android:textSize="38sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/organizationTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Organization Api Key:"
-        android:textColor="@color/white"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:textSize="24sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/organizationApiKeyField"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:hint="Enter your api key"
-        android:layout_margin="16dp"
-        android:background="@color/white"
-        android:maxLines="1"
-        app:layout_constraintTop_toBottomOf="@+id/organizationTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:id="@+id/showIdTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Show Id (Optional):"
-        android:textColor="@color/white"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:textSize="24sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/organizationApiKeyField" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/showIdField"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:hint="Enter your show id"
-        android:layout_margin="16dp"
-        android:background="@color/white"
-        android:maxLines="1"
-        app:layout_constraintTop_toBottomOf="@+id/showIdTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/watchButton"
-        android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:text="Watch Live"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#E8386D"
-        android:textSize="18sp"
-        app:cornerRadius="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/showIdField"/>
-
-    <RadioGroup
-        android:id="@+id/environmentGroup"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <RadioButton
-            android:id="@+id/dev"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Dev"
-            android:textSize="30sp"
-            android:textColor="@color/white_70"/>
+            android:layout_margin="16dp"
+            android:text="PBJ Live"
+            android:textColor="#E8386D"
+            android:textSize="38sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <RadioButton
-            android:id="@+id/demo"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/organizationTitle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Demo"
-            android:textSize="30sp"
-            android:textColor="@color/white_70"/>
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Organization Api Key:"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title" />
 
-        <RadioButton
-            android:id="@+id/prod"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/organizationApiKeyField"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_margin="16dp"
+            android:background="@color/white"
+            android:hint="Enter your api key"
+            android:maxLines="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/organizationTitle" />
+
+        <TextView
+            android:id="@+id/showIdTitle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Prod"
-            android:textSize="30sp"
-            android:textColor="@color/white_70"/>
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Show Id (Optional):"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/organizationApiKeyField" />
 
-    </RadioGroup>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/showIdField"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_margin="16dp"
+            android:background="@color/white"
+            android:hint="Enter your show id"
+            android:maxLines="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/showIdTitle" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/watchButton"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#E8386D"
+            android:text="Watch Live on Activity"
+            android:textSize="18sp"
+            app:cornerRadius="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/showIdField" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/watchFragment"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#E8386D"
+            android:text="Watch Live on Fragment"
+            android:textSize="18sp"
+            app:cornerRadius="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/watchButton" />
+
+        <RadioGroup
+            android:id="@+id/environmentGroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <RadioButton
+                android:id="@+id/dev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dev"
+                android:textColor="@color/white_70"
+                android:textSize="30sp" />
+
+            <RadioButton
+                android:id="@+id/demo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Demo"
+                android:textColor="@color/white_70"
+                android:textSize="30sp" />
+
+            <RadioButton
+                android:id="@+id/prod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Prod"
+                android:textColor="@color/white_70"
+                android:textSize="30sp" />
+
+        </RadioGroup>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

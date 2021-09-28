@@ -14,19 +14,23 @@ interface LiveSDK {
 
     val guestFeature: GuestFeature
 
-    /**Start the Live Player in a new activity
+    /**Get the Intent to start the Live Player in a new activity
      * @param context App context
      * @param showId Id of the show to open
      */
-    fun startLivePlayer(context: Context, showId: String) {
-        SdkLivePlayerActivity.startLivePlayer(context, showId)
+    fun getLivePlayerActivityIntent(context: Context, showId: String) {
+        SdkLivePlayerActivity.getLivePlayerActivityIntent(
+            context,
+            if (showId.isBlank()) showId else null
+        )
+
     }
 
-    /**Start the Live Player in a new activity
+    /**Get the Intent to start the Live Player in a new activity
      * @param context App context
      */
-    fun startLivePlayer(context: Context) {
-        SdkLivePlayerActivity.startLivePlayer(context)
+    fun getLivePlayerActivityIntent(context: Context) {
+        SdkLivePlayerActivity.getLivePlayerActivityIntent(context)
     }
 
     /**Check if an episode is currently live
@@ -56,7 +60,7 @@ interface LiveSDK {
             return SdkHolder.instance
         }
 
-        /**Properly end the SDK*/
+        /**Properly close the SDK*/
         fun close() {
             SdkHolder.instance.close()
         }
