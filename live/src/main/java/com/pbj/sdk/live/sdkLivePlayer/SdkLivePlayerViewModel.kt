@@ -32,7 +32,6 @@ internal class SdkLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
 
     fun init(showId: String?) {
         getLiveStreamAsGuest(showId)
-        listenToEpisode()
     }
 
     private fun getLiveStreamAsGuest(showId: String?) {
@@ -40,6 +39,7 @@ internal class SdkLivePlayerViewModel : ViewModel(), LiveUpdateListener, LiveKoi
         guestInteractor.authenticateAsGuest({
             onError(it.localizedMessage)
         }) {
+            listenToEpisode()
             if (showId.isNullOrBlank())
                 getAnyEpisode()
             else

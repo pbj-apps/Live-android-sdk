@@ -2,13 +2,10 @@ package com.pbj.sdk.concreteImplementation.authentication
 
 import android.util.Log
 import com.pbj.sdk.di.LiveKoinComponent
+import com.pbj.sdk.domain.*
 import com.pbj.sdk.domain.authentication.GuestInteractor
 import com.pbj.sdk.domain.authentication.GuestRepository
 import com.pbj.sdk.domain.authentication.UserRepository
-import com.pbj.sdk.domain.onError
-import com.pbj.sdk.domain.onErrorCallBack
-import com.pbj.sdk.domain.onSuccess
-import com.pbj.sdk.domain.successResult
 import kotlinx.coroutines.*
 import timber.log.Timber
 
@@ -25,16 +22,20 @@ internal class GuestInteractorImpl(override val guestRepository: GuestRepository
 
     override fun authenticateAsGuest(onError: onErrorCallBack?, onSuccess: (() -> Unit)?) {
         scope.launch {
-            val guestToken = guestRepository.fetchGuestToken()
-                .onError(onError)
-                .onSuccess {
-                    onSuccess?.invoke()
-                }.successResult
+            userRepository.logout().onResult {
+                scope.launch {
+                    val guestToken = guestRepository.fetchGuestToken()
+                        .onError(onError)
+                        .onSuccess {
+                            onSuccess?.invoke()
+                        }.successResult
 
-            userRepository.apply {
-                guestToken?.authToken?.let {
-                    saveToken(it)
-                    saveIsLoggedInAsGuest(true)
+                    userRepository.apply {
+                        guestToken?.authToken?.let {
+                            saveToken(it)
+                            saveIsLoggedInAsGuest(true)
+                        }
+                    }
                 }
             }
         }

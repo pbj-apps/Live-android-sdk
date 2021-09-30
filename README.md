@@ -36,10 +36,27 @@ liveSdk.isEpisodeLive { isLive ->
 
 You can also pass your showId as a parameter to query live episodes, but this time for a specific show. You can find your showId in your web dashboard. Select the show you want and grab it's id from the browser's url.
 
-## 4. Start a Player activity
+## 4. Start a Live Player
 
 ```kotlin
-liveSdk.startLivePlayer(context) // Optionally pass a showId.
+//Start Live player as an activity
+val intent = liveSdk.getLivePlayerActivityIntent(context) // Optionally pass a showId.
+startActivity(intent)
+
+//Start Live player as a fragment
+SdkLivePlayerFragment.newInstance() // Optionally pass a showId.
+
+//The activity starting the fragment can implement SdkLivePlayerFragment.LiveFragmentListener 
+//to handle events
+class Activity() : SdkLivePlayerFragment.LiveFragmentListener {
+    override fun onClickCard(product: Product) {
+
+    }
+
+    override fun onBack() {
+
+    }
+}
 ```
 Without a showId parameter, the player will display the first live show it finds.
 

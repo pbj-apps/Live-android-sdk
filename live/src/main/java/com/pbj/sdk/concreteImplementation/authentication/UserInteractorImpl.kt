@@ -80,7 +80,6 @@ internal class UserInteractorImpl(
         onError: onErrorCallBack?,
         onSuccess: ((User?) -> Unit)?
     ) {
-
         scope.launch {
             val user: User? = userRepository.getUser()
                 .onError(onError).onSuccess(onSuccess).successResult
@@ -144,8 +143,9 @@ internal class UserInteractorImpl(
             }
 
             userRepository.getUser().onResult {
-                it?.copy(avatarUrl = profileImage?.small)
-                onSuccess?.invoke(it)
+                onSuccess?.invoke(
+                    it?.copy(avatarUrl = profileImage?.small)
+                )
             }
         }
     }
